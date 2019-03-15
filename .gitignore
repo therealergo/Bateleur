@@ -225,3 +225,4 @@ tags
 [._]*.un~
 
 Bateleur.iml
+/.classpath

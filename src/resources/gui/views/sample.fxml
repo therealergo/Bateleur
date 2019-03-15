@@ -26,7 +26,7 @@
                   <Slider layoutX="183.0" layoutY="14.0" />
                   <ImageView fitHeight="99.0" fitWidth="116.0" layoutX="7.0" layoutY="4.0" pickOnBounds="true" smooth="false">
                        <image>
-                           <Image url="@/gui/images/orange-square-md.png" />
+                           <Image url="@/resources/gui/images/orange-square-md.png" />
                        </image>
                   </ImageView>
                   <Slider layoutX="373.0" layoutY="14.0" prefHeight="14.0" prefWidth="558.0" />
