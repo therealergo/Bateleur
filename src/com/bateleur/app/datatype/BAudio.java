@@ -83,10 +83,10 @@ public abstract class BAudio {
 			throw new IllegalArgumentException("Metadata key cannot be null!");
 		}
 		if (key.length() < 1) {
-			throw new IllegalArgumentException("Metadata key must be at least 1 charcter long!");
+			throw new IllegalArgumentException("Metadata key must be at least 1 character long!");
 		}
 		
-		// Return the metadata for the given key, type pair
+		// Return the metadata for the given key
 		// Internal metadata is given priority over external metadata
 		// If no internal or external metadata is found, then 'null' is returned
 		Object internalT = mapInternal.get(key);
@@ -105,7 +105,7 @@ public abstract class BAudio {
 			throw new IllegalArgumentException("Metadata key cannot be null!");
 		}
 		if (key.length() < 1) {
-			throw new IllegalArgumentException("Metadata key must be at least 1 charcter long!");
+			throw new IllegalArgumentException("Metadata key must be at least 1 character long!");
 		}
 		
 		// Remove metadata entry if key is null, otherwise add metadata entry
@@ -139,7 +139,7 @@ public abstract class BAudio {
 			throw new IllegalArgumentException("Metadata key cannot be null!");
 		}
 		if (key.length() < 1) {
-			throw new IllegalArgumentException("Metadata key must be at least 1 charcter long!");
+			throw new IllegalArgumentException("Metadata key must be at least 1 character long!");
 		}
 		
 		// Remove metadata entry if key is null, otherwise add metadata entry
