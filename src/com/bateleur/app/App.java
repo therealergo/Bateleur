@@ -7,6 +7,7 @@ import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioFile;
 import com.bateleur.app.model.LibraryModel;
 import com.bateleur.app.model.PlaybackModel;
+import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.Main;
 
 import javafx.application.Application;
@@ -19,6 +20,13 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
     	PlaybackModel playbackModel = new PlaybackModel();
+    	SettingsModel settingsModel = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
+    	
+    	{ // Test of SettingsModel
+		    Main.log.log(settingsModel.<Integer>getSetting("test_setting", 1));
+		    settingsModel.<Integer>setSetting("test_setting", (int)(System.nanoTime()%8));
+		    Main.log.log(settingsModel.<Integer>getSetting("test_setting", 1));
+    	}
     	
         { // Test of BAudio
         	BAudio audio = new BAudioFile(Main.resource.getResourceFileLocal("testBAudio>meta_test_file"));
@@ -60,7 +68,7 @@ public class App extends Application {
 	    	loader.setControllerFactory(c -> {
 	    		switch (c.getSimpleName()) {
 		    		case "PlaybackController":
-		    			return new PlaybackController(null, playbackModel, null);
+		    			return new PlaybackController(settingsModel, playbackModel, null);
 	    		}
 	    		throw new RuntimeException("Unable to locate controller class: " + c + "!");
 	    	});
