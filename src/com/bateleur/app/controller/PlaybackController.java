@@ -1,8 +1,5 @@
 package com.bateleur.app.controller;
 
-import static com.bateleur.app.controller.PlaybackController.RepeatSetting.REPEAT_OFF;
-import static com.bateleur.app.controller.PlaybackController.RepeatSetting.REPEAT_QUEUE;
-
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
@@ -53,8 +50,6 @@ public class PlaybackController {
 
     private QueueModel queue;
 
-    private RepeatSetting repeatSetting = REPEAT_OFF;    // Default is no repeating of a queue
-
     public PlaybackController(SettingsModel settings, PlaybackModel playback, QueueModel queue) {
         this.settings = settings;
         this.playback = playback;
@@ -80,42 +75,17 @@ public class PlaybackController {
 
     @FXML
     public void onRepeatPress() throws Exception {
-        // TODO: Change the appearance of the button according with change
-        switch (repeatSetting) {
-
-            case REPEAT_OFF:
-                repeatSetting = REPEAT_QUEUE;
-                queue.setRepeat(false);
-                break;
-
-            case REPEAT_QUEUE:
-                repeatSetting = REPEAT_OFF;
-                queue.setRepeat(true);
-                break;
-
-            case REPEAT_ONE:
-                repeatSetting = REPEAT_OFF;
-                queue.setRepeat(true);   // TODO: think of how to implement repeat_one
-                break;
-
-            default:
-                throw new Exception("what')");
-        }
+    	queue.setRepeatState(!queue.isRepeatEnabled());
     }
 
     @FXML
     public void onShufflePress() {
-        if (queue.isShuffleEnabled()) {
-            queue = queue.shuffle();
-        }
-        else {
-            queue.unshuffle();
-        }
-
+    	queue.setShuffleState(!queue.isShuffleEnabled());
     }
 
     @FXML
     public void onQueuePress() {
+    	queue.setQueueState(!queue.isQueueEnabled());
     }
 
     @FXML
@@ -129,13 +99,15 @@ public class PlaybackController {
 
     @FXML
     public void onSkipForwardPress() {
-        playback.loadAudio(queue.skipForwards());
+    	queue.skipForwards();
+        playback.loadAudio(queue.get(), settings.get(settings.FADE_TIME_USER));
         playback.play(settings.get(settings.FADE_TIME_USER));
     }
 
     @FXML
     public void onSkipBackwardPress() {
-        playback.loadAudio(queue.skipBackwards());
+    	queue.skipBackwards();
+        playback.loadAudio(queue.get(), settings.get(settings.FADE_TIME_USER));
         playback.play(settings.get(settings.FADE_TIME_USER));
     }
 

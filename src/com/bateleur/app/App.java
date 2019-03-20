@@ -26,7 +26,7 @@ public class App extends Application {
     	PlaybackModel playback = new PlaybackModel(settings);
     	LibraryModel  library  = new LibraryModel (settings, Main.resource.getResourceFolderClass("library", App.class));
     	PlaylistModel playlist = new PlaylistModel(settings);
-    	QueueModel    queue    = new QueueModel   (null, false);
+    	QueueModel    queue    = new QueueModel   ();
     	
     	{ // Test of SettingsModel
 		    Main.log.log(settings.get(settings.TEST_VAL));
@@ -65,11 +65,14 @@ public class App extends Application {
         
         { // Test of PlaybackModel
         	BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"), Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getPath().toUri());
-        	playback.loadAudio(audio);
+        	playback.loadAudio(audio, 0);
         	playback.play(0);
         }
         
         library.update();
+        playback.loadAudio(library.iterator().next(), 0);
+        playback.play(0);
+        queue.setQueue(library, library.iterator().next());
         
         { // Start FXML window
 	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/gui/views/sample.fxml"));

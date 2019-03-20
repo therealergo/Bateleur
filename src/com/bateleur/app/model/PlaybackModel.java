@@ -30,7 +30,12 @@ public class PlaybackModel {
 		return loadedAudio;
 	}
 
-	public void loadAudio(BAudio audio) {
+	public void loadAudio(BAudio audio, int fadeOutTimeMS) {
+		if (player != null) {
+			player.dispose();
+			loadedAudio = null;
+		}
+		
 		if (audio == null) {
 			player = null;
 			loadedAudio = null;

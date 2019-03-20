@@ -5,112 +5,92 @@ import com.bateleur.app.datatype.BAudio;
 import java.util.*;
 
 public class QueueModel {
-
     private boolean shuffleEnabled;
-
+    private boolean queueEnabled;
     private boolean repeatEnabled;
-
-    /**
-     * Holds original forwardQueue when the model is created, used for shuffling
-     */
-    private Queue<BAudio> startingQueue;
-
-    /**
-     * Holds current active forwardQueue of songs
-     */
-    private Queue<BAudio> forwardQueue;
-
-    /**
-     * Holds previously played songs in the forwardQueue
-     */
-    private Queue<BAudio> previousQueue;
-
-    /**
-     * Returns a new QueueModel based on a new starting forwardQueue
-     * @param startingQueue the newly created starting forwardQueue for the model
-     */
-    public QueueModel(Queue<BAudio> startingQueue, boolean shuffleEnabled) {
-        this.startingQueue = startingQueue;
-        forwardQueue = startingQueue;
-        previousQueue = new ArrayDeque<>();
-        this.shuffleEnabled = shuffleEnabled;
+    
+    private ArrayList<BAudio> queueSet;
+    private ArrayList<BAudio> queueProcessed;
+    private int queueProcessedIndex;
+    
+    public QueueModel() {
+    	shuffleEnabled = false;
+    	queueEnabled = true;
+    	repeatEnabled = true;
+    	
+    	queueSet = new ArrayList<BAudio>();
+    	queueProcessed = new ArrayList<BAudio>();
+    	queueProcessedIndex = -1;
     }
-
+    
+    private void recreateProcessedQueue(BAudio startingAudio) {
+    	queueProcessed.clear();
+    	queueProcessed.addAll(queueSet);
+    	
+    	if (shuffleEnabled) {
+    		Collections.shuffle(queueProcessed);
+    	}
+    	
+    	queueProcessedIndex = queueProcessed.indexOf(startingAudio);
+    }
+    
     public BAudio get() {
-        return forwardQueue.poll();
+        return queueProcessed.get(queueProcessedIndex);
+    }
+    
+    private void wrapQueueProcessedIndex() {
+		if (repeatEnabled) {
+			queueProcessedIndex = ((queueProcessedIndex % queueProcessed.size()) + queueProcessed.size()) % queueProcessed.size();
+		} else {
+			queueProcessedIndex = Math.min(Math.max(queueProcessedIndex, 0), queueProcessed.size()-1);
+		}
     }
 
-    public QueueModel shuffle() {
-        ArrayList<BAudio> shuffledQueueList = convertQueueToList(startingQueue);    // for creating new shuffle
-        ArrayDeque<BAudio> shuffledQueue = new ArrayDeque<>(shuffledQueueList);
-        return new QueueModel(shuffledQueue, shuffleEnabled);
+    public void skipForwards() {
+    	if (isQueueEnabled()) {
+        	queueProcessedIndex++;
+        	wrapQueueProcessedIndex();
+    	}
     }
 
-    public void unshuffle() {
-        if (shuffleEnabled) {
-            recreateQueueState(null);    // TODO: get current song to dequeue to this point
-        }
+    public void skipBackwards() {
+    	if (isQueueEnabled()) {
+    		queueProcessedIndex--;
+        	wrapQueueProcessedIndex();
+    	}
     }
 
-    /**
-     * When unshuffling, this should load the original forwardQueue in the correct state. i.e., if the user shuffled on the
-     * last song in their forwardQueue and unshuffled, the unshuffled forwardQueue should be at the last song.
-     * @param audio current audio file to dequeue to
-     */
-    private void recreateQueueState(BAudio audio) {
-        Queue<BAudio> queue = new LinkedList<>(startingQueue);    // create a new queue to poll from
-
-        BAudio file;
-        while ((file = queue.poll()) != null) {
-            if (!file.equals(audio)) {
-                previousQueue.add(file);
-            }
-            else {
-                previousQueue.add(file);
-                forwardQueue.addAll(queue);    // adds remaining queue elements to the forward queue
-            }
-        }
-    }
-
-    private ArrayList<BAudio> convertQueueToList(Queue<BAudio> queue) {
-        ArrayList<BAudio> list = new ArrayList<>(queue);
-        Collections.shuffle(list);
-        return list;
-    }
-
-    public BAudio skipForwards() {
-        BAudio next = forwardQueue.poll();
-        previousQueue.add(next);
-        return next;
-    }
-
-    public BAudio skipBackwards() {
-        BAudio prev = previousQueue.poll();
-        forwardQueue.add(prev);
-        return prev;
-    }
-
-    public void setQueue(LibraryModel libraryModel, int startingIndex) {
-
-    }
-
-    public void setShuffleState(boolean enabled) {
-
-    }
-
-    public void setQueueState(boolean enabled) {
-
-    }
-
-    public void setRepeat(boolean enabled) {
-
+    public void setQueue(LibraryModel libraryModel, BAudio startingAudio) {
+    	queueSet.clear();
+    	libraryModel.forEach( (BAudio audio) -> queueSet.add(audio) );
+    	
+    	recreateProcessedQueue(startingAudio);
     }
 
     public boolean isShuffleEnabled() {
         return shuffleEnabled;
     }
 
+    public void setShuffleState(boolean shuffleEnabled) {
+    	if (this.shuffleEnabled != shuffleEnabled) {
+        	this.shuffleEnabled = shuffleEnabled;
+    		recreateProcessedQueue(get());
+    	}
+    }
+
+    public boolean isQueueEnabled() {
+        return queueEnabled;
+    }
+
+    public void setQueueState(boolean queueEnabled) {
+    	this.queueEnabled = queueEnabled;
+    }
+
     public boolean isRepeatEnabled() {
         return repeatEnabled;
+    }
+
+    public void setRepeatState(boolean repeatEnabled) {
+    	this.repeatEnabled = repeatEnabled;
     }
 }
