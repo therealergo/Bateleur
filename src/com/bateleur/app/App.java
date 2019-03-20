@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioFile;
 import com.bateleur.app.model.LibraryModel;
+import com.bateleur.app.model.PlaybackModel;
 import com.therealergo.main.Main;
 
 import javafx.application.Application;
@@ -14,7 +15,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class App extends Application {
-
+	PlaybackModel playback;
+	
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/resources/gui/views/sample.fxml"));
@@ -49,6 +51,13 @@ public class App extends Application {
         	while (audioIterator.hasNext()) {
         		Main.log.log(audioIterator.next().<Integer>getMetadata("test_meta"));
         	}
+        }
+        
+        { // Test of PlaybackModel
+        	BAudio audio = new BAudioFile(Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"), Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getFullPath().toUri());
+        	playback = new PlaybackModel();
+        	playback.loadTrack(audio);
+        	playback.play(0);
         }
     }
 
