@@ -10,13 +10,18 @@ import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
 public class PlaybackModel {
+	private final SettingsModel settings;
+	
 	private MediaPlayer player;
 	private BAudio loadedAudio;
 	private double volume;
 
-	public PlaybackModel() {
-		player = null;
-		volume = 1.0;
+	public PlaybackModel(SettingsModel settings) {
+		this.settings = settings;
+		
+		this.player = null;
+		this.loadedAudio = null;
+		this.volume = 1.0;
 	}
 
 	public boolean isAudioLoaded() {
@@ -32,7 +37,7 @@ public class PlaybackModel {
 			player = null;
 			loadedAudio = null;
 		} else {
-			Media media = new Media(audio.<URI>getMetadata("__playbackSourceURI").toString());
+			Media media = new Media(audio.<URI>getMetadata(settings.stat.KEY_PLAYBACK_URI).toString());
 			player = new MediaPlayer(media);
 			player.setVolume(volume);
 			loadedAudio = audio;

@@ -98,11 +98,11 @@ public class PlaybackController {
     @FXML
     public void onPlayPausePress() {
         if (paused) {
-            playback.play(1);
+            playback.play(settings.<Integer>getSetting(settings.stat.KEY_FADE_TIME_USER, settings.stat.DEF_FADE_TIME_USER));
             paused = false;
         }
         else {
-            playback.pause(1);
+            playback.pause(settings.<Integer>getSetting(settings.stat.KEY_FADE_TIME_USER, settings.stat.DEF_FADE_TIME_USER));
             paused = true;
         }
     }
@@ -110,13 +110,13 @@ public class PlaybackController {
     @FXML
     public void onSkipForwardPress() {
         playback.loadAudio(queue.get());
-        playback.play(1);    // magic number for fadetime for now
+        playback.play(settings.<Integer>getSetting(settings.stat.KEY_FADE_TIME_USER, settings.stat.DEF_FADE_TIME_USER));
     }
 
     @FXML
     public void onSkipBackwardPress() {
         playback.loadAudio(queue.previous());
-        playback.play(1);    // magic number for fadetime for now
+        playback.play(settings.<Integer>getSetting(settings.stat.KEY_FADE_TIME_USER, settings.stat.DEF_FADE_TIME_USER));
     }
 
     public void onPlayTimeIncrease() {

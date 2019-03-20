@@ -16,13 +16,13 @@ public class LibraryModel implements Iterable<BAudio> {
 	private List<BAudio> listLibarary;
 	private List<BAudio> listFiltered;
 	
-	public LibraryModel(ResourceFile file, ResourceFolder data, SettingsModel settings) throws IOException {
+	public LibraryModel(SettingsModel settings, ResourceFolder data) throws IOException {
 		listLibarary = new ArrayList<BAudio>();
 		listFiltered = new ArrayList<BAudio>();
 		
 		ResourceFile[] audioFileList = data.listFileChildren();
 		for (int i = 0; i<audioFileList.length; i++) {
-			listLibarary.add(new BAudioFile(audioFileList[i]));
+			listLibarary.add(new BAudioFile(settings, audioFileList[i]));
 		}
 		
 		reset();

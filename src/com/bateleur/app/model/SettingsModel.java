@@ -11,14 +11,19 @@ import com.therealergo.main.resource.ResourceFile;
 
 public class SettingsModel {
 	/**
+	 * @brief Object holding all of the static (i.e. built-in and not saved/loaded) settings.
+	 */
+	public final StaticSettings stat;
+	
+	/**
 	 * @brief Map used to relate setting keys to Serializable setting values.
 	 */
-	private HashMap<String, Serializable> settingsMap;
+	private final HashMap<String, Serializable> settingsMap;
 	
 	/**
 	 * @brief The file used to locally store settings values.
 	 */
-	private ResourceFile settingsFile;
+	private final ResourceFile settingsFile;
 	
 	/** 
 	 * @brief Constructor for SettingsModel, which stores all settings for the Bateleur application.
@@ -31,6 +36,7 @@ public class SettingsModel {
 			throw new IllegalArgumentException("SettingsModel store file cannot be null!");
 		}
 		
+		this.stat = new StaticSettings();
 		this.settingsMap = new HashMap<String, Serializable>();
 		this.settingsFile = settingsFile;
 		
@@ -104,5 +110,14 @@ public class SettingsModel {
 				oos.writeObject(settingsMap.get(writeKey));
 			}
 		}
+	}
+	
+	public class StaticSettings {
+		public final String KEY_PLAYBACK_URI = "__playbackSourceURI";
+		
+		public final String KEY_FADE_TIME_USER = "__fadeTimeUser";
+		public final int    DEF_FADE_TIME_USER = 0;
+		public final String KEY_FADE_TIME_AUTO = "__fadeTimeAuto";
+		public final int    DEF_FADE_TIME_AUTO = 0;
 	}
 }

@@ -19,8 +19,8 @@ import javafx.stage.Stage;
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-    	PlaybackModel playbackModel = new PlaybackModel();
     	SettingsModel settingsModel = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
+    	PlaybackModel playbackModel = new PlaybackModel(settingsModel);
     	
     	{ // Test of SettingsModel
 		    Main.log.log(settingsModel.<Integer>getSetting("test_setting", 1));
@@ -29,7 +29,7 @@ public class App extends Application {
     	}
     	
         { // Test of BAudio
-        	BAudio audio = new BAudioFile(Main.resource.getResourceFileLocal("testBAudio>meta_test_file"));
+        	BAudio audio = new BAudioFile(settingsModel, Main.resource.getResourceFileLocal("testBAudio>meta_test_file"));
 		    
 		    Integer test_meta0 = audio.<Integer>getMetadata("test_meta");
 		    Main.log.log(test_meta0);
@@ -42,11 +42,11 @@ public class App extends Application {
         
         { // Test of LibraryModel
         	for (int i = 0; i<8; i++) {
-            	BAudio audio = new BAudioFile(Main.resource.getResourceFileLocal("testLibraryModel>meta_test_" + i));
+            	BAudio audio = new BAudioFile(settingsModel, Main.resource.getResourceFileLocal("testLibraryModel>meta_test_" + i));
     		    audio.<Integer>setMetadata("test_meta", 1230 + i);
         	}
 		    
-        	LibraryModel libraryModel = new LibraryModel(null, Main.resource.getResourceLocal("testLibraryModel"), null);
+        	LibraryModel libraryModel = new LibraryModel(settingsModel, Main.resource.getResourceLocal("testLibraryModel"));
         	
         	libraryModel.filterBy( (BAudio audio) -> audio.<Integer>getMetadata("test_meta") > 1234 );
         	libraryModel.sortBy( (BAudio a0, BAudio a1) -> a1.<Integer>getMetadata("test_meta") - a0.<Integer>getMetadata("test_meta") );
@@ -58,7 +58,7 @@ public class App extends Application {
         }
         
         { // Test of PlaybackModel
-        	BAudio audio = new BAudioFile(Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"), Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getFullPath().toUri());
+        	BAudio audio = new BAudioFile(settingsModel, Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"), Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getFullPath().toUri());
         	playbackModel.loadAudio(audio);
         	playbackModel.play(0);
         }
