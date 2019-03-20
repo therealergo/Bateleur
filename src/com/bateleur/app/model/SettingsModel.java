@@ -25,6 +25,11 @@ public class SettingsModel {
 	public final BFile.Entry< Boolean           > QUEUE_QUEUE_EN     = new BFile.Entry< Boolean           >( "__queueQueueEn"     , true                     );
 	public final BFile.Entry< Boolean           > QUEUE_REPEAT_EN    = new BFile.Entry< Boolean           >( "__queueRepeatEn"    , true                     );
 	
+	public final BFile.Entry< String            > AUDIO_PROP_TITLE   = new BFile.Entry< String            >( "title"              , "No title found!"        );
+	public final BFile.Entry< String            > AUDIO_PROP_ARTIST  = new BFile.Entry< String            >( "xmpDM:artist"       , "No artist found!"       );
+	public final BFile.Entry< String            > AUDIO_PROP_ALBUM   = new BFile.Entry< String            >( "xmpDM:album"        , "No album found!"        );
+	public final BFile.Entry< String            > AUDIO_PROP_TRACKN  = new BFile.Entry< String            >( "xmpDM:trackNumber"  , "No track number found!" );
+	
 	/**
 	 * @brief 
 	 */

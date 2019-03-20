@@ -41,10 +41,10 @@
                         <ToggleButton fx:id="repeatButton" minWidth="42.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Repeat" onMouseClicked="#onRepeatPress" />
                      </buttons>
                   </ButtonBar>
-                  <Label layoutX="144.0" layoutY="72.0" text="Darude" />
-                  <Label layoutX="269.0" layoutY="72.0" text="Track Number" />
-                  <Label layoutX="201.0" layoutY="72.0" text="Album" />
-                  <Label layoutX="144.0" layoutY="45.0" prefHeight="17.0" prefWidth="203.0" text="Sandstorm" />
+                  <Label fx:id="textBot" layoutX="144.0" layoutY="72.0" text="Darude" />
+                  <Label layoutX="269.0" layoutY="72.0" text="" />
+                  <Label layoutX="201.0" layoutY="72.0" text="" />
+                  <Label fx:id="textTop" layoutX="144.0" layoutY="45.0" prefHeight="17.0" prefWidth="203.0" text="Sandstorm" />
                </children>
             </AnchorPane>
          </children>

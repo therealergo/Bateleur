@@ -8,6 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.apache.tika.exception.TikaException;
+import org.xml.sax.SAXException;
+
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioLocal;
 import com.therealergo.main.Main;
@@ -21,7 +24,7 @@ public class LibraryModel implements Iterable<BAudio> {
 	private List<BAudio> listFiltered;
 	private ResourceFolder data;
 	
-	public LibraryModel(SettingsModel settings, ResourceFolder data) throws IOException {
+	public LibraryModel(SettingsModel settings, ResourceFolder data) throws IOException, SAXException, TikaException {
 		this.settings = settings;
 		
 		this.listLibarary = new ArrayList<BAudio>();
@@ -41,8 +44,10 @@ public class LibraryModel implements Iterable<BAudio> {
 	 * TODO: Not yet implemented
 	 * @param settings
 	 * @throws IOException 
+	 * @throws TikaException 
+	 * @throws SAXException 
 	 */
-	public void update() throws IOException {
+	public void update() throws IOException, SAXException, TikaException {
 		ResourceFolder libraryFolder = Main.resource.getResourceFolderGlobal(settings.get(settings.LIBRARY_PATH));
 		ResourceFile[] audioFileList = libraryFolder.listFileChildren();
 		

@@ -7,6 +7,7 @@ import com.bateleur.app.model.SettingsModel;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 
@@ -17,6 +18,12 @@ public class PlaybackController {
         REPEAT_QUEUE,
         REPEAT_ONE
     }
+
+    @FXML
+    private Label textBot;
+
+    @FXML
+    private Label textTop;
 
     @FXML
     private ToggleButton playPauseButton;
@@ -78,6 +85,11 @@ public class PlaybackController {
     		onSeekSet(new_val.doubleValue());
         });
     }
+    
+    private void updateText() {
+    	textTop.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_TITLE));
+    	textBot.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_ARTIST));
+    }
 
     @FXML
     public void onShufflePress() {
@@ -108,6 +120,7 @@ public class PlaybackController {
     	queue.skipForwards();
         playback.loadAudio(queue.get(), settings.get(settings.FADE_TIME_USER));
         playback.play(settings.get(settings.FADE_TIME_USER));
+        updateText();
     }
 
     @FXML
@@ -115,6 +128,7 @@ public class PlaybackController {
     	queue.skipBackwards();
         playback.loadAudio(queue.get(), settings.get(settings.FADE_TIME_USER));
         playback.play(settings.get(settings.FADE_TIME_USER));
+        updateText();
     }
 
     public void onPlayTimeIncrease() {
