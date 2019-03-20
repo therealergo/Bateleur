@@ -23,13 +23,28 @@ public class QueueModel {
      */
     private Queue<BAudio> queue;
 
-    public BAudio get() {
+    /**
+     * Holds previously played songs in the queue
+     */
+    private Queue<BAudio> previousQueue;
 
+    /**
+     * Returns a new QueueModel based on a new starting queue
+     * @param startingQueue the newly created starting queue for the model
+     */
+    public QueueModel(Queue<BAudio> startingQueue) {
+        this.startingQueue = startingQueue;
+        queue = startingQueue;
+        previousQueue = new LinkedList<>();
+    }
+
+    public BAudio get() {
+        return queue.poll();
     }
 
     public QueueModel shuffle() {
-        LinkedList<BAudio> shuffledQueueList = convertQueueToList(startingQueue);    // for creating new shuffle
-
+        LinkedList<BAudio> shuffledQueue = convertQueueToList(startingQueue);    // for creating new shuffle
+        return new QueueModel(shuffledQueue);
     }
 
     private LinkedList<BAudio> convertQueueToList(Queue<BAudio> queue) {
@@ -39,11 +54,11 @@ public class QueueModel {
     }
 
     public void skipForwards() {
-
+        previousQueue.add(queue.poll());
     }
 
     public void skipBackwards() {
-
+        queue.add(previousQueue.poll());
     }
 
     public void setQueue(LibraryModel libraryModel, int startingIndex) {

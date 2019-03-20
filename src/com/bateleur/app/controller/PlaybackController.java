@@ -77,7 +77,6 @@ public class PlaybackController {
 
     @FXML
     public void onShufflePress() {
-
         queue = queue.shuffle();
     }
 
