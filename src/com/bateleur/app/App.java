@@ -51,7 +51,7 @@ public class App extends Application {
         
         { // Test of PlaybackModel
         	BAudio audio = new BAudioFile(Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"), Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getFullPath().toUri());
-        	playbackModel.loadTrack(audio);
+        	playbackModel.loadAudio(audio);
         	playbackModel.play(0);
         }
         
