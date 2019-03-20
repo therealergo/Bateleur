@@ -6,6 +6,7 @@ import com.bateleur.app.datatype.BAudio;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
 public class PlaybackModel {
@@ -52,6 +53,10 @@ public class PlaybackModel {
 		}
 
 		player.pause();
+	}
+	
+	public boolean isPlaying() {
+		return player.getStatus().equals(Status.PLAYING);
 	}
 
 	public double getPlaybackLengthMS() {
