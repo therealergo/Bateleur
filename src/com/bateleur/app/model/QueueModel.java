@@ -2,32 +2,29 @@ package com.bateleur.app.model;
 
 import com.bateleur.app.datatype.BAudio;
 
+import java.io.IOException;
 import java.util.*;
 
 public class QueueModel {
-    private boolean shuffleEnabled;
-    private boolean queueEnabled;
-    private boolean repeatEnabled;
-    
+	private SettingsModel settings;
+	
     private ArrayList<BAudio> queueSet;
     private ArrayList<BAudio> queueProcessed;
     private int queueProcessedIndex;
     
-    public QueueModel() {
-    	shuffleEnabled = false;
-    	queueEnabled = true;
-    	repeatEnabled = true;
+    public QueueModel(SettingsModel settings) {
+    	this.settings = settings;
     	
-    	queueSet = new ArrayList<BAudio>();
-    	queueProcessed = new ArrayList<BAudio>();
-    	queueProcessedIndex = -1;
+    	this.queueSet = new ArrayList<BAudio>();
+    	this.queueProcessed = new ArrayList<BAudio>();
+    	this.queueProcessedIndex = -1;
     }
     
     private void recreateProcessedQueue(BAudio startingAudio) {
     	queueProcessed.clear();
     	queueProcessed.addAll(queueSet);
     	
-    	if (shuffleEnabled) {
+    	if (isShuffleEnabled()) {
     		Collections.shuffle(queueProcessed);
     	}
     	
@@ -39,7 +36,7 @@ public class QueueModel {
     }
     
     private void wrapQueueProcessedIndex() {
-		if (repeatEnabled) {
+		if (isRepeatEnabled()) {
 			queueProcessedIndex = ((queueProcessedIndex % queueProcessed.size()) + queueProcessed.size()) % queueProcessed.size();
 		} else {
 			queueProcessedIndex = Math.min(Math.max(queueProcessedIndex, 0), queueProcessed.size()-1);
@@ -68,29 +65,41 @@ public class QueueModel {
     }
 
     public boolean isShuffleEnabled() {
-        return shuffleEnabled;
+        return settings.get(settings.QUEUE_SHUFFLE_EN);
     }
 
     public void setShuffleState(boolean shuffleEnabled) {
-    	if (this.shuffleEnabled != shuffleEnabled) {
-        	this.shuffleEnabled = shuffleEnabled;
+    	if (isShuffleEnabled() != shuffleEnabled) {
+        	try {
+    			settings.set(settings.QUEUE_SHUFFLE_EN.to(shuffleEnabled));
+    		} catch (IOException e) {
+    			//TODO: In future this won't be thrown here
+    		}
     		recreateProcessedQueue(get());
     	}
     }
 
     public boolean isQueueEnabled() {
-        return queueEnabled;
+        return settings.get(settings.QUEUE_QUEUE_EN);
     }
 
     public void setQueueState(boolean queueEnabled) {
-    	this.queueEnabled = queueEnabled;
+    	try {
+			settings.set(settings.QUEUE_QUEUE_EN.to(queueEnabled));
+		} catch (IOException e) {
+			//TODO: In future this won't be thrown here
+		}
     }
 
     public boolean isRepeatEnabled() {
-        return repeatEnabled;
+        return settings.get(settings.QUEUE_REPEAT_EN);
     }
 
     public void setRepeatState(boolean repeatEnabled) {
-    	this.repeatEnabled = repeatEnabled;
+    	try {
+			settings.set(settings.QUEUE_REPEAT_EN.to(repeatEnabled));
+		} catch (IOException e) {
+			//TODO: In future this won't be thrown here
+		}
     }
 }

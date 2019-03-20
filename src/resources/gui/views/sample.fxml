@@ -37,8 +37,8 @@
                   <ButtonBar layoutX="486.0" layoutY="46.0" pickOnBounds="false" prefHeight="40.0" prefWidth="222.0">
                      <buttons>
                         <ToggleButton fx:id="shuffleButton" minWidth="43.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Shuffle" onMouseClicked="#onShufflePress"/>
-                        <Button fx:id="queueButton" minWidth="67.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Queue" onMouseClicked="#onQueuePress"/>
-                        <Button fx:id="repeatButton" minWidth="42.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Repeat" onMouseClicked="#onRepeatPress" />
+                        <ToggleButton fx:id="queueButton" minWidth="67.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Queue" onMouseClicked="#onQueuePress"/>
+                        <ToggleButton fx:id="repeatButton" minWidth="42.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Repeat" onMouseClicked="#onRepeatPress" />
                      </buttons>
                   </ButtonBar>
                   <Label layoutX="144.0" layoutY="72.0" text="Darude" />

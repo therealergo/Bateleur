@@ -31,10 +31,10 @@ public class PlaybackController {
     private ToggleButton shuffleButton;
 
     @FXML
-    private Button queueButton;
+    private ToggleButton queueButton;
 
     @FXML
-    private Button repeatButton;
+    private ToggleButton repeatButton;
 
     @FXML
     private Slider seekBar;
@@ -58,6 +58,12 @@ public class PlaybackController {
     
     @FXML
     public void initialize() {
+    	shuffleButton.setSelected(queue.isShuffleEnabled());
+
+    	queueButton  .setSelected(queue.isQueueEnabled()  );
+
+    	repeatButton .setSelected(queue.isRepeatEnabled() );
+    	
     	volumeBar.setMin(0.0);
     	volumeBar.setMax(100.0);
     	volumeBar.setValue(playback.getVolume()*100.0);
@@ -74,18 +80,18 @@ public class PlaybackController {
     }
 
     @FXML
-    public void onRepeatPress() throws Exception {
-    	queue.setRepeatState(!queue.isRepeatEnabled());
-    }
-
-    @FXML
     public void onShufflePress() {
-    	queue.setShuffleState(!queue.isShuffleEnabled());
+    	queue.setShuffleState(shuffleButton.isSelected());
     }
 
     @FXML
     public void onQueuePress() {
-    	queue.setQueueState(!queue.isQueueEnabled());
+    	queue.setQueueState(queueButton.isSelected());
+    }
+
+    @FXML
+    public void onRepeatPress() throws Exception {
+    	queue.setRepeatState(repeatButton.isSelected());
     }
 
     @FXML

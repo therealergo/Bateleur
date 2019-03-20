@@ -26,7 +26,7 @@ public class App extends Application {
     	PlaybackModel playback = new PlaybackModel(settings);
     	LibraryModel  library  = new LibraryModel (settings, Main.resource.getResourceFolderClass("library", App.class));
     	PlaylistModel playlist = new PlaylistModel(settings);
-    	QueueModel    queue    = new QueueModel   ();
+    	QueueModel    queue    = new QueueModel   (settings);
     	
     	{ // Test of SettingsModel
 		    Main.log.log(settings.get(settings.TEST_VAL));

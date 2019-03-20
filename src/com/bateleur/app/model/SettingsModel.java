@@ -20,6 +20,10 @@ public class SettingsModel {
 	
 	public final BFile.Entry< String            > LIBRARY_PATH       = new BFile.Entry< String            >( "__libraryPath"      , "C:>TempMusicLibrary"    );
 	public final BFile.Entry< Long              > LIBRARY_NEXT_VAL   = new BFile.Entry< Long              >( "__librayNextVal"    , 0L                       );
+
+	public final BFile.Entry< Boolean           > QUEUE_SHUFFLE_EN   = new BFile.Entry< Boolean           >( "__queueShuffleEn"   , false                    );
+	public final BFile.Entry< Boolean           > QUEUE_QUEUE_EN     = new BFile.Entry< Boolean           >( "__queueQueueEn"     , true                     );
+	public final BFile.Entry< Boolean           > QUEUE_REPEAT_EN    = new BFile.Entry< Boolean           >( "__queueRepeatEn"    , true                     );
 	
 	/**
 	 * @brief 
