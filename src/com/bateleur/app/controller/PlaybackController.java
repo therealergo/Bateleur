@@ -129,13 +129,13 @@ public class PlaybackController {
 
     @FXML
     public void onSkipForwardPress() {
-        playback.loadAudio(queue.get());
+        playback.loadAudio(queue.skipForwards());
         playback.play(settings.get(settings.FADE_TIME_USER));
     }
 
     @FXML
     public void onSkipBackwardPress() {
-        playback.loadAudio(queue.previous());
+        playback.loadAudio(queue.skipBackwards());
         playback.play(settings.get(settings.FADE_TIME_USER));
     }
 

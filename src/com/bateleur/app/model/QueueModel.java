@@ -78,12 +78,16 @@ public class QueueModel {
         return list;
     }
 
-    public void skipForwards() {
-        previousQueue.add(forwardQueue.poll());
+    public BAudio skipForwards() {
+        BAudio next = forwardQueue.poll();
+        previousQueue.add(next);
+        return next;
     }
 
-    public void skipBackwards() {
-        forwardQueue.add(previousQueue.poll());
+    public BAudio skipBackwards() {
+        BAudio prev = previousQueue.poll();
+        forwardQueue.add(prev);
+        return prev;
     }
 
     public void setQueue(LibraryModel libraryModel, int startingIndex) {
