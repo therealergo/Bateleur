@@ -39,10 +39,10 @@ public class LibraryModel implements Iterable<BAudio> {
 	 * @throws IOException 
 	 */
 	public void update(SettingsModel settings) throws IOException {
-		ResourceFolder libraryFolder = Main.resource.getResourceFolderGlobal(settings.get(settings.LIBRARY_PATH), 'C');
+		ResourceFolder libraryFolder = Main.resource.getResourceFolderGlobal(settings.get(settings.LIBRARY_PATH));
 		ResourceFile[] audioFileList = libraryFolder.listFileChildren();
 		for (int i = 0; i<audioFileList.length; i++) {
-			URI searchURI = audioFileList[i].getFullPath().toUri();
+			URI searchURI = audioFileList[i].getPath().toUri();
 			filterBy((BAudio audio) -> audio.get(settings.PLAYBACK_URI).equals(searchURI));
 			while (listFiltered.size() > 1) {
 				listLibarary.remove(listFiltered.remove(0));

@@ -52,7 +52,7 @@ public class App extends Application {
     		    audio.set(settings.TEST_VAL.to(1230+i));
         	}
 		    
-        	LibraryModel libraryTest = new LibraryModel(settings, Main.resource.getResourceLocal("testLibraryModel"));
+        	LibraryModel libraryTest = new LibraryModel(settings, Main.resource.getResourceFolderLocal("testLibraryModel"));
         	
         	libraryTest.filterBy( (BAudio audio) -> audio.get(settings.TEST_VAL) > 1234 );
         	libraryTest.sortBy( (BAudio a0, BAudio a1) -> a1.get(settings.TEST_VAL) - a0.get(settings.TEST_VAL) );
@@ -64,7 +64,7 @@ public class App extends Application {
         }
         
         { // Test of PlaybackModel
-        	BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"), Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getFullPath().toUri());
+        	BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"), Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getPath().toUri());
         	playback.loadAudio(audio);
         	playback.play(0);
         }
