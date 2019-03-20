@@ -18,6 +18,9 @@ public class SettingsModel {
 	public final BFile.Entry< Integer           > FADE_TIME_USER     = new BFile.Entry< Integer           >( "__fadeTimeUser"     , 0                        );
 	public final BFile.Entry< Integer           > FADE_TIME_AUTO     = new BFile.Entry< Integer           >( "__fadeTimeAuto"     , 0                        );
 	
+	public final BFile.Entry< String            > LIBRARY_PATH       = new BFile.Entry< String            >( "__libraryPath"      , "Files>Audio>Music>#OST - SimCity 4");
+	public final BFile.Entry< Long              > LIBRARY_NEXT_VAL   = new BFile.Entry< Long              >( "__librayNextVal"    , 0L                       );
+	
 	/**
 	 * @brief 
 	 */

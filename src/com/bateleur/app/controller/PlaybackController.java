@@ -1,14 +1,17 @@
 package com.bateleur.app.controller;
 
+import static com.bateleur.app.controller.PlaybackController.RepeatSetting.REPEAT_OFF;
+import static com.bateleur.app.controller.PlaybackController.RepeatSetting.REPEAT_QUEUE;
+
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
-import javafx.event.ActionEvent;
-import javafx.event.EventType;
+
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-
-import static com.bateleur.app.controller.PlaybackController.RepeatSetting.*;
+import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleButton;
 
 public class PlaybackController {
 
@@ -19,22 +22,28 @@ public class PlaybackController {
     }
 
     @FXML
-    private Button playButton;
+    private ToggleButton playPauseButton;
 
     @FXML
-    private Button skipButton;
+    private Button skipBackwardButton;
 
     @FXML
-    private Button forwardButton;
+    private Button skipForwardButton;
 
     @FXML
-    private Button shuffleButton;
+    private ToggleButton shuffleButton;
 
     @FXML
     private Button queueButton;
 
     @FXML
     private Button repeatButton;
+
+    @FXML
+    private Slider seekBar;
+
+    @FXML
+    private Slider volumeBar;
 
     // Regular fields
 
@@ -51,10 +60,26 @@ public class PlaybackController {
         this.playback = playback;
         this.queue = queue;
     }
+    
+    @FXML
+    public void initialize() {
+    	volumeBar.setMin(0.0);
+    	volumeBar.setMax(100.0);
+    	volumeBar.setValue(playback.getVolume()*100.0);
+    	volumeBar.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
+    		onVolumeSet(new_val.doubleValue()/100.0);
+        });
+    	
+    	seekBar.setMin(0.0);
+    	seekBar.setMax(1.0);
+    	seekBar.setValue(0.0);
+    	seekBar.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
+    		onSeekSet(new_val.doubleValue());
+        });
+    }
 
     @FXML
     public void onRepeatPress() throws Exception {
-
         // TODO: Change the appearance of the button according with change
         switch (repeatSetting) {
 
@@ -116,10 +141,13 @@ public class PlaybackController {
 
     public void onPlayTimeIncrease() {
     }
-
+    
     public void onVolumeSet(double volume) {
+    	playback.setVolume(volume);
     }
 
-    public void onSeekSet(long ms) {
+    public void onSeekSet(double seek) {
+    	playback.setPlaybackTimeMS(playback.getPlaybackLengthMS() * seek);
+    	playback.play(settings.get(settings.FADE_TIME_USER));
     }
 }

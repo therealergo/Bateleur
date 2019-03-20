@@ -24,21 +24,21 @@
          <children>
             <AnchorPane layoutY="420.0" prefHeight="107.0" prefWidth="971.0" style="-fx-background-color: #7aabf9;">
                <children>
-                  <Slider layoutX="183.0" layoutY="14.0" />
+                  <Slider fx:id="volumeBar" layoutX="183.0" layoutY="14.0"/>
                   <ImageView fitHeight="99.0" fitWidth="116.0" layoutX="7.0" layoutY="4.0" pickOnBounds="true" smooth="false">
                        <image>
                            <Image url="@/resources/gui/images/orange-square-md.png" />
                        </image>
                   </ImageView>
-                  <Slider layoutX="373.0" layoutY="14.0" prefHeight="14.0" prefWidth="558.0" />
-                  <ToggleButton layoutX="840.0" layoutY="39.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="60.0" style="-fx-background-radius: 100;" text="Play" onMouseClicked="#onPlayPausePress"/>
-                  <Button layoutX="788.0" layoutY="47.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="43.0" style="-fx-background-radius: 100;" text="Back" onMouseClicked="#onSkipBackwardPress"/>
-                  <Button layoutX="910.0" layoutY="47.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="43.0" style="-fx-background-radius: 100;" text="Forward" onMouseClicked="#onSkipForwardPress"/>
+                  <Slider fx:id="seekBar" layoutX="373.0" layoutY="14.0" prefHeight="14.0" prefWidth="558.0"/>
+                  <ToggleButton fx:id="playPauseButton" layoutX="840.0" layoutY="39.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="60.0" style="-fx-background-radius: 100;" text="Play" onMouseClicked="#onPlayPausePress"/>
+                  <Button fx:id="skipBackwardButton" layoutX="788.0" layoutY="47.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="43.0" style="-fx-background-radius: 100;" text="Back" onMouseClicked="#onSkipBackwardPress"/>
+                  <Button fx:id="skipForwardButton" layoutX="910.0" layoutY="47.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="43.0" style="-fx-background-radius: 100;" text="Forward" onMouseClicked="#onSkipForwardPress"/>
                   <ButtonBar layoutX="486.0" layoutY="46.0" pickOnBounds="false" prefHeight="40.0" prefWidth="222.0">
                      <buttons>
-                        <ToggleButton minWidth="43.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Shuffle" onMouseClicked="#onShufflePress"/>
-                        <Button minWidth="67.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Queue" onMouseClicked="#onQueuePress"/>
-                        <Button minWidth="42.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Repeat" onMouseClicked="#onRepeatPress" />
+                        <ToggleButton fx:id="shuffleButton" minWidth="43.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Shuffle" onMouseClicked="#onShufflePress"/>
+                        <Button fx:id="queueButton" minWidth="67.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Queue" onMouseClicked="#onQueuePress"/>
+                        <Button fx:id="repeatButton" minWidth="42.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Repeat" onMouseClicked="#onRepeatPress" />
                      </buttons>
                   </ButtonBar>
                   <Label layoutX="144.0" layoutY="72.0" text="Darude" />
