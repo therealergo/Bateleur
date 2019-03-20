@@ -86,31 +86,28 @@ public class PlaybackController {
 
     }
 
+    @FXML
     public void onQueuePress() {
-
     }
 
+    @FXML
     public void onPlayPausePress() {
-
     }
 
+    @FXML
     public void onSkipForwardPress() {
-
     }
 
+    @FXML
     public void onSkipBackwardPress() {
-
     }
 
     public void onPlayTimeIncrease() {
-
     }
 
     public void onVolumeSet(float volume) {
-
     }
 
     public void onSeekSet(float volume) {
-
     }
 }
