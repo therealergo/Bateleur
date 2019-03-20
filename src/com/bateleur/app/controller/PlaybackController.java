@@ -77,18 +77,24 @@ public class PlaybackController {
 
     @FXML
     public void onShufflePress() {
-        queue = queue.shuffle();
+        if (queue.isShuffleEnabled()) {
+            queue = queue.shuffle();
+        }
+        else {
+            queue.unshuffle();
+        }
+
     }
 
     public void onQueuePress() {
 
     }
 
-    public void onPlayPausetPress() {
+    public void onPlayPausePress() {
 
     }
 
-    public void onSkipFowardPress() {
+    public void onSkipForwardPress() {
 
     }
 
