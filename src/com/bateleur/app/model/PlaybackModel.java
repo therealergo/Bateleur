@@ -10,6 +10,7 @@ import javafx.util.Duration;
 
 public class PlaybackModel {
 	private MediaPlayer player;
+	private BAudio loadedAudio;
 	private double volume;
 
 	public PlaybackModel() {
@@ -17,18 +18,24 @@ public class PlaybackModel {
 		volume = 1.0;
 	}
 
-	public void loadTrack(BAudio audio) {
+	public boolean isAudioLoaded() {
+		return loadedAudio != null;
+	}
+	
+	public BAudio getLoadedAudio() {
+		return loadedAudio;
+	}
+
+	public void loadAudio(BAudio audio) {
 		if (audio == null) {
 			player = null;
+			loadedAudio = null;
 		} else {
 			Media media = new Media(audio.<URI>getMetadata("__playbackSourceURI").toString());
 			player = new MediaPlayer(media);
 			player.setVolume(volume);
+			loadedAudio = audio;
 		}
-	}
-
-	public boolean isTrackLoaded() {
-		return player != null;
 	}
 
 	public void play(int fadeTimeMS) {
