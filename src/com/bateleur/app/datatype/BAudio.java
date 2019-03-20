@@ -59,8 +59,7 @@ public abstract class BAudio {
 						Serializable newObj = (Serializable) ois.readObject();
 						mapInternal.put(keyName, newObj);
 					} catch (ClassNotFoundException e) {
-						//TODO: Die here
-						e.printStackTrace();
+						throw new IOException("Given metadata file corrupt or improperly formatted!");
 					}
 				}
 			}
