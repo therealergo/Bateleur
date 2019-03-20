@@ -61,7 +61,7 @@ public abstract class BAudio {
 	 *          Will not modify any external metadata, but can ‘shadow’ or 'hide' external metadata with the same key.
 	 * @exception Raises an exception if the key is either null or an empty String.
 	 */
-	public <T extends Serializable> void set(BFile.Entry<T> entry) throws IOException {
+	public <T extends Serializable> void set(BFile.Entry<T> entry) {
 		file.<T>set(entry);
 	}
 	

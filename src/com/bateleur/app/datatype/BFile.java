@@ -67,7 +67,7 @@ public final class BFile {
 	 * @exception Raises an exception if 'key' is either null or an empty String.
 	 * @exception Raises an exception if setting storage file I/O fails.
 	 */
-	public <T extends Serializable> void set(Entry<T> entry) throws IOException {
+	public <T extends Serializable> void set(Entry<T> entry) {
 		// Remove setting if key is null, otherwise add setting
 		if (entry.val == null) {
 			settingsMap.remove(entry.key);
@@ -78,6 +78,9 @@ public final class BFile {
 		// Write updated settingsMap to the settings file
 		try (ObjectOutputStream oos = new ObjectOutputStream(file.getOutputStream())) {
 			oos.writeObject(settingsMap);
+		} catch (IOException e) {
+			//TODO: In future we won't be writing here
+			e.printStackTrace();
 		}
 	}
 	

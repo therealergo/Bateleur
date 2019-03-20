@@ -1,14 +1,15 @@
 package com.bateleur.app.model;
 
-import com.bateleur.app.datatype.BAudio;
+import java.util.ArrayList;
+import java.util.Collections;
 
-import java.io.IOException;
-import java.util.*;
+import com.bateleur.app.datatype.BAudio;
 
 public class QueueModel {
 	private SettingsModel settings;
 	
     private ArrayList<BAudio> queueSet;
+    
     private ArrayList<BAudio> queueProcessed;
     private int queueProcessedIndex;
     
@@ -16,6 +17,7 @@ public class QueueModel {
     	this.settings = settings;
     	
     	this.queueSet = new ArrayList<BAudio>();
+    	
     	this.queueProcessed = new ArrayList<BAudio>();
     	this.queueProcessedIndex = -1;
     }
@@ -70,11 +72,7 @@ public class QueueModel {
 
     public void setShuffleState(boolean shuffleEnabled) {
     	if (isShuffleEnabled() != shuffleEnabled) {
-        	try {
-    			settings.set(settings.QUEUE_SHUFFLE_EN.to(shuffleEnabled));
-    		} catch (IOException e) {
-    			//TODO: In future this won't be thrown here
-    		}
+    		settings.set(settings.QUEUE_SHUFFLE_EN.to(shuffleEnabled));
     		recreateProcessedQueue(get());
     	}
     }
@@ -84,11 +82,7 @@ public class QueueModel {
     }
 
     public void setQueueState(boolean queueEnabled) {
-    	try {
-			settings.set(settings.QUEUE_QUEUE_EN.to(queueEnabled));
-		} catch (IOException e) {
-			//TODO: In future this won't be thrown here
-		}
+		settings.set(settings.QUEUE_QUEUE_EN.to(queueEnabled));
     }
 
     public boolean isRepeatEnabled() {
@@ -96,10 +90,6 @@ public class QueueModel {
     }
 
     public void setRepeatState(boolean repeatEnabled) {
-    	try {
-			settings.set(settings.QUEUE_REPEAT_EN.to(repeatEnabled));
-		} catch (IOException e) {
-			//TODO: In future this won't be thrown here
-		}
+		settings.set(settings.QUEUE_REPEAT_EN.to(repeatEnabled));
     }
 }

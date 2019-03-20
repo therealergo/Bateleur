@@ -55,7 +55,7 @@ public class SettingsModel {
 	 * @exception Raises an exception if 'key' is either null or an empty String.
 	 * @exception Raises an exception if setting storage file I/O fails.
 	 */
-	public <T extends Serializable> void set(BFile.Entry<T> entry) throws IOException {
+	public <T extends Serializable> void set(BFile.Entry<T> entry) {
 		file.<T>set(entry);
 	}
 }
