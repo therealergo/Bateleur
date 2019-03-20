@@ -81,4 +81,9 @@ public abstract class BAudio {
 			mapExternal.put(entry.key, entry.val);
 		}
 	}
+
+	public BAudio delete() {
+		file.delete();
+		return this;
+	}
 }

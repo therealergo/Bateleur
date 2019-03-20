@@ -15,11 +15,15 @@ import com.therealergo.main.resource.ResourceFile;
 import com.therealergo.main.resource.ResourceFolder;
 
 public class LibraryModel implements Iterable<BAudio> {
+	private SettingsModel settings;
+	
 	private List<BAudio> listLibarary;
 	private List<BAudio> listFiltered;
 	private ResourceFolder data;
 	
 	public LibraryModel(SettingsModel settings, ResourceFolder data) throws IOException {
+		this.settings = settings;
+		
 		this.listLibarary = new ArrayList<BAudio>();
 		this.listFiltered = new ArrayList<BAudio>();
 		this.data = data;
@@ -38,18 +42,23 @@ public class LibraryModel implements Iterable<BAudio> {
 	 * @param settings
 	 * @throws IOException 
 	 */
-	public void update(SettingsModel settings) throws IOException {
+	public void update() throws IOException {
 		ResourceFolder libraryFolder = Main.resource.getResourceFolderGlobal(settings.get(settings.LIBRARY_PATH));
 		ResourceFile[] audioFileList = libraryFolder.listFileChildren();
+		
 		for (int i = 0; i<audioFileList.length; i++) {
 			URI searchURI = audioFileList[i].getPath().toUri();
+			
+			reset();
 			filterBy((BAudio audio) -> audio.get(settings.PLAYBACK_URI).equals(searchURI));
+			
 			while (listFiltered.size() > 1) {
-				listLibarary.remove(listFiltered.remove(0));
+				listLibarary.remove(listFiltered.remove(0).delete());
 			}
+			
 			if (listFiltered.size() < 1) {
 				long nameVal = settings.get(settings.LIBRARY_NEXT_VAL);
-				listLibarary.add(new BAudioLocal(settings, data.getChildFile("" + nameVal), searchURI));
+				listLibarary.add(new BAudioLocal(settings, data.getChildFile(nameVal + ".ser"), searchURI));
 				settings.set(settings.LIBRARY_NEXT_VAL.to(nameVal + 1));
 			}
 		}

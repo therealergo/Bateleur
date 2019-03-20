@@ -101,4 +101,10 @@ public final class BFile {
 			return new Entry<T>(key, val);
 		}
 	}
+
+	public BFile delete() {
+		file.delete();
+		settingsMap.clear();
+		return this;
+	}
 }

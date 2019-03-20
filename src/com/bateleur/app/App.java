@@ -69,6 +69,8 @@ public class App extends Application {
         	playback.play(0);
         }
         
+        library.update();
+        
         { // Start FXML window
 	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/gui/views/sample.fxml"));
 	    	loader.setControllerFactory(c -> {
