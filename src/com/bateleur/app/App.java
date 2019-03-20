@@ -23,37 +23,37 @@ public class App extends Application {
     	PlaybackModel playbackModel = new PlaybackModel(settingsModel);
     	
     	{ // Test of SettingsModel
-		    Main.log.log(settingsModel.<Integer>getSetting("test_setting", 1));
-		    settingsModel.<Integer>setSetting("test_setting", (int)(System.nanoTime()%8));
-		    Main.log.log(settingsModel.<Integer>getSetting("test_setting", 1));
+		    Main.log.log(settingsModel.get(settingsModel.TEST_VAL));
+		                 settingsModel.set(settingsModel.TEST_VAL.to((int)(System.nanoTime()%8)) );
+		    Main.log.log(settingsModel.get(settingsModel.TEST_VAL));
     	}
     	
         { // Test of BAudio
         	BAudio audio = new BAudioFile(settingsModel, Main.resource.getResourceFileLocal("testBAudio>meta_test_file"));
 		    
-		    Integer test_meta0 = audio.<Integer>getMetadata("test_meta");
+		    Integer test_meta0 = audio.get(settingsModel.TEST_VAL);
 		    Main.log.log(test_meta0);
 		    
-		    audio.<Integer>setMetadata("test_meta", 123);
+		    audio.set(settingsModel.TEST_VAL.to(123));
 		    
-		    Integer test_meta1 = audio.<Integer>getMetadata("test_meta");
+		    Integer test_meta1 = audio.get(settingsModel.TEST_VAL);
 		    Main.log.log(test_meta1);
         }
         
         { // Test of LibraryModel
         	for (int i = 0; i<8; i++) {
             	BAudio audio = new BAudioFile(settingsModel, Main.resource.getResourceFileLocal("testLibraryModel>meta_test_" + i));
-    		    audio.<Integer>setMetadata("test_meta", 1230 + i);
+    		    audio.set(settingsModel.TEST_VAL.to(1230+i));
         	}
 		    
         	LibraryModel libraryModel = new LibraryModel(settingsModel, Main.resource.getResourceLocal("testLibraryModel"));
         	
-        	libraryModel.filterBy( (BAudio audio) -> audio.<Integer>getMetadata("test_meta") > 1234 );
-        	libraryModel.sortBy( (BAudio a0, BAudio a1) -> a1.<Integer>getMetadata("test_meta") - a0.<Integer>getMetadata("test_meta") );
+        	libraryModel.filterBy( (BAudio audio) -> audio.get(settingsModel.TEST_VAL) > 1234 );
+        	libraryModel.sortBy( (BAudio a0, BAudio a1) -> a1.get(settingsModel.TEST_VAL) - a0.get(settingsModel.TEST_VAL) );
         	
         	Iterator<BAudio> audioIterator = libraryModel.iterator();
         	while (audioIterator.hasNext()) {
-        		Main.log.log(audioIterator.next().<Integer>getMetadata("test_meta"));
+        		Main.log.log(audioIterator.next().get(settingsModel.TEST_VAL));
         	}
         }
         

@@ -1,31 +1,22 @@
 package com.bateleur.app.datatype;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import com.therealergo.main.resource.ResourceFile;
 
 public abstract class BAudio {
 	/**
 	 * @brief   Map used to relate metadata keys to Serializable metadata values.
-	 * @details This map stores metadata values that are created and stored internally to the application.
-	 */
-	private HashMap<String, Serializable> mapInternal;
-	
-	/**
-	 * @brief   Map used to relate metadata keys to Serializable metadata values.
 	 * @details This map stores metadata values that are created and stored externally from the application.
 	 */
-	private HashMap<String, Serializable> mapExternal;
+	private final HashMap<String, Serializable> mapExternal;
 	
 	/**
 	 * @brief The file used to locally store any metadata values that are meant to be stored internally to the application.
 	 */
-	private ResourceFile metadataFile;
+	private final BFile file;
 	
 	/** 
 	 * @brief   Constructor for BAudio, the base class of any Bateleur audio file.
@@ -42,33 +33,8 @@ public abstract class BAudio {
 	 * @exception Raises an exception if an I/O exception occurs while reading the given file.
 	 */
 	protected BAudio(ResourceFile metadataFile) throws IOException {
-		if (metadataFile == null) {
-			throw new IllegalArgumentException("BAudio store file cannot be null!");
-		}
-		
-		this.mapInternal = new HashMap<String, Serializable>();
 		this.mapExternal = new HashMap<String, Serializable>();
-		this.metadataFile = metadataFile;
-		
-		if (metadataFile.exists()) {
-			// Read mapInternal from the metadata file
-			try (ObjectInputStream ois = new ObjectInputStream(metadataFile.getInputStream())) {
-				while (ois.available() > 0) {
-					try {
-						String keyName = ois.readUTF();
-						Serializable newObj = (Serializable) ois.readObject();
-						mapInternal.put(keyName, newObj);
-					} catch (ClassNotFoundException e) {
-						throw new IOException("Given metadata file corrupt or improperly formatted!");
-					}
-				}
-			}
-		} else {
-			// Create default empty metadata file
-			metadataFile.create();
-			try (ObjectOutputStream oos = new ObjectOutputStream(metadataFile.getOutputStream())) {
-			}
-		}
+		this.file = new BFile(metadataFile);
 	}
 
 	/**
@@ -77,21 +43,16 @@ public abstract class BAudio {
 	 *          Returns null if the given key has no metadata set. 
 	 * @exception Raises an exception if the key is either null or an empty String.
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends Serializable> T getMetadata(String key) {
-		if (key == null) {
-			throw new IllegalArgumentException("Metadata key cannot be null!");
-		}
-		if (key.length() < 1) {
-			throw new IllegalArgumentException("Metadata key must be at least 1 character long!");
-		}
-		
+	public <T extends Serializable> T get(BFile.Entry<T> entry) {
 		// Return the metadata for the given key
 		// Internal metadata is given priority over external metadata
 		// If no internal or external metadata is found, then 'null' is returned
-		Object internalT = mapInternal.get(key);
-		Object externalT = mapExternal.get(key);
-		return internalT == null ? externalT == null ? null : (T) externalT : (T) internalT;
+		@SuppressWarnings("unchecked")
+		T externalValue = (T)mapExternal.get(entry.key);
+		if (externalValue != null) {
+			entry = entry.to(externalValue);
+		}
+		return file.<T>get(entry);
 	}
 	
 	/**
@@ -100,30 +61,8 @@ public abstract class BAudio {
 	 *          Will not modify any external metadata, but can ‘shadow’ or 'hide' external metadata with the same key.
 	 * @exception Raises an exception if the key is either null or an empty String.
 	 */
-	public <T extends Serializable> void setMetadata(String key, T prop) throws IOException {
-		if (key == null) {
-			throw new IllegalArgumentException("Metadata key cannot be null!");
-		}
-		if (key.length() < 1) {
-			throw new IllegalArgumentException("Metadata key must be at least 1 character long!");
-		}
-		
-		// Remove metadata entry if key is null, otherwise add metadata entry
-		if (prop == null) {
-			mapInternal.remove(key);
-		} else {
-			mapInternal.put(key, prop);
-		}
-		
-		// Write updated mapInternal to the metadata file
-		try (ObjectOutputStream oos = new ObjectOutputStream(metadataFile.getOutputStream())) {
-			Iterator<String> keyIterator = mapInternal.keySet().iterator();
-			while (keyIterator.hasNext()) {
-				String writeKey = keyIterator.next();
-				oos.writeUTF(writeKey);
-				oos.writeObject(mapInternal.get(writeKey));
-			}
-		}
+	public <T extends Serializable> void set(BFile.Entry<T> entry) throws IOException {
+		file.<T>set(entry);
 	}
 	
 	/**
@@ -134,19 +73,12 @@ public abstract class BAudio {
 	 *          This should only be called by implementations of the BAudio class.
 	 * @exception Raises an exception if the key is either null or an empty String.
 	 */
-	protected <T extends Serializable> void setMetadataExternal(String key, T prop) {
-		if (key == null) {
-			throw new IllegalArgumentException("Metadata key cannot be null!");
-		}
-		if (key.length() < 1) {
-			throw new IllegalArgumentException("Metadata key must be at least 1 character long!");
-		}
-		
+	protected <T extends Serializable> void setExternal(BFile.Entry<T> entry) {
 		// Remove metadata entry if key is null, otherwise add metadata entry
-		if (prop == null) {
-			mapExternal.remove(key);
+		if (entry.val == null) {
+			mapExternal.remove(entry.key);
 		} else {
-			mapExternal.put(key, prop);
+			mapExternal.put(entry.key, entry.val);
 		}
 	}
 }

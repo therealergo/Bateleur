@@ -1,7 +1,5 @@
 package com.bateleur.app.model;
 
-import java.net.URI;
-
 import com.bateleur.app.datatype.BAudio;
 
 import javafx.scene.media.Media;
@@ -37,7 +35,7 @@ public class PlaybackModel {
 			player = null;
 			loadedAudio = null;
 		} else {
-			Media media = new Media(audio.<URI>getMetadata(settings.stat.KEY_PLAYBACK_URI).toString());
+			Media media = new Media(audio.get(settings.PLAYBACK_URI).toString());
 			player = new MediaPlayer(media);
 			player.setVolume(volume);
 			loadedAudio = audio;
