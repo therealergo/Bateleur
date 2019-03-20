@@ -46,6 +46,8 @@ public class PlaybackController {
 
     private RepeatSetting repeatSetting = REPEAT_OFF;    // Default is no repeating of a queue
 
+    private boolean paused;
+
     public PlaybackController(SettingsModel settings, PlaybackModel playback, QueueModel queue) {
         this.settings = settings;
         this.playback = playback;
@@ -60,14 +62,17 @@ public class PlaybackController {
 
             case REPEAT_OFF:
                 repeatSetting = REPEAT_QUEUE;
+                queue.setRepeat(false);
                 break;
 
             case REPEAT_QUEUE:
                 repeatSetting = REPEAT_OFF;
+                queue.setRepeat(true);
                 break;
 
             case REPEAT_ONE:
                 repeatSetting = REPEAT_OFF;
+                queue.setRepeat(true);   // TODO: think of how to implement repeat_one
                 break;
 
             default:
@@ -91,26 +96,35 @@ public class PlaybackController {
     }
 
     public void onPlayPausePress() {
-
+        if (paused) {
+            playback.play(1);
+            paused = false;
+        }
+        else {
+            playback.pause(1);
+            paused = true;
+        }
     }
 
     public void onSkipForwardPress() {
-
+        playback.loadAudio(queue.get());
+        playback.play(1);    // magic number for fadetime for now
     }
 
     public void onSkipBackwardPress() {
-
+        playback.loadAudio(queue.previous());
+        playback.play(1);    // magic number for fadetime for now
     }
 
     public void onPlayTimeIncrease() {
 
     }
 
-    public void onVolumeSet(float volume) {
+    public void onVolumeSet(double volume) {
 
     }
 
-    public void onSeekSet(float volume) {
+    public void onSeekSet(long ms) {
 
     }
 }

@@ -37,7 +37,15 @@ public class QueueModel {
     }
 
     public BAudio get() {
-        return forwardQueue.poll();
+        BAudio nextFile = forwardQueue.poll();
+        previousQueue.add(nextFile);
+        return nextFile;
+    }
+
+    public BAudio previous() {
+        BAudio prevFile = previousQueue.poll();
+        forwardQueue.add(prevFile);
+        return prevFile;
     }
 
     public QueueModel shuffle() {
