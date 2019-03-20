@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import com.bateleur.app.controller.PlaybackController;
 import com.bateleur.app.datatype.BAudio;
-import com.bateleur.app.datatype.BAudioFile;
+import com.bateleur.app.datatype.BAudioLocal;
 import com.bateleur.app.model.LibraryModel;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.SettingsModel;
@@ -29,7 +29,7 @@ public class App extends Application {
     	}
     	
         { // Test of BAudio
-        	BAudio audio = new BAudioFile(settingsModel, Main.resource.getResourceFileLocal("testBAudio>meta_test_file"));
+        	BAudio audio = new BAudioLocal(settingsModel, Main.resource.getResourceFileLocal("testBAudio>meta_test_file"));
 		    
 		    Integer test_meta0 = audio.get(settingsModel.TEST_VAL);
 		    Main.log.log(test_meta0);
@@ -42,7 +42,7 @@ public class App extends Application {
         
         { // Test of LibraryModel
         	for (int i = 0; i<8; i++) {
-            	BAudio audio = new BAudioFile(settingsModel, Main.resource.getResourceFileLocal("testLibraryModel>meta_test_" + i));
+            	BAudio audio = new BAudioLocal(settingsModel, Main.resource.getResourceFileLocal("testLibraryModel>meta_test_" + i));
     		    audio.set(settingsModel.TEST_VAL.to(1230+i));
         	}
 		    
@@ -58,7 +58,7 @@ public class App extends Application {
         }
         
         { // Test of PlaybackModel
-        	BAudio audio = new BAudioFile(settingsModel, Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"), Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getFullPath().toUri());
+        	BAudio audio = new BAudioLocal(settingsModel, Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"), Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getFullPath().toUri());
         	playbackModel.loadAudio(audio);
         	playbackModel.play(0);
         }

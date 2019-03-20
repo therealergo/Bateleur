@@ -6,14 +6,14 @@ import java.net.URI;
 import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.resource.ResourceFile;
 
-public class BAudioFile extends BAudio {
+public class BAudioLocal extends BAudio {
 	// Stub implementation
-	public BAudioFile(SettingsModel settings, ResourceFile file) throws IOException {
+	public BAudioLocal(SettingsModel settings, ResourceFile file) throws IOException {
 		super(file);
 		loadMetadataFromURI(get(settings.PLAYBACK_URI));
 	}
 	
-	public BAudioFile(SettingsModel settings, ResourceFile file, URI audioURI) throws IOException {
+	public BAudioLocal(SettingsModel settings, ResourceFile file, URI audioURI) throws IOException {
 		super(file);
 		set(settings.PLAYBACK_URI.to(audioURI));
 		loadMetadataFromURI(audioURI);

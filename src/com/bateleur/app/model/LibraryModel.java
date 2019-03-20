@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.bateleur.app.datatype.BAudio;
-import com.bateleur.app.datatype.BAudioFile;
+import com.bateleur.app.datatype.BAudioLocal;
 import com.therealergo.main.resource.ResourceFile;
 import com.therealergo.main.resource.ResourceFolder;
 
@@ -22,7 +22,7 @@ public class LibraryModel implements Iterable<BAudio> {
 		
 		ResourceFile[] audioFileList = data.listFileChildren();
 		for (int i = 0; i<audioFileList.length; i++) {
-			listLibarary.add(new BAudioFile(settings, audioFileList[i]));
+			listLibarary.add(new BAudioLocal(settings, audioFileList[i]));
 		}
 		
 		reset();
