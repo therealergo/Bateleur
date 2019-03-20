@@ -2,6 +2,7 @@ package com.bateleur.app;
 
 import java.util.Iterator;
 
+import com.bateleur.app.controller.PlaybackController;
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioFile;
 import com.bateleur.app.model.LibraryModel;
@@ -15,15 +16,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class App extends Application {
-	PlaybackModel playback;
-	
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/resources/gui/views/sample.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
-        primaryStage.show();
-        
+    	PlaybackModel playbackModel = new PlaybackModel();
+    	
         { // Test of BAudio
         	BAudio audio = new BAudioFile(Main.resource.getResourceFileLocal("testBAudio>meta_test_file"));
 		    
@@ -55,9 +51,23 @@ public class App extends Application {
         
         { // Test of PlaybackModel
         	BAudio audio = new BAudioFile(Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"), Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getFullPath().toUri());
-        	playback = new PlaybackModel();
-        	playback.loadTrack(audio);
-        	playback.play(0);
+        	playbackModel.loadTrack(audio);
+        	playbackModel.play(0);
+        }
+        
+        { // Start FXML window
+	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/gui/views/sample.fxml"));
+	    	loader.setControllerFactory(c -> {
+	    		switch (c.getSimpleName()) {
+		    		case "PlaybackController":
+		    			return new PlaybackController(null, playbackModel, null);
+	    		}
+	    		throw new RuntimeException("Unable to locate controller class: " + c + "!");
+	    	});
+	    	Parent root = (Parent)loader.load();
+	        primaryStage.setTitle("Bateleur INDEV");
+	        primaryStage.setScene(new Scene(root, 300, 275));
+	        primaryStage.show();
         }
     }
 
