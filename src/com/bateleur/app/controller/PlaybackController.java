@@ -46,8 +46,6 @@ public class PlaybackController {
 
     private RepeatSetting repeatSetting = REPEAT_OFF;    // Default is no repeating of a queue
 
-    private boolean paused;
-
     public PlaybackController(SettingsModel settings, PlaybackModel playback, QueueModel queue) {
         this.settings = settings;
         this.playback = playback;
@@ -97,13 +95,10 @@ public class PlaybackController {
 
     @FXML
     public void onPlayPausePress() {
-        if (paused) {
-            playback.play(settings.<Integer>getSetting(settings.stat.KEY_FADE_TIME_USER, settings.stat.DEF_FADE_TIME_USER));
-            paused = false;
-        }
-        else {
+        if (playback.isPlaying()) {
             playback.pause(settings.<Integer>getSetting(settings.stat.KEY_FADE_TIME_USER, settings.stat.DEF_FADE_TIME_USER));
-            paused = true;
+        } else {
+            playback.play(settings.<Integer>getSetting(settings.stat.KEY_FADE_TIME_USER, settings.stat.DEF_FADE_TIME_USER));
         }
     }
 
