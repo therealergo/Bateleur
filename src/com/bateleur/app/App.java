@@ -19,16 +19,17 @@ public class App extends Application {
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
         
-        BAudio audio = new BAudioFile(Main.resource.getResourceFileLocal("test>meta_test_file"));
-        
-        // Test of BAudio
-        Integer test_meta0 = audio.<Integer>getMetadata("test_meta");
-        Main.log.log(test_meta0);
-        
-        audio.<Integer>setMetadata("test_meta", 1235);
-        
-        Integer test_meta1 = audio.<Integer>getMetadata("test_meta");
-        Main.log.log(test_meta1);
+        { // Test of BAudio
+        	BAudio audio = new BAudioFile(Main.resource.getResourceFileLocal("test>meta_test_file"));
+		    
+		    Integer test_meta0 = audio.<Integer>getMetadata("test_meta");
+		    Main.log.log(test_meta0);
+		    
+		    audio.<Integer>setMetadata("test_meta", 1235);
+		    
+		    Integer test_meta1 = audio.<Integer>getMetadata("test_meta");
+		    Main.log.log(test_meta1);
+        }
     }
 
     public static void main(String[] args) {
