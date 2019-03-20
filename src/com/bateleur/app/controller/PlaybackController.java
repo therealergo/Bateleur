@@ -84,6 +84,8 @@ public class PlaybackController {
     	seekBar.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
     		onSeekSet(new_val.doubleValue());
         });
+
+        updateText();
     }
     
     private void updateText() {

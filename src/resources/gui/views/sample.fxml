@@ -22,10 +22,10 @@
    <children>
       <AnchorPane prefHeight="527.0" prefWidth="971.0">
          <children>
-            <AnchorPane layoutY="420.0" prefHeight="107.0" prefWidth="971.0" style="-fx-background-color: #7aabf9;">
+            <AnchorPane layoutY="420.0" prefHeight="107.0" prefWidth="971.0" style="-fx-background-color: #ff4830;">
                <children>
                   <Slider fx:id="volumeBar" layoutX="183.0" layoutY="14.0"/>
-                  <ImageView fitHeight="99.0" fitWidth="116.0" layoutX="7.0" layoutY="4.0" pickOnBounds="true" smooth="false">
+                  <ImageView fitHeight="107.0" fitWidth="107.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" smooth="false">
                        <image>
                            <Image url="@/resources/gui/images/orange-square-md.png" />
                        </image>
@@ -41,10 +41,8 @@
                         <ToggleButton fx:id="repeatButton" minWidth="42.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Repeat" onMouseClicked="#onRepeatPress" />
                      </buttons>
                   </ButtonBar>
-                  <Label fx:id="textBot" layoutX="144.0" layoutY="72.0" text="Darude" />
-                  <Label layoutX="269.0" layoutY="72.0" text="" />
-                  <Label layoutX="201.0" layoutY="72.0" text="" />
-                  <Label fx:id="textTop" layoutX="144.0" layoutY="45.0" prefHeight="17.0" prefWidth="203.0" text="Sandstorm" />
+                  <Label fx:id="textTop" layoutX="144.0" layoutY="45.0" prefHeight="17.0" prefWidth="203.0" text="" />
+                  <Label fx:id="textBot" layoutX="144.0" layoutY="72.0" text="" />
                </children>
             </AnchorPane>
          </children>
