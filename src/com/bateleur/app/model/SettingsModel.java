@@ -1,14 +1,13 @@
 package com.bateleur.app.model;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 
 import com.bateleur.app.datatype.BFile;
 import com.therealergo.main.resource.ResourceFile;
 
-public class SettingsModel {
+public class SettingsModel extends BFile {
 	public final BFile.Entry< Integer           > TEST_VAL           = new BFile.Entry< Integer           >( "__testVal"          , -1                       );
 	
 	public final BFile.Entry< URI               > PLAYBACK_URI       = new BFile.Entry< URI               >( "__playbackURI"      , URI.create("")           );
@@ -30,37 +29,12 @@ public class SettingsModel {
 	public final BFile.Entry< String            > AUDIO_PROP_ALBUM   = new BFile.Entry< String            >( "xmpDM:album"        , "No album found!"        );
 	public final BFile.Entry< String            > AUDIO_PROP_TRACKN  = new BFile.Entry< String            >( "xmpDM:trackNumber"  , "No track number found!" );
 	
-	/**
-	 * @brief 
-	 */
-	private final BFile file;
-	
 	/** 
-	 * @brief Constructor for SettingsModel, which stores all settings for the Bateleur application.
+	 * @brief Constructor for SettingsModel, which stores all settings for the Bateleur application as a BFile-derived instance.
+	 * @see   BFile
 	 * @param settingsFile The local file into which the settings are to be stored.
-	 * @exception Raises an exception if the given file exists and does not contain a correctly-formatted settings file.
-	 * @exception Raises an exception if an I/O exception occurs while reading the given file.
 	 */
 	public SettingsModel(ResourceFile settingsFile) throws IOException {
-		this.file = new BFile(settingsFile);
-	}
-
-	/**
-	 * @brief   Returns the setting corresponding to the given String 'key'. 
-	 * @details Returns 'defaultValue' if the setting corresponding to 'key' is not set. 
-	 * @exception Raises an exception if 'key' is either null or an empty String.
-	 */
-	public <T extends Serializable> T get(BFile.Entry<T> entry) {
-		return file.<T>get(entry);
-	}
-	
-	/**
-	 * @brief   Sets the setting corresponding to the given String 'key'.
-	 * @details Providing null for 'value' will cause the setting corresponding to 'key' to be deleted.
-	 * @exception Raises an exception if 'key' is either null or an empty String.
-	 * @exception Raises an exception if setting storage file I/O fails.
-	 */
-	public <T extends Serializable> void set(BFile.Entry<T> entry) {
-		file.<T>set(entry);
+		super(settingsFile);
 	}
 }

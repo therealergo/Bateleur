@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 import com.therealergo.main.resource.ResourceFile;
 
-public final class BFile {
+public abstract class BFile {
 	/**
 	 * @brief The file used to store BFile Entries on disk.
 	 */
@@ -56,7 +56,7 @@ public final class BFile {
 	 * @param entry The Entry key-value pair for which this BFile's will perform its lookup.
 	 * @return  The value corresponding to the given Entry, if one exists.
 	 *          This returned value CANNOT be null.
-	 *          'Entry.val' as a default if the value corresponding to 'Entry.key' is not set.
+	 *          'Entry.val' is returned as a default if the value corresponding to 'Entry.key' is not set.
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Serializable> T get(Entry<T> entry) {
