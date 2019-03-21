@@ -8,7 +8,6 @@ import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioLocal;
 import com.bateleur.app.model.LibraryModel;
 import com.bateleur.app.model.PlaybackModel;
-import com.bateleur.app.model.PlaylistModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.Main;
@@ -25,7 +24,7 @@ public class App extends Application {
     	SettingsModel settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
     	PlaybackModel playback = new PlaybackModel(settings);
     	LibraryModel  library  = new LibraryModel (settings, Main.resource.getResourceFolderClass("library", App.class));
-    	PlaylistModel playlist = new PlaylistModel(settings);
+//    	PlaylistModel playlist = new PlaylistModel(settings);
     	QueueModel    queue    = new QueueModel   (settings);
     	
     	{ // Test of SettingsModel
@@ -81,7 +80,7 @@ public class App extends Application {
 		    		case "PlaybackController":
 		    			return new PlaybackController(settings, playback, queue);
 		    		case "MusicListController":
-		    			return new MusicListController(settings, playlist, library, playback);
+		    			return new MusicListController(settings, library, playback, queue);
 	    		}
 	    		throw new RuntimeException("Unable to locate controller class: " + c + "!");
 	    	});
