@@ -11,7 +11,7 @@ import com.therealergo.main.resource.ResourceFile;
 public class SettingsModel {
 	public final BFile.Entry< Integer           > TEST_VAL           = new BFile.Entry< Integer           >( "__testVal"          , -1                       );
 	
-	public final BFile.Entry< URI               > PLAYBACK_URI       = new BFile.Entry< URI               >( "__playbackURI"      , null                     );
+	public final BFile.Entry< URI               > PLAYBACK_URI       = new BFile.Entry< URI               >( "__playbackURI"      , URI.create("")           );
 	
 	public final BFile.Entry< ArrayList<String> > PLAYLIST_NAME_LIST = new BFile.Entry< ArrayList<String> >( "__playlistNameList" , new ArrayList<String>()  );
 

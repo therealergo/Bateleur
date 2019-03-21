@@ -26,18 +26,15 @@ public class BAudioLocal extends BAudio {
 	}
 	
 	private void loadMetadataFromURI(URI audioURI) throws IOException, SAXException, TikaException {
-		if (audioURI == null) {
-			return;
-			//TODO: Throw error here.
-		}
-		
-		try (InputStream stream = Main.resource.getResourceFileGlobal(audioURI.getPath().substring(1).replaceAll("/", ">")).getInputStream()) {
-			Metadata metadata = new Metadata();
-			new Tika().parse(stream, metadata);
-			String[] names = metadata.names();
-			for (int i = 0; i<names.length; i++) {
-//				Main.log.log(names[i] + " = " + metadata.get(names[i]));
-				setExternal(new BFile.Entry<String>(names[i], metadata.get(names[i])));
+		if (audioURI.getPath().length() > 0) {
+			try (InputStream stream = Main.resource.getResourceFileGlobal(audioURI.getPath().substring(1).replaceAll("/", ">")).getInputStream()) {
+				Metadata metadata = new Metadata();
+				new Tika().parse(stream, metadata);
+				String[] names = metadata.names();
+				for (int i = 0; i<names.length; i++) {
+//					Main.log.log(names[i] + " = " + metadata.get(names[i]));
+					setExternal(new BFile.Entry<String>(names[i], metadata.get(names[i])));
+				}
 			}
 		}
 	}
