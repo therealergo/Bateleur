@@ -92,9 +92,10 @@ public class PlaybackController {
 
         updateText();
         
-        new Thread(){
+        Thread javaFXThread = Thread.currentThread();
+        new Thread() {
         	public void run() {
-        		while (true) {
+        		while (!javaFXThread.getState().equals(State.TERMINATED)) {
             		try {
 						Thread.sleep(10);
 					} catch (InterruptedException e) {
