@@ -53,6 +53,7 @@ public final class BFile {
 	/**
 	 * @brief   Returns the value corresponding to the given Entry.
 	 * @details Performs a map lookup to find the value corresponding to to 'Entry.key'.
+	 * @param entry The Entry key-value pair for which this BFile's will perform its lookup.
 	 * @return  The value corresponding to the given Entry, if one exists.
 	 *          This returned value CANNOT be null.
 	 *          'Entry.val' as a default if the value corresponding to 'Entry.key' is not set.
@@ -67,6 +68,7 @@ public final class BFile {
 	 * @brief   Sets the value corresponding to the given Entry's key.
 	 * @details Sets the value within the value map corresponding to to 'Entry.key'.
 	 *          Note that BFile Entries CANNOT be set to a null value.
+	 * @param entry The Entry key-value pair to which this BFile's stored value is to be set.
 	 */
 	public <T extends Serializable> void set(Entry<T> entry) {
 		// Add/update Entry's key-value pair in valueMap
@@ -84,6 +86,7 @@ public final class BFile {
 	/**
 	 * @brief   Remove the value corresponding to the given Entry's key, if one exists.
 	 * @details Removes any value within the value map corresponding to to 'Entry.key'.
+	 * @param entry The Entry for which this BFile's stored value is to be removed.
 	 * @return  true if there was a value corresponding to the given Entry's key.
 	 *          false if there was not a value corresponding to the given Entry's key.
 	 */
