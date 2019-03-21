@@ -128,6 +128,8 @@ public final class BFile {
 		/**
 		 * @brief   Entry constructor.
 		 * @details Each Entry instance is immutable, representing some pairing of key and value.
+		 * @param key The key to be used for this Entry's key-value pair.
+		 * @param val The value to be used for this Entry's key-value pair.
 		 * @exception Raises an exception if the given 'key' String is not a non-null string of nonzero length.
 		 * @exception Raises an exception if the given 'val' parameter is null, as BFiles cannot store null values.
 		 */
@@ -152,6 +154,7 @@ public final class BFile {
 		 *          The syntax for this usage is bFile.set(entry.to(newValue)).
 		 *          Since the Entry supplied to the set(...) function has the given value, 
 		 *          this will set the value with the same key as 'entry' to 'newValue' in 'bFile'.
+		 * @param val The value to be used for the cloned Entry's key-value pair.
 		 * @return  The cloned Entry instance.
 		 */
 		public Entry<T> to(T val) {
