@@ -4,6 +4,7 @@ import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
 
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -57,6 +58,8 @@ public class PlaybackController {
 
     private QueueModel queue;
 
+    private boolean TEMP_OSS = false;
+
     public PlaybackController(SettingsModel settings, PlaybackModel playback, QueueModel queue) {
         this.settings = settings;
         this.playback = playback;
@@ -82,10 +85,31 @@ public class PlaybackController {
     	seekBar.setMax(1.0);
     	seekBar.setValue(0.0);
     	seekBar.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
-    		onSeekSet(new_val.doubleValue());
+    		if (TEMP_OSS == false) {
+        		onSeekSet(new_val.doubleValue());
+    		}
         });
 
         updateText();
+        
+        new Thread(){
+        	public void run() {
+        		while (true) {
+            		try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+                    Platform.runLater(new Runnable() {
+						@Override  public void run() {
+                        	TEMP_OSS = true;
+                    		seekBar.setValue(playback.getPlaybackTimeMS() / playback.getPlaybackLengthMS());
+                        	TEMP_OSS = false;
+                        }
+                    });
+        		}
+        	}
+        }.start();
     }
     
     private void updateText() {
