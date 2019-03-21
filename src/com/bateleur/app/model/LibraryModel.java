@@ -34,41 +34,50 @@ public class LibraryModel implements Iterable<BAudio> {
 		data.create();
 		ResourceFile[] audioFileList = data.listFileChildren();
 		for (int i = 0; i<audioFileList.length; i++) {
-			listLibarary.add(new BAudioLocal(settings, audioFileList[i]));
+			try {
+				listLibarary.add(new BAudioLocal(settings, audioFileList[i]));
+			} catch (Exception e) {
+				Main.log.logErr("Error adding audio store file to library! Corrupted audio store file will be deleted.");
+				Main.log.logErr(e);
+				audioFileList[i].delete();
+			}
 		}
 		
 		reset();
 	}
 	
-	/**
-	 * TODO: Not yet implemented
-	 * @param settings
-	 * @throws IOException 
-	 * @throws TikaException 
-	 * @throws SAXException 
-	 */
-	public void update() throws IOException, SAXException, TikaException {
-		ResourceFolder libraryFolder = Main.resource.getResourceFolderGlobal(settings.get(settings.LIBRARY_PATH));
-		ResourceFile[] audioFileList = libraryFolder.listFileChildren();
+	private void updateFromFolder(ResourceFolder folder) throws IOException, SAXException, TikaException {
+		ResourceFile[] audioFileList = folder.listFileChildren();
 		
 		for (int i = 0; i<audioFileList.length; i++) {
-			URI searchURI = audioFileList[i].getPath().toUri();
-			
-			reset();
-			filterBy((BAudio audio) -> audio.get(settings.PLAYBACK_URI).equals(searchURI));
-			
-			while (listFiltered.size() > 1) {
-				listLibarary.remove(listFiltered.remove(0).delete());
-			}
-			
-			if (listFiltered.size() < 1) {
-				long nameVal = settings.get(settings.LIBRARY_NEXT_VAL);
-				listLibarary.add(new BAudioLocal(settings, data.getChildFile(nameVal + ".ser"), searchURI));
-				settings.set(settings.LIBRARY_NEXT_VAL.to(nameVal + 1));
+			if (settings.get(settings.LIBRARY_OKAY_TYPES).contains(audioFileList[i].getExtension())) {
+				URI searchURI = audioFileList[i].getPath().toUri();
+				
+				reset();
+				filterBy((BAudio audio) -> audio.get(settings.PLAYBACK_URI).equals(searchURI));
+				
+				while (listFiltered.size() > 1) {
+					listLibarary.remove(listFiltered.remove(0).delete());
+				}
+				
+				if (listFiltered.size() < 1) {
+					long nameVal = settings.get(settings.LIBRARY_NEXT_VAL);
+					listLibarary.add(new BAudioLocal(settings, data.getChildFile(nameVal + ".ser"), searchURI));
+					settings.set(settings.LIBRARY_NEXT_VAL.to(nameVal + 1));
+				}
 			}
 		}
 		
 		reset();
+		
+		ResourceFolder[] audioFolderList = folder.listFolderChildren();
+		for (int i = 0; i<audioFolderList.length; i++) {
+			updateFromFolder(audioFolderList[i]);
+		}
+	}
+	
+	public void update() throws IOException, SAXException, TikaException {
+		updateFromFolder(Main.resource.getResourceFolderGlobal(settings.get(settings.LIBRARY_PATH)));
 	}
 	
 	public void sortBy(Comparator<BAudio> comparator) {

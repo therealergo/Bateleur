@@ -19,6 +19,7 @@ public class SettingsModel extends BFile {
 	
 	public final BFile.Entry< String            > LIBRARY_PATH       = new BFile.Entry< String            >( "__libraryPath"      , "C:>TempMusicLibrary"    );
 	public final BFile.Entry< Long              > LIBRARY_NEXT_VAL   = new BFile.Entry< Long              >( "__librayNextVal"    , 0L                       );
+	public final BFile.Entry< String            > LIBRARY_OKAY_TYPES = new BFile.Entry< String            >( "__playlistNameList" , ".mp3.mp4.ogg.flac"      );
 
 	public final BFile.Entry< Boolean           > QUEUE_SHUFFLE_EN   = new BFile.Entry< Boolean           >( "__queueShuffleEn"   , false                    );
 	public final BFile.Entry< Boolean           > QUEUE_QUEUE_EN     = new BFile.Entry< Boolean           >( "__queueQueueEn"     , true                     );
