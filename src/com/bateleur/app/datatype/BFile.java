@@ -10,104 +10,149 @@ import com.therealergo.main.resource.ResourceFile;
 
 public final class BFile {
 	/**
-	 * @brief The file used to locally store settings values.
+	 * @brief The file used to store BFile Entries on disk.
 	 */
 	private final ResourceFile file;
 	
 	/**
-	 * @brief Map used to relate setting keys to Serializable setting values.
+	 * @brief Map used to relate String keys to Serializable values for each BFile Entry.
 	 */
-	private final HashMap<String, Serializable> settingsMap;
+	private final HashMap<String, Serializable> valueMap;
 	
 	/** 
-	 * @brief Constructor for SettingsModel, which stores all settings for the Bateleur application.
-	 * @param settingsFile The local file into which the settings are to be stored.
-	 * @exception Raises an exception if the given file exists and does not contain a correctly-formatted settings file.
-	 * @exception Raises an exception if an I/O exception occurs while reading the given file.
+	 * @brief Constructor for BFile, a generic file type that stores Entries consisting of arbitrary key-value mapped values.
+	 * @param file The local file into which the mapped values are to be stored
+	 * @exception Raises an exception if the file exists but is not correctly-formatted or is corrupted.
+	 * @exception Raises an exception if an I/O exception occurs while reading the file.
 	 */
 	@SuppressWarnings("unchecked")
 	public BFile(ResourceFile file) throws IOException {
 		if (file == null) {
-			throw new IllegalArgumentException("SettingsModel store file cannot be null!");
+			throw new IllegalArgumentException("BFile file cannot be null!");
 		}
 		
 		this.file = file;
 		
 		if (file.exists()) {
-			// Read settingsMap from the settings file
+			// Read valueMap from the file
 			try (ObjectInputStream ois = new ObjectInputStream(file.getInputStream())) {
-				this.settingsMap = (HashMap<String, Serializable>) ois.readObject();
+				this.valueMap = (HashMap<String, Serializable>) ois.readObject();
 			} catch (ClassNotFoundException e) {
-				throw new IOException("Given settings file corrupt or improperly formatted!");
+				throw new IOException("Given BFile file corrupt or improperly formatted!");
 			}
 		} else {
-			// Create default empty settings file
+			// Create default empty file
 			file.create();
 			try (ObjectOutputStream oos = new ObjectOutputStream(file.getOutputStream())) {
-				this.settingsMap = new HashMap<String, Serializable>();
-				oos.writeObject(settingsMap);
+				this.valueMap = new HashMap<String, Serializable>();
+				oos.writeObject(valueMap);
 			}
 		}
 	}
 
 	/**
-	 * @brief   Returns the setting corresponding to the given String 'key'. 
-	 * @details Returns 'defaultValue' if the setting corresponding to 'key' is not set. 
-	 * @exception Raises an exception if 'key' is either null or an empty String.
+	 * @brief   Returns the value corresponding to the given Entry.
+	 * @details Performs a map lookup to find the value corresponding to to 'Entry.key'.
+	 * @return  The value corresponding to the given Entry, if one exists.
+	 *          This returned value CANNOT be null.
+	 *          'Entry.val' as a default if the value corresponding to 'Entry.key' is not set.
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Serializable> T get(Entry<T> entry) {
-		Object storedSetting = settingsMap.get(entry.key);
-		return storedSetting == null ? entry.val : (T) storedSetting;
+		Object storedValue = valueMap.get(entry.key);
+		return storedValue == null ? entry.val : (T) storedValue;
 	}
 	
 	/**
-	 * @brief   Sets the setting corresponding to the given String 'key'.
-	 * @details Providing null for 'value' will cause the setting corresponding to 'key' to be deleted.
-	 * @exception Raises an exception if 'key' is either null or an empty String.
-	 * @exception Raises an exception if setting storage file I/O fails.
+	 * @brief   Sets the value corresponding to the given Entry's key.
+	 * @details Sets the value within the value map corresponding to to 'Entry.key'.
+	 *          Note that BFile Entries CANNOT be set to a null value.
 	 */
 	public <T extends Serializable> void set(Entry<T> entry) {
-		// Remove setting if key is null, otherwise add setting
-		if (entry.val == null) {
-			settingsMap.remove(entry.key);
-		} else {
-			settingsMap.put(entry.key, entry.val);
-		}
+		// Add/update Entry's key-value pair in valueMap
+		valueMap.put(entry.key, entry.val);
 		
-		// Write updated settingsMap to the settings file
+		// Write updated valueMap to the on-disk file
 		try (ObjectOutputStream oos = new ObjectOutputStream(file.getOutputStream())) {
-			oos.writeObject(settingsMap);
+			oos.writeObject(valueMap);
 		} catch (IOException e) {
-			//TODO: In future we won't be writing here
+			//TODO: In future we won't be writing here, but will instead write everything when the program closes
 			e.printStackTrace();
 		}
 	}
 	
-	public static final class Entry<T extends Serializable> {
-		public final String key;
-		public final T val;
+	/**
+	 * @brief   Remove the value corresponding to the given Entry's key, if one exists.
+	 * @details Removes any value within the value map corresponding to to 'Entry.key'.
+	 * @return  true if there was a value corresponding to the given Entry's key.
+	 *          false if there was not a value corresponding to the given Entry's key.
+	 */
+	public <T extends Serializable> boolean remove(Entry<T> entry) {
+		return valueMap.remove(entry.key) != null;
+	}
+
+	/**
+	 * @brief   Deletes this BFile.
+	 * @details After this call, all values corresponding to any Entry's key are removed.
+	 *          The on-disk save file is also deleted, so all values are deleted even after a reload.
+	 * @return  A reference to the BFile on which this is invoked, for method chaining.
+	 */
+	public BFile delete() {
+		file.delete();
+		valueMap.clear();
 		
-		public Entry(String key, T def) {
+		return this;
+	}
+	
+	/**
+	 * @brief   Entry class, which specifies a specific key-value relationship in a BFile.
+	 * @details This class is most commonly used as a parameter to BFile.set(...) and BFile.get(...).
+	 *          When used in BFile.set(...), the value corresponding to this Entry's 'key' field is set to this Entry's 'val' field.
+	 *          When used in BFile.get(...), the value corresponding to this Entry's 'key' field is returned, 
+	 *          and this Entry's 'val' field is returned if no BFile value is set.
+	 */
+	public static final class Entry<T extends Serializable> {
+		/**
+		 * @brief The key part of this Entry's key-value pair.
+		 */
+		public final String key;
+		
+		/**
+		 * @brief The value part of this Entry's key-value pair.
+		 */
+		public final T val;
+
+		/**
+		 * @brief   Entry constructor.
+		 * @details Each Entry instance is immutable, representing some pairing of key and value.
+		 * @exception Raises an exception if the given 'key' String is not a non-null string of nonzero length.
+		 * @exception Raises an exception if the given 'val' parameter is null, as BFiles cannot store null values.
+		 */
+		public Entry(String key, T val) {
 			if (key == null) {
 				throw new IllegalArgumentException("BFile.Entry key cannot be null!");
 			}
 			if (key.length() < 1) {
 				throw new IllegalArgumentException("BFile.Entry key must be at least 1 character long!");
 			}
+			if (val == null) {
+				throw new IllegalArgumentException("BFile.Entry val cannot be null!");
+			}
 			
 			this.key = key;
-			this.val = def;
+			this.val = val;
 		}
-		
+
+		/**
+		 * @brief   Returns a clone of this Entry with the given value instead of this Entry's value.
+		 * @details This is typically used in BFile's 'set(...)' method.
+		 *          The syntax for this usage is bFile.set(entry.to(newValue)).
+		 *          Since the Entry supplied to the set(...) function has the given value, 
+		 *          this will set the value with the same key as 'entry' to 'newValue' in 'bFile'.
+		 * @return  The cloned Entry instance.
+		 */
 		public Entry<T> to(T val) {
 			return new Entry<T>(key, val);
 		}
-	}
-
-	public BFile delete() {
-		file.delete();
-		settingsMap.clear();
-		return this;
 	}
 }
