@@ -72,7 +72,7 @@ public class BBackgroundCanvas extends Canvas {
 	    try {
 		    GraphicsContext gc = getGraphicsContext2D();
 	    	Image im = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImage();
-
+	    	
 			gc.setGlobalAlpha(1.0);
 	    	drawImageCover(
 	    			gc, 
@@ -83,6 +83,7 @@ public class BBackgroundCanvas extends Canvas {
 	    			height
 	    	);
 			gc.applyEffect(new GaussianBlur( Math.max(width, height) * settings.get(settings.UI_BLUR_RADIUS) ));
+			getParent().setStyle("-fx-background-color: #000000");
 			
 			double areaWidth  = width     ;
 			double areaHeight = height-107;
