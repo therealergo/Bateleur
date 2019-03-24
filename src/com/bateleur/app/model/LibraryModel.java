@@ -1,15 +1,11 @@
 package com.bateleur.app.model;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
-
-import org.apache.tika.exception.TikaException;
-import org.xml.sax.SAXException;
 
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioLocal;
@@ -24,7 +20,7 @@ public class LibraryModel implements Iterable<BAudio> {
 	private List<BAudio> listFiltered;
 	private ResourceFolder data;
 	
-	public LibraryModel(SettingsModel settings, ResourceFolder data) throws IOException, SAXException, TikaException {
+	public LibraryModel(SettingsModel settings, ResourceFolder data) {
 		this.settings = settings;
 		
 		this.listLibarary = new ArrayList<BAudio>();
@@ -46,7 +42,7 @@ public class LibraryModel implements Iterable<BAudio> {
 		reset();
 	}
 	
-	private void updateFromFolder(ResourceFolder folder) throws IOException, SAXException, TikaException {
+	private void updateFromFolder(ResourceFolder folder) throws Exception {
 		ResourceFile[] audioFileList = folder.listFileChildren();
 		
 		for (int i = 0; i<audioFileList.length; i++) {
@@ -76,7 +72,7 @@ public class LibraryModel implements Iterable<BAudio> {
 		}
 	}
 	
-	public void update() throws IOException, SAXException, TikaException {
+	public void update() throws Exception {
 		updateFromFolder(Main.resource.getResourceFolderGlobal(settings.get(settings.LIBRARY_PATH)));
 	}
 	
