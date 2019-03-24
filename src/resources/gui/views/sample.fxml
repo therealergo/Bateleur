@@ -128,7 +128,7 @@
       </GridPane>
       <AnchorPane layoutX="-157.0" layoutY="-242.0" prefHeight="25.0" prefWidth="0.0" style="-fx-background-color: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.0));" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label id="topBarLabel" fx:id="topBarLabel" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Label id="topBarLabel" fx:id="topBarLabel" textFill="WHITE" translateX="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <Button id="topBarDrag" mnemonicParsing="false" style="-fx-background-color: rgba(255, 255, 255, 0.0);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <Button id="topBarClose" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: rgba(255, 255, 255, 0.0);" text="X" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <Button id="topBarMaximize" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: rgba(255, 255, 255, 0.0);" text="[]" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0" />
