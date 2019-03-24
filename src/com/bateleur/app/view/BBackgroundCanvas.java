@@ -1,0 +1,118 @@
+package com.bateleur.app.view;
+
+import com.bateleur.app.model.PlaybackModel;
+import com.bateleur.app.model.SettingsModel;
+
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.Image;
+
+public class BBackgroundCanvas extends Canvas {
+	private SettingsModel settings;
+	private PlaybackModel playback;
+	
+	public final DoubleProperty artAlpha;
+
+	public BBackgroundCanvas(SettingsModel settings, PlaybackModel playback) {
+		this.settings = settings;
+		this.playback = playback;
+		
+		this.artAlpha = new SimpleDoubleProperty(this, "artAlpha");
+		this.artAlpha.addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+            	redraw(getWidth(), getHeight());
+            }
+        });
+	}
+	
+	private void drawImageCover(GraphicsContext gc, Image im, double dx, double dy, double dw, double dh) {
+    	double imWidth  = im.getWidth ();
+    	double imHeight = im.getHeight();
+    	
+    	double scaledWidth  = dw * Math.min(imWidth/dw, imHeight/dh);
+    	double scaledHeight = dh * Math.min(imWidth/dw, imHeight/dh);
+    	
+		gc.drawImage(im, 
+				imWidth /2 - scaledWidth /2, 
+				imHeight/2 - scaledHeight/2, 
+				scaledWidth , 
+				scaledHeight, 
+				dx, 
+				dy, 
+				dw, 
+				dh
+		);
+	}
+	
+	private void drawImageFit(GraphicsContext gc, Image im, double dx, double dy, double dw, double dh) {
+    	double imWidth  = im.getWidth ();
+    	double imHeight = im.getHeight();
+    	
+    	double scaledWidth  = imWidth  * Math.min(dw/imWidth, dh/imHeight);
+    	double scaledHeight = imHeight * Math.min(dw/imWidth, dh/imHeight);
+    	
+		gc.drawImage(im, 
+				0, 
+				0, 
+				imWidth, 
+				imHeight, 
+				dx + dw/2 - scaledWidth /2, 
+				dy + dh/2 - scaledHeight/2, 
+				scaledWidth , 
+				scaledHeight
+		);
+	}
+	
+	public void redraw(double width, double height) {
+	    try {
+		    GraphicsContext gc = getGraphicsContext2D();
+	    	Image im = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImage();
+
+			gc.setGlobalAlpha(1.0);
+	    	drawImageCover(
+	    			gc, 
+	    			im, 
+	    			0, 
+	    			0, 
+	    			width, 
+	    			height
+	    	);
+			gc.applyEffect(new GaussianBlur( Math.max(width, height) * settings.get(settings.UI_BLUR_RADIUS) ));
+			
+			double areaWidth  = width     ;
+			double areaHeight = height-107;
+			double scaling = settings.get(settings.UI_ART_SCALING);
+			gc.setGlobalAlpha(Math.min(Math.max(artAlpha.doubleValue(), 0.0), 1.0));
+	    	drawImageFit(
+	    			gc, 
+	    			im, 
+	    			(areaWidth  - areaWidth  * scaling) / 2.0, 
+	    			(areaHeight - areaHeight * scaling) / 2.0, 
+	    			areaWidth  * scaling, 
+	    			areaHeight * scaling
+	    	);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public boolean isResizable()
+	{
+	    return true;
+	}
+	
+	@Override
+	public void resize(double width, double height)
+	{
+	    super.setWidth(width);
+	    super.setHeight(height);
+	    
+	    redraw(width, height);
+	}
+}
