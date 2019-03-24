@@ -10,13 +10,20 @@ import com.bateleur.app.model.LibraryModel;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
+import com.bateleur.app.view.BBackgroundCanvas;
 import com.therealergo.main.Main;
 
+import borderless.BorderlessScene;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Builder;
+import javafx.util.BuilderFactory;
 
 public class App extends Application {
     @Override
@@ -69,12 +76,27 @@ public class App extends Application {
         }
         
         library.update();
+        library.sortBy( (BAudio audio1, BAudio audio2) -> audio2.get(settings.AUDIO_PROP_TITLE).compareTo(audio1.get(settings.AUDIO_PROP_TITLE)) );
         playback.loadAudio(library.iterator().next(), 0);
         playback.play(0);
         queue.setQueue(library, library.iterator().next());
         
         { // Start FXML window
 	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/gui/views/sample.fxml"));
+	    	BuilderFactory defaultBuilderFactory = new JavaFXBuilderFactory();
+	    	loader.setBuilderFactory(b -> {
+	    		switch (b.getSimpleName()) {
+		    		case "BBackgroundCanvas":
+		    			return new Builder<BBackgroundCanvas>(){
+							@Override
+							public BBackgroundCanvas build() {
+								return new BBackgroundCanvas(settings, playback);
+							}
+		    			};
+		    		default:
+		    			return defaultBuilderFactory.getBuilder(b);
+	    		}
+	    	});
 	    	loader.setControllerFactory(c -> {
 	    		switch (c.getSimpleName()) {
 		    		case "PlaybackController":
@@ -85,8 +107,32 @@ public class App extends Application {
 	    		throw new RuntimeException("Unable to locate controller class: " + c + "!");
 	    	});
 	    	Parent root = (Parent)loader.load();
+	        BorderlessScene scene = new BorderlessScene(primaryStage, root);
+
 	        primaryStage.setTitle("Bateleur INDEV");
-	        primaryStage.setScene(new Scene(root, 300, 275));
+	        ((Label)root.lookup("#topBarLabel")).setText(primaryStage.getTitle());
+	        
+	        scene.setMoveControl(root.lookup("#topBarDrag"));
+	        
+	        root.lookup("#topBarMinimize").setOnMousePressed(new EventHandler<MouseEvent>(){
+	        	@Override public void handle(MouseEvent event) {
+					scene.minimise();
+				}
+	        });
+	        
+	        root.lookup("#topBarMaximize").setOnMousePressed(new EventHandler<MouseEvent>(){
+	        	@Override public void handle(MouseEvent event) {
+					scene.maximise();
+				}
+	        });
+	        
+	        root.lookup("#topBarClose").setOnMousePressed(new EventHandler<MouseEvent>(){
+	        	@Override public void handle(MouseEvent event) {
+	        		scene.getWindow().hide();
+				}
+	        });
+
+	        primaryStage.setScene(scene);
 	        primaryStage.show();
         }
     }

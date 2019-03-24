@@ -1,51 +1,139 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<?import javafx.scene.control.Button?>
-<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bateleur.app.controller.PlaybackController">
-   <columnConstraints>
-      <ColumnConstraints />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints />
-   </rowConstraints>
+<AnchorPane prefHeight="640.0" prefWidth="884.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bateleur.app.controller.PlaybackController">
    <children>
-      <AnchorPane prefHeight="527.0" prefWidth="971.0">
+      <com.bateleur.app.view.BBackgroundCanvas fx:id="backgroundCanvas" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <GridPane fx:id="lowerPane" layoutX="50.0" layoutY="96.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="10000.0" minHeight="0.0" prefHeight="107.0" vgrow="NEVER" />
+          <RowConstraints maxHeight="10000.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+        </rowConstraints>
          <children>
-            <AnchorPane layoutY="420.0" prefHeight="107.0" prefWidth="971.0" style="-fx-background-color: #ff4830;">
+            <AnchorPane fx:id="musicSelectPane" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                <children>
-                  <Slider fx:id="volumeBar" layoutX="140.0" layoutY="14.0"/>
-                  <ImageView fitHeight="107.0" fitWidth="107.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" smooth="false">
-                       <image>
-                           <Image url="@/resources/gui/images/orange-square-md-107.png" />
-                       </image>
-                  </ImageView>
-                  <Slider fx:id="seekBar" layoutX="385.0" layoutY="14.0" prefHeight="14.0" prefWidth="570.0"/>
-                  <ToggleButton fx:id="playPauseButton" layoutX="840.0" layoutY="39.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="60.0" style="-fx-background-radius: 100;" text="Play" onMouseClicked="#onPlayPausePress"/>
-                  <Button fx:id="skipBackwardButton" layoutX="788.0" layoutY="47.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="43.0" style="-fx-background-radius: 100;" text="Back" onMouseClicked="#onSkipBackwardPress"/>
-                  <Button fx:id="skipForwardButton" layoutX="910.0" layoutY="47.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="43.0" style="-fx-background-radius: 100;" text="Forward" onMouseClicked="#onSkipForwardPress"/>
-                  <ButtonBar layoutX="486.0" layoutY="46.0" pickOnBounds="false" prefHeight="40.0" prefWidth="222.0">
+                  <TabPane layoutX="122.0" layoutY="145.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                      <Tab text="Folders">
+                           <content>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <ScrollPane layoutX="128.0" layoutY="64.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                                      </content>
+                                    </ScrollPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                      </Tab>
+                      <Tab text="Tracks">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ScrollPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <content>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                        <Tab text="Playlists">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ScrollPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <content>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Artists">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ScrollPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <content>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="playbackPane" onMouseClicked="#onBarPress" prefHeight="66.0" prefWidth="899.0" style="-fx-background-color: linear-gradient(to top, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.0))">
+               <children>
+                  <Slider fx:id="seekBar" layoutX="511.0" layoutY="27.0" prefHeight="14.0" prefWidth="451.0" AnchorPane.rightAnchor="8.0" />
+                  <ToggleButton fx:id="playPauseButton" layoutX="860.0" layoutY="42.0" mnemonicParsing="false" onMouseClicked="#onPlayPausePress" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 100;" text="Play" AnchorPane.rightAnchor="61.0" />
+                  <Button fx:id="skipBackwardButton" layoutX="808.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#onSkipBackwardPress" prefHeight="43.0" prefWidth="43.0" style="-fx-background-radius: 100;" text="Back" AnchorPane.rightAnchor="130.0" />
+                  <Button fx:id="skipForwardButton" layoutX="930.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#onSkipForwardPress" prefHeight="43.0" prefWidth="43.0" style="-fx-background-radius: 100;" text="Forward" AnchorPane.rightAnchor="8.0" />
+                  <ButtonBar layoutX="501.0" layoutY="52.0" pickOnBounds="false" prefHeight="40.0" prefWidth="222.0" AnchorPane.rightAnchor="215.0">
                      <buttons>
-                        <ToggleButton fx:id="shuffleButton" minWidth="43.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Shuffle" onMouseClicked="#onShufflePress"/>
-                        <ToggleButton fx:id="queueButton" minWidth="67.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Queue" onMouseClicked="#onQueuePress"/>
-                        <ToggleButton fx:id="repeatButton" minWidth="42.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="35.0" style="-fx-background-radius: 30;" text="Repeat" onMouseClicked="#onRepeatPress" />
+                        <ToggleButton fx:id="shuffleButton" minHeight="29.0" minWidth="43.0" mnemonicParsing="false" onMouseClicked="#onShufflePress" prefHeight="29.0" prefWidth="43.0" style="-fx-background-radius: 30;" text="Shuffle" />
+                        <ToggleButton fx:id="queueButton" minHeight="29.0" minWidth="43.0" mnemonicParsing="false" onMouseClicked="#onQueuePress" prefHeight="29.0" prefWidth="43.0" style="-fx-background-radius: 30;" text="Queue" />
+                        <ToggleButton fx:id="repeatButton" minHeight="29.0" minWidth="43.0" mnemonicParsing="false" onMouseClicked="#onRepeatPress" prefHeight="29.0" prefWidth="43.0" style="-fx-background-radius: 30;" text="Repeat" />
                      </buttons>
                   </ButtonBar>
-                  <Label fx:id="textTop" layoutX="144.0" layoutY="45.0" prefHeight="17.0" prefWidth="203.0" text="" style="-fx-text-fill: #ffffff;"/>
-                  <Label fx:id="textBot" layoutX="144.0" layoutY="72.0" text="" style="-fx-text-fill: #ffffff;"/>
+                  <AnchorPane fx:id="playbackLeftSide" prefHeight="107.0" prefWidth="460.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <GridPane prefHeight="107.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columnConstraints>
+                            <ColumnConstraints fx:id="barImageContainer" maxWidth="10000.0" minWidth="0.0" prefWidth="0.0" />
+                            <ColumnConstraints maxWidth="10000.0" minWidth="160.0" prefWidth="10000.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <ImageView fx:id="barImage" fitHeight="107.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <Label fx:id="textTop" layoutX="8.0" layoutY="51.0" prefHeight="17.0" prefWidth="203.0" style="-fx-text-fill: #ffffff;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" />
+                                    <Label fx:id="textBot" layoutX="8.0" layoutY="77.0" prefHeight="17.0" prefWidth="124.0" style="-fx-text-fill: #ffffff;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" />
+                                    <Slider fx:id="volumeBar" layoutX="8.0" layoutY="27.0" AnchorPane.leftAnchor="8.0" />
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
                </children>
             </AnchorPane>
          </children>
+      </GridPane>
+      <AnchorPane layoutX="-157.0" layoutY="-242.0" prefHeight="25.0" prefWidth="0.0" style="-fx-background-color: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.0));" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label id="topBarLabel" fx:id="topBarLabel" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button id="topBarDrag" mnemonicParsing="false" style="-fx-background-color: rgba(255, 255, 255, 0.0);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button id="topBarClose" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: rgba(255, 255, 255, 0.0);" text="X" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button id="topBarMaximize" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: rgba(255, 255, 255, 0.0);" text="[]" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0" />
+            <Button id="topBarMinimize" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: rgba(255, 255, 255, 0.0);" text="--" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="0.0" />
+         </children>
       </AnchorPane>
    </children>
-</GridPane>
+</AnchorPane>

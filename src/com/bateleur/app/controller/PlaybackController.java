@@ -3,14 +3,26 @@ package com.bateleur.app.controller;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
+import com.bateleur.app.view.BBackgroundCanvas;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 
 public class PlaybackController {
 
@@ -19,15 +31,39 @@ public class PlaybackController {
         REPEAT_QUEUE,
         REPEAT_ONE
     }
+    
+    @FXML
+    private BBackgroundCanvas backgroundCanvas;
+    
+    @FXML
+    private GridPane lowerPane;
+    
+    @FXML
+    private AnchorPane musicSelectPane;
+    
+    @FXML
+    private AnchorPane playbackPane;
+    
+    @FXML
+    private AnchorPane playbackLeftSide;
 
     @FXML
     private Label textBot;
 
     @FXML
     private Label textTop;
+    
+    @FXML
+    private ImageView barImage;
+    
+    @FXML
+    private ColumnConstraints barImageContainer;
 
     @FXML
     private ToggleButton playPauseButton;
+    
+    @FXML
+    private Label topBarLabel;
 
     @FXML
     private Button skipBackwardButton;
@@ -59,12 +95,22 @@ public class PlaybackController {
     private QueueModel queue;
 
     private boolean TEMP_OSS = false;
+    
+    private Timeline slideAnimation;
+    private BoxBlur blurEffect;
 
     public PlaybackController(SettingsModel settings, PlaybackModel playback, QueueModel queue) {
         this.settings = settings;
         this.playback = playback;
         this.queue = queue;
     }
+    
+    private double smoothstep(double x) {
+		x = x * x * (3 - 2 * x);
+		x = x * x * (3 - 2 * x);
+		x = x * x * (3 - 2 * x);
+		return x;
+	}
     
     @FXML
     public void initialize() {
@@ -111,11 +157,66 @@ public class PlaybackController {
         		}
         	}
         }.start();
+        
+        blurEffect = new BoxBlur(0, 0, 3);
+        lowerPane.setEffect(blurEffect);
+        
+        ChangeListener<Number> cl = new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldVal, Number newVal) {
+            	if (lowerPane.getTranslateY() != 0) {
+                	lowerPane.setTranslateY(musicSelectPane.getHeight());
+            	}
+            	if (playbackLeftSide.getTranslateX() != 0) {
+            		playbackLeftSide.setTranslateX(-barImageContainer.getMinWidth());
+            	}
+            	if (topBarLabel.getTranslateX() != 0) {
+            		topBarLabel.setTranslateX(barImageContainer.getMinWidth());
+            	}
+            	
+            	double   rate = 0.0 ;
+            	Duration time = null;
+            	if (slideAnimation != null) {
+                	rate = slideAnimation.getRate();
+                	time = slideAnimation.getCurrentTime();
+            	}
+            	
+                slideAnimation = new Timeline();
+                slideAnimation.setRate(-1.0);
+                for (int i = 0; i<100; i++) {
+                	double pct0 = smoothstep((i-1)/99.0);
+                	double pct1 = smoothstep((i  )/99.0);
+                	double pct2 = smoothstep((i+1)/99.0);
+                    slideAnimation.getKeyFrames().add(
+            	        	new KeyFrame(new Duration(i*settings.get(settings.UI_ANIM_TIME_MUL)),
+            	        			new KeyValue(topBarLabel.translateXProperty(), (1.0-pct1)*barImageContainer.getMinWidth()), 
+            	        			new KeyValue(playbackLeftSide.translateXProperty(), -pct1*barImageContainer.getMinWidth()), 
+            	        			new KeyValue(blurEffect.heightProperty(), (pct2-pct0)*settings.get(settings.UI_MOTION_BLUR_MUL)*musicSelectPane.getHeight()), 
+            	        			new KeyValue(lowerPane.translateYProperty(), pct1*musicSelectPane.getHeight()), 
+            	        			new KeyValue(backgroundCanvas.artAlpha, pct1)
+            	            )
+                    );
+                }
+                
+            	if (time != null) {
+	                slideAnimation.setRate(rate);
+	                slideAnimation.jumpTo (time);
+            	}
+            }
+        };
+        musicSelectPane  .heightProperty()  .addListener(cl);
+        barImageContainer.minWidthProperty().addListener(cl);
     }
     
     private void updateText() {
     	textTop.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_TITLE));
     	textBot.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_ARTIST));
+    	try {
+    		Image im = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImage();
+    		barImageContainer.setMinWidth(im.getWidth() / im.getHeight() * 107.0);
+			barImage.setImage(im);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     @FXML
@@ -131,6 +232,12 @@ public class PlaybackController {
     @FXML
     public void onRepeatPress() throws Exception {
     	queue.setRepeatState(repeatButton.isSelected());
+    }
+
+    @FXML
+    public void onBarPress() throws Exception {
+    	slideAnimation.setRate(-slideAnimation.getRate());
+    	slideAnimation.play();
     }
 
     @FXML
