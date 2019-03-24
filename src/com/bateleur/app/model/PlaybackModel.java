@@ -40,9 +40,12 @@ public class PlaybackModel {
 			player = null;
 			loadedAudio = null;
 		} else {
-			Media media = new Media(audio.get(settings.PLAYBACK_URI).toString());
-			player = new MediaPlayer(media);
-			player.setVolume(volume);
+			try {
+				Media media = new Media(audio.get(settings.PLAYBACK_URI).toString());
+				player = new MediaPlayer(media);
+				player.setVolume(volume);
+			} catch (Exception e) { //TODO: This is a temporary fix for crashes from unsupported formats
+			}
 			loadedAudio = audio;
 		}
 	}
