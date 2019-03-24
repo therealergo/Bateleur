@@ -1,41 +1,55 @@
 package com.bateleur.app.datatype;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.net.URI;
 
-import org.apache.tika.Tika;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.xml.sax.SAXException;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.images.Artwork;
 
 import com.bateleur.app.model.SettingsModel;
-import com.therealergo.main.Main;
 import com.therealergo.main.resource.ResourceFile;
 
+import javafx.scene.image.Image;
+
 public class BAudioLocal extends BAudio {
-	public BAudioLocal(SettingsModel settings, ResourceFile file) throws IOException, SAXException, TikaException {
+	public BAudioLocal(SettingsModel settings, ResourceFile file) throws Exception {
 		super(file);
-		loadMetadataFromURI(get(settings.PLAYBACK_URI));
+		loadMetadataFromURI(settings, get(settings.PLAYBACK_URI));
 	}
 	
-	public BAudioLocal(SettingsModel settings, ResourceFile file, URI audioURI) throws IOException, SAXException, TikaException {
+	public BAudioLocal(SettingsModel settings, ResourceFile file, URI audioURI) throws Exception {
 		super(file);
 		set(settings.PLAYBACK_URI.to(audioURI));
-		loadMetadataFromURI(audioURI);
+		loadMetadataFromURI(settings, audioURI);
 	}
 	
-	private void loadMetadataFromURI(URI audioURI) throws IOException, SAXException, TikaException {
+	private void loadMetadataFromURI(SettingsModel settings, URI audioURI) throws Exception {
 		if (audioURI.getPath().length() > 0) {
-			try (InputStream stream = Main.resource.getResourceFileGlobal(audioURI.getPath().substring(1).replaceAll("/", ">")).getInputStream()) {
-				Metadata metadata = new Metadata();
-				new Tika().parse(stream, metadata);
-				String[] names = metadata.names();
-				for (int i = 0; i<names.length; i++) {
-//					Main.log.log(names[i] + " = " + metadata.get(names[i]));
-					setExternal(new BFile.Entry<String>(names[i], metadata.get(names[i])));
-				}
+			AudioFile f = AudioFileIO.read(new File(audioURI));
+			Tag tag = f.getTag();
+			
+			Artwork art = tag.getFirstArtwork();
+			if (art != null) {
+				Image image = new Image(new ByteArrayInputStream(art.getBinaryData()));
+				setExternal(settings.AUDIO_PROP_ART.to(
+					new BArtLoader() {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public Image getImage() throws Exception {
+						return image;
+					}
+				}));
 			}
+			
+			setExternal(settings.AUDIO_PROP_TITLE .to(tag.getFirst(FieldKey.TITLE )));
+			setExternal(settings.AUDIO_PROP_ARTIST.to(tag.getFirst(FieldKey.ARTIST)));
+			setExternal(settings.AUDIO_PROP_ALBUM .to(tag.getFirst(FieldKey.ALBUM )));
+			setExternal(settings.AUDIO_PROP_TRACKN.to(tag.getFirst(FieldKey.TRACK )));
 		}
 	}
 }
