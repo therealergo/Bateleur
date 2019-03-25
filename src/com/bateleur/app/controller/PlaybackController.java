@@ -143,7 +143,7 @@ public class PlaybackController {
         	public void run() {
         		while (!javaFXThread.getState().equals(State.TERMINATED)) {
             		try {
-						Thread.sleep(10);
+						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -152,6 +152,12 @@ public class PlaybackController {
                         	TEMP_OSS = true;
                     		seekBar.setValue(playback.getPlaybackTimeMS() / playback.getPlaybackLengthMS());
                         	TEMP_OSS = false;
+                        	if (playback.getPlaybackTimeMS() >= playback.getPlaybackLengthMS()) {
+                            	queue.skipForwards();
+                                playback.loadAudio(queue.get(), settings.get(settings.FADE_TIME_USER));
+                                playback.play(settings.get(settings.FADE_TIME_USER));
+                                updateText();
+                        	}
                         }
                     });
         		}
