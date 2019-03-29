@@ -85,12 +85,35 @@ public class PlaybackModelTest {
         assertEquals(testAudio, playbackModel.getLoadedAudio());
     }
 
+    /**
+     * Pauses the thread to verify that the playback model is playing
+     * @param playing whether the desired state is playing or not
+     * @throws InterruptedException part of thread.sleep
+     */
+    private boolean assertPlaying(boolean playing) throws InterruptedException {
+        Thread.sleep(100);
+        for (int i = 0; i < 10000; i++) {
+            if (playing) {
+                if (playbackModel.isPlaying()) {
+                    assertTrue(playbackModel.isPlaying());
+                    return true;    // cease test
+                }
+            } else {
+                if (!playbackModel.isPlaying()) {
+                    assertFalse(playbackModel.isPlaying());
+                    return true;    // cease test
+                }
+            }
+        }
+        return false;
+    }
 
     /**
-     * This test is useless, since the status of the MediaPlayer seems to be unknown, not PAUSED or PLAYING
+     * This tests that the PlaybackModel begins playback
      */
     @Test
-    public void test_audioLoaded_play_isPlaying() {
+    public void test_audioLoaded_play_isPlaying()
+    throws Exception {
         // Given
         playbackModel.loadAudio(testAudio, FADE_TIME);
 
@@ -99,20 +122,27 @@ public class PlaybackModelTest {
 
         // Then
         assertTrue(playbackModel.isAudioLoaded());
-        assertTrue(playbackModel.isPlaying());
+        if (!assertPlaying(true)) {
+            fail();
+        }
     }
 
     /**
-     * This test is useless, since the status of the MediaPlayer seems to be unknown, not PAUSED or PLAYING
+     * This tests that the PlaybackModel pauses audio playback
      */
     @Test
-    public void test_audioLoadedNotPlaying_isPlaying_false() {
+    public void test_audioLoadedNotPlaying_isPlaying_false()
+    throws Exception {
         // Given
         playbackModel.loadAudio(testAudio, FADE_TIME);
         playbackModel.play(FADE_TIME);
+        if (!assertPlaying(true)) {
+            fail();
+        }
 
         // When
         playbackModel.pause(FADE_TIME);
+        assertPlaying(false);
 
         // Then
         assertTrue(playbackModel.isAudioLoaded());
