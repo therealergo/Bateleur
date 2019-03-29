@@ -21,10 +21,12 @@ public class PlaybackModelTest {
 
     private static final int FADE_TIME = 0;
     private static final long DELAY_TIME_MS = 3000L;
+    private static final double PLAYBACK_TIME = 10000.0;
 
     private PlaybackModel playbackModel;
 
     private static SettingsModel settings;
+    private static BAudio testAudio;
 
     @BeforeClass
     public static void setupClass() throws Exception {
@@ -32,48 +34,119 @@ public class PlaybackModelTest {
         Thread.sleep(DELAY_TIME_MS);    // wait for Main to init correctly
 
         settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
+        testAudio = new BAudioLocal(settings,
+                                   Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"),
+                                   Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getPath().toUri());
     }
 
+    /**
+     * Refreshes the state of the playbackModel being tested
+     */
     @Before
     public void setup() {
         playbackModel = new PlaybackModel(settings);
     }
 
+    /**
+     * Tests loading audio to check that MediaPlayer's loaded audio is the same as the test audio
+     */
     @Test
-    public void test_noAudio_loadAudio_loadsAudio() throws Exception {
+    public void test_noAudio_loadAudio_loadsAudio() {
         // Given
-        BAudio audio = new BAudioLocal(settings,
-                                       Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"),
-                                       Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getPath().toUri());
 
         // When
-        playbackModel.loadAudio(audio, FADE_TIME);
+        playbackModel.loadAudio(testAudio, FADE_TIME);
 
         // Then
         assertTrue(playbackModel.isAudioLoaded());
-        assertEquals(audio, playbackModel.getLoadedAudio());
+        assertEquals(testAudio, playbackModel.getLoadedAudio());
     }
 
+    /**
+     * Tests loading audio correctly changes the loaded audio in the MediaPlayer of PlaybackMddel
+     * @throws Exception error in creating BAudio file for test
+     */
+    @Test
     public void test_loadedAudio_loadAudio_loadsNewAudio() throws Exception {
         // Given
         BAudio originalAudio = new BAudioLocal(settings,
                                                Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"),
                                                Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getPath().toUri());
 
-        BAudio audio = new BAudioLocal(settings,
-                                       Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"),
-                                       Main.resource.getResourceFileLocal("testPlaybackModel>0.mp3").getPath().toUri());
-        assert !(audio.equals(originalAudio));    // validates the test environment was created correctly, not unit
+        assert !(testAudio.equals(originalAudio));    // validates the test environment was created correctly, not unit
 
         playbackModel.loadAudio(originalAudio, FADE_TIME);
         playbackModel.play(FADE_TIME);
 
         // When
-        playbackModel.loadAudio(audio, FADE_TIME);
+        playbackModel.loadAudio(testAudio, FADE_TIME);
         // Then
         assertTrue(playbackModel.isAudioLoaded());
-        assertEquals(audio, playbackModel.getLoadedAudio());
+        assertEquals(testAudio, playbackModel.getLoadedAudio());
     }
 
+
+    /**
+     * This test is useless, since the status of the MediaPlayer seems to be unknown, not PAUSED or PLAYING
+     */
+    @Test
+    public void test_audioLoaded_play_isPlaying() {
+        // Given
+        playbackModel.loadAudio(testAudio, FADE_TIME);
+
+        // When
+        playbackModel.play(FADE_TIME);
+
+        // Then
+        assertTrue(playbackModel.isAudioLoaded());
+        assertTrue(playbackModel.isPlaying());
+    }
+
+    /**
+     * This test is useless, since the status of the MediaPlayer seems to be unknown, not PAUSED or PLAYING
+     */
+    @Test
+    public void test_audioLoadedNotPlaying_isPlaying_false() {
+        // Given
+        playbackModel.loadAudio(testAudio, FADE_TIME);
+        playbackModel.play(FADE_TIME);
+
+        // When
+        playbackModel.pause(FADE_TIME);
+
+        // Then
+        assertTrue(playbackModel.isAudioLoaded());
+        assertFalse(playbackModel.isPlaying());
+    }
+
+    /**
+     * Verifies that the playback volume changes correctly in the player
+     */
+    @Test
+    public void test_originalVolume_setVolume_changes() {
+        // Given
+        playbackModel.loadAudio(testAudio, FADE_TIME);
+        double originalVolume = playbackModel.getVolume();
+
+        // When
+        playbackModel.setVolume(any(Double.class));    // any value since we have no value checking in the method
+
+        // Then
+        assertFalse(originalVolume == playbackModel.getVolume());
+    }
+
+    /**
+     * Verifies that the playback time changes correctly in the player
+     */
+    public void test_originalPlaybackTime_setPlaybackTime_changes() {
+        // Given
+        playbackModel.loadAudio(testAudio, FADE_TIME);
+        double originalPlaybackTime = playbackModel.getPlaybackTimeMS();
+
+        // When
+        playbackModel.setPlaybackTimeMS(PLAYBACK_TIME);
+
+        assertFalse(originalPlaybackTime == playbackModel.getPlaybackTimeMS());
+    }
 
 }
