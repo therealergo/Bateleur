@@ -30,7 +30,7 @@ public class QueueModelTest {
         Thread.sleep(DELAY_TIME_MS);    // wait for Main to init correctly
 
         for (int i = 0; i<8; i++) {
-            BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileLocal("testLibraryModel>meta_test_" + i));
+            BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileClass("test_out>LibraryModelTest>meta_test_" + i, App.class));
             audio.set(settings.TEST_VAL.to(1231+i));
         }
 
@@ -46,10 +46,9 @@ public class QueueModelTest {
         queueModel = new QueueModel(settings);
 
         testAudio = new BAudioLocal(settings,
-                                    Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"),
-                                    Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getPath().toUri());
-
-
+                                    Main.resource.getResourceFileClass("test_out>PlaybackModelTest>__meta_test", App.class),
+                                    Main.resource.getResourceFileClass("test_in>test.mp3", App.class).getPath().toUri());
+        
         queueModel.setQueue(library, testAudio);
     }
 

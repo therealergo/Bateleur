@@ -35,8 +35,8 @@ public class PlaybackModelTest {
 
         settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
         testAudio = new BAudioLocal(settings,
-                                   Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"),
-                                   Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getPath().toUri());
+                                   Main.resource.getResourceFileClass("test>PlaybackModelTest>__meta_test", App.class),
+                                   Main.resource.getResourceFileClass("test_in>test.mp3", App.class).getPath().toUri());
     }
 
     /**
@@ -70,8 +70,8 @@ public class PlaybackModelTest {
     public void test_loadedAudio_loadAudio_loadsNewAudio() throws Exception {
         // Given
         BAudio originalAudio = new BAudioLocal(settings,
-                                               Main.resource.getResourceFileLocal("testPlaybackModel>__meta_test"),
-                                               Main.resource.getResourceFileLocal("testPlaybackModel>test.mp3").getPath().toUri());
+                                               Main.resource.getResourceFileClass("test_out>PlaybackModelTest>__meta_test", App.class),
+                                               Main.resource.getResourceFileClass("test_in>test.mp3", App.class).getPath().toUri());
 
         assert !(testAudio.equals(originalAudio));    // validates the test environment was created correctly, not unit
 
@@ -91,8 +91,8 @@ public class PlaybackModelTest {
      * @throws InterruptedException part of thread.sleep
      */
     private boolean assertPlaying(boolean playing) throws InterruptedException {
-        Thread.sleep(100);
-        for (int i = 0; i < 10000; i++) {
+    	// Allow up to 50 * 100 = 5000 milliseconds = 5 seconds for playback to begin
+        for (int i = 0; i < 50; i++) {
             if (playing) {
                 if (playbackModel.isPlaying()) {
                     assertTrue(playbackModel.isPlaying());
@@ -104,6 +104,7 @@ public class PlaybackModelTest {
                     return true;    // cease test
                 }
             }
+            Thread.sleep(100);
         }
         return false;
     }
