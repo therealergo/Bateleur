@@ -18,9 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(JfxRunner.class)
 public class PlaybackModelTest {
-
     private static final int FADE_TIME = 0;
-    private static final long DELAY_TIME_MS = 3000L;
     private static final double PLAYBACK_TIME = 10000.0;
 
     private PlaybackModel playbackModel;
@@ -31,11 +29,13 @@ public class PlaybackModelTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         Main.mainInit(App.class, new String[]{});
-        Thread.sleep(DELAY_TIME_MS);    // wait for Main to init correctly
-
+        
+    	// Ensure that there is no existing metadata file
+    	Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class).create().delete();
+        
         settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
         testAudio = new BAudioLocal(settings,
-                                   Main.resource.getResourceFileClass("test>PlaybackModelTest>__meta_test", App.class),
+                                   Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class),
                                    Main.resource.getResourceFileClass("test_in>test.mp3", App.class).getPath().toUri());
     }
 
@@ -70,7 +70,7 @@ public class PlaybackModelTest {
     public void test_loadedAudio_loadAudio_loadsNewAudio() throws Exception {
         // Given
         BAudio originalAudio = new BAudioLocal(settings,
-                                               Main.resource.getResourceFileClass("test_out>PlaybackModelTest>__meta_test", App.class),
+                                               Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class),
                                                Main.resource.getResourceFileClass("test_in>test.mp3", App.class).getPath().toUri());
 
         assert !(testAudio.equals(originalAudio));    // validates the test environment was created correctly, not unit
@@ -80,6 +80,7 @@ public class PlaybackModelTest {
 
         // When
         playbackModel.loadAudio(testAudio, FADE_TIME);
+        
         // Then
         assertTrue(playbackModel.isAudioLoaded());
         assertEquals(testAudio, playbackModel.getLoadedAudio());

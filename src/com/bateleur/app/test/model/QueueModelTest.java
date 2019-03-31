@@ -14,9 +14,6 @@ import org.junit.runner.RunWith;
 
 @RunWith(JfxRunner.class)
 public class QueueModelTest {
-
-    private static final long DELAY_TIME_MS = 3000L;
-
     private QueueModel queueModel;
 
     private static SettingsModel settings;
@@ -27,15 +24,12 @@ public class QueueModelTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         Main.mainInit(App.class, new String[]{});
-        Thread.sleep(DELAY_TIME_MS);    // wait for Main to init correctly
 
-        for (int i = 0; i<8; i++) {
-            BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileClass("test_out>LibraryModelTest>meta_test_" + i, App.class));
-            audio.set(settings.TEST_VAL.to(1231+i));
-        }
-
+    	// Ensure that there are no existing library files
+    	Main.resource.getResourceFileClass("test_out>QueueModelTest>library", App.class).create().delete();
+    	
         settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
-        library = new LibraryModel(settings, Main.resource.getResourceFolderLocal("testLibraryModel"));
+        library = new LibraryModel(settings, Main.resource.getResourceFolderClass("test_out>QueueModelTest>library", App.class));
     }
 
     /**
@@ -44,13 +38,14 @@ public class QueueModelTest {
     @Before
     public void setup() throws Exception {
         queueModel = new QueueModel(settings);
+        
+    	// Ensure that there is no existing metadata file
+    	Main.resource.getResourceFileClass("test_out>QueueModelTest>test_meta.ser", App.class).create().delete();
 
         testAudio = new BAudioLocal(settings,
-                                    Main.resource.getResourceFileClass("test_out>PlaybackModelTest>__meta_test", App.class),
+                                    Main.resource.getResourceFileClass("test_out>QueueModelTest>test_meta.ser", App.class),
                                     Main.resource.getResourceFileClass("test_in>test.mp3", App.class).getPath().toUri());
         
         queueModel.setQueue(library, testAudio);
     }
-
-
 }
