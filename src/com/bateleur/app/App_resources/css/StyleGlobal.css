@@ -1,0 +1,12 @@
+.border {
+    -fx-border-color: white;
+}
+
+.playbackBarButton {
+	-fx-border-radius: 300;
+	-fx-border-color: white;
+	-fx-border-width: 2;
+	-fx-background-color: rgba(255, 255, 255, 0.0);
+	-fx-text-fill: white;
+	-fx-padding: 0;
+}

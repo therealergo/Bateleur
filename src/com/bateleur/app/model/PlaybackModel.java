@@ -1,5 +1,8 @@
 package com.bateleur.app.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.bateleur.app.datatype.BAudio;
 
 import javafx.scene.media.Media;
@@ -13,6 +16,9 @@ public class PlaybackModel {
 	private MediaPlayer player;
 	private BAudio loadedAudio;
 	private double volume;
+	
+	private List<Runnable> onPlayHandlers ;
+	private List<Runnable> onPauseHandlers;
 
 	public PlaybackModel(SettingsModel settings) {
 		this.settings = settings;
@@ -20,6 +26,9 @@ public class PlaybackModel {
 		this.player = null;
 		this.loadedAudio = null;
 		this.volume = 1.0;
+		
+		onPlayHandlers  = new ArrayList<Runnable>();
+		onPauseHandlers = new ArrayList<Runnable>();
 	}
 
 	public boolean isAudioLoaded() {
@@ -43,6 +52,16 @@ public class PlaybackModel {
 			try {
 				Media media = new Media(audio.get(settings.PLAYBACK_URI).toString());
 				player = new MediaPlayer(media);
+				player.setOnPlaying(() -> {
+					for (int i = 0; i<onPlayHandlers.size(); i++) {
+						onPlayHandlers.get(i).run();
+					}
+				});
+				player.setOnPaused(() -> {
+					for (int i = 0; i<onPauseHandlers.size(); i++) {
+						onPauseHandlers.get(i).run();
+					}
+				});
 				player.setVolume(volume);
 			} catch (Exception e) { //TODO: This is a temporary fix for crashes from unsupported formats
 			}
@@ -103,5 +122,21 @@ public class PlaybackModel {
 		if (player != null) {
 			player.setVolume(volume);
 		}
+	}
+	
+	public void addPlayHandler(Runnable handler) {
+		onPlayHandlers.add(handler);
+	}
+	
+	public void removePlayHandler(Runnable handler) {
+		onPlayHandlers.remove(handler);
+	}
+	
+	public void addPauseHandler(Runnable handler) {
+		onPauseHandlers.add(handler);
+	}
+	
+	public void removePauseHandler(Runnable handler) {
+		onPauseHandlers.remove(handler);
 	}
 }

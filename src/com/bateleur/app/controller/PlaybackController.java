@@ -1,9 +1,12 @@
 package com.bateleur.app.controller;
 
+import java.util.Iterator;
+
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
 import com.bateleur.app.view.BBackgroundCanvas;
+import com.therealergo.main.math.Vector3D;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -12,16 +15,20 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class PlaybackController {
@@ -39,13 +46,25 @@ public class PlaybackController {
     private GridPane lowerPane;
     
     @FXML
+    private AnchorPane root;
+    
+    @FXML
     private AnchorPane musicSelectPane;
     
     @FXML
-    private AnchorPane playbackPane;
+    private AnchorPane playbackBar;
     
     @FXML
-    private AnchorPane playbackLeftSide;
+    private AnchorPane playbackBarLeft;
+    
+    @FXML
+    private AnchorPane topBar;
+    
+    @FXML
+    private AnchorPane topBarBG;
+    
+    @FXML
+    private AnchorPane topBarFG;
 
     @FXML
     private Label textBot;
@@ -54,13 +73,10 @@ public class PlaybackController {
     private Label textTop;
     
     @FXML
-    private ImageView barImage;
+    private ImageView playbackImage;
     
     @FXML
-    private ColumnConstraints barImageContainer;
-
-    @FXML
-    private ToggleButton playPauseButton;
+    private ColumnConstraints playbackImageContainer;
     
     @FXML
     private Label topBarLabel;
@@ -72,6 +88,9 @@ public class PlaybackController {
     private Button skipForwardButton;
 
     @FXML
+    private ToggleButton playPauseButton;
+
+    @FXML
     private ToggleButton shuffleButton;
 
     @FXML
@@ -79,6 +98,30 @@ public class PlaybackController {
 
     @FXML
     private ToggleButton repeatButton;
+
+    @FXML
+    private ImageView playPauseButtonImage_O;
+
+    @FXML
+    private ImageView shuffleButtonImage_O;
+
+    @FXML
+    private ImageView queueButtonImage_O;
+
+    @FXML
+    private ImageView repeatButtonImage_O;
+
+    @FXML
+    private ImageView playPauseButtonImage_I;
+
+    @FXML
+    private ImageView shuffleButtonImage_I;
+
+    @FXML
+    private ImageView queueButtonImage_I;
+
+    @FXML
+    private ImageView repeatButtonImage_I;
 
     @FXML
     private Slider seekBar;
@@ -98,6 +141,9 @@ public class PlaybackController {
     
     private Timeline slideAnimation;
     private BoxBlur blurEffect;
+    Lighting lightingFG;
+    Lighting lightingBG;
+    Lighting lightingBO;
 
     public PlaybackController(SettingsModel settings, PlaybackModel playback, QueueModel queue) {
         this.settings = settings;
@@ -115,10 +161,25 @@ public class PlaybackController {
     @FXML
     public void initialize() {
     	shuffleButton.setSelected(queue.isShuffleEnabled());
+    	shuffleButtonImage_O.setOpacity(shuffleButton.isSelected() ? 1.0 : 0.0);
+    	shuffleButtonImage_I.setOpacity(shuffleButton.isSelected() ? 0.0 : 1.0);
 
     	queueButton  .setSelected(queue.isQueueEnabled()  );
+    	queueButtonImage_O  .setOpacity(queueButton  .isSelected() ? 1.0 : 0.0);
+    	queueButtonImage_I  .setOpacity(queueButton  .isSelected() ? 0.0 : 1.0);
 
     	repeatButton .setSelected(queue.isRepeatEnabled() );
+    	repeatButtonImage_O .setOpacity(repeatButton .isSelected() ? 1.0 : 0.0);
+    	repeatButtonImage_I .setOpacity(repeatButton .isSelected() ? 0.0 : 1.0);
+        
+        playback.addPlayHandler(() -> {
+	    	playPauseButtonImage_O.setOpacity(0.0);
+	    	playPauseButtonImage_I.setOpacity(1.0);
+        });
+        playback.addPauseHandler(() -> {
+	    	playPauseButtonImage_O.setOpacity(1.0);
+	    	playPauseButtonImage_I.setOpacity(0.0);
+        });
     	
     	volumeBar.setMin(0.0);
     	volumeBar.setMax(100.0);
@@ -135,7 +196,42 @@ public class PlaybackController {
         		onSeekSet(new_val.doubleValue());
     		}
         });
-
+		
+        lightingBG = new Lighting();
+        lightingBG.setDiffuseConstant(1.0);
+        lightingBG.setSpecularConstant(0.0);
+        lightingBG.setSpecularExponent(0.0);
+        lightingBG.setSurfaceScale(0.0);
+        lightingBG.setLight(new Light.Distant(0, 90.0, Color.BLACK));
+    	Iterator<Node> BGNodes = root.lookupAll("#colorBG").iterator();
+    	while (BGNodes.hasNext()) {
+    		BGNodes.next().setEffect(lightingBG);
+    	}
+		
+        lightingFG = new Lighting();
+        lightingFG.setDiffuseConstant(1.0);
+        lightingFG.setSpecularConstant(0.0);
+        lightingFG.setSpecularExponent(0.0);
+        lightingFG.setSurfaceScale(0.0);
+        lightingFG.setLight(new Light.Distant(0, 90.0, Color.WHITE));
+    	Iterator<Node> FGNodes = root.lookupAll("#colorFG").iterator();
+    	while (FGNodes.hasNext()) {
+    		FGNodes.next().setEffect(lightingFG);
+    	}
+		
+        lightingBO = new Lighting();
+        lightingBO.setDiffuseConstant(1.0);
+        lightingBO.setSpecularConstant(0.0);
+        lightingBO.setSpecularExponent(0.0);
+        lightingBO.setSurfaceScale(0.0);
+        lightingBO.setLight(new Light.Distant(0, 90.0, Color.WHITE));
+    	Iterator<Node> BONodes = root.lookupAll("#colorBO").iterator();
+    	while (BONodes.hasNext()) {
+    		BONodes.next().setEffect(lightingBO);
+    	}
+    	
+    	topBarLabel.setTranslateX(1.0);
+    	
         updateText();
         
         Thread javaFXThread = Thread.currentThread();
@@ -172,11 +268,11 @@ public class PlaybackController {
             	if (lowerPane.getTranslateY() != 0) {
                 	lowerPane.setTranslateY(musicSelectPane.getHeight());
             	}
-            	if (playbackLeftSide.getTranslateX() != 0) {
-            		playbackLeftSide.setTranslateX(-barImageContainer.getMinWidth());
+            	if (playbackBarLeft.getTranslateX() != 0) {
+            		playbackBarLeft.setTranslateX(-playbackImageContainer.getMinWidth());
             	}
             	if (topBarLabel.getTranslateX() != 0) {
-            		topBarLabel.setTranslateX(barImageContainer.getMinWidth());
+            		topBarLabel.setTranslateX(playbackImageContainer.getMinWidth());
             	}
             	
             	double   rate = 0.0 ;
@@ -194,8 +290,8 @@ public class PlaybackController {
                 	double pct2 = smoothstep((i+1)/99.0);
                     slideAnimation.getKeyFrames().add(
             	        	new KeyFrame(new Duration(i*settings.get(settings.UI_ANIM_TIME_MUL)),
-            	        			new KeyValue(topBarLabel.translateXProperty(), (1.0-pct1)*barImageContainer.getMinWidth()), 
-            	        			new KeyValue(playbackLeftSide.translateXProperty(), -pct1*barImageContainer.getMinWidth()), 
+            	        			new KeyValue(topBarLabel.translateXProperty(), (1.0-pct1)*playbackImageContainer.getMinWidth()), 
+            	        			new KeyValue(playbackBarLeft.translateXProperty(), -pct1*playbackImageContainer.getMinWidth()), 
             	        			new KeyValue(blurEffect.heightProperty(), (pct2-pct0)*settings.get(settings.UI_MOTION_BLUR_MUL)*musicSelectPane.getHeight()), 
             	        			new KeyValue(lowerPane.translateYProperty(), pct1*musicSelectPane.getHeight()), 
             	        			new KeyValue(backgroundCanvas.artAlpha, pct1)
@@ -210,34 +306,48 @@ public class PlaybackController {
             }
         };
         musicSelectPane  .heightProperty()  .addListener(cl);
-        barImageContainer.minWidthProperty().addListener(cl);
+        playbackImageContainer.minWidthProperty().addListener(cl);
     }
     
     private void updateText() {
-    	textTop.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_TITLE));
-    	textBot.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_ARTIST));
+    	textTop.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_ARTIST));
+    	textBot.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_TITLE));
     	try {
-    		Image im = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImage();
-    		barImageContainer.setMinWidth(im.getWidth() / im.getHeight() * 107.0);
-			barImage.setImage(im);
+    		Image im = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImageThumbnail();
+    		playbackImageContainer.setMinWidth(im.getWidth() / im.getHeight() * 107.0);
+			playbackImage.setImage(im);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		Vector3D cBG_VEC = playback.getLoadedAudio().get(settings.AUDIO_PROP_COLR_BG);
+		Vector3D cFG_VEC = playback.getLoadedAudio().get(settings.AUDIO_PROP_COLR_FG);
+		Color cBG = new Color(cBG_VEC.x, cBG_VEC.y, cBG_VEC.z, 1.0);
+		Color cFG = new Color(cFG_VEC.x, cFG_VEC.y, cFG_VEC.z, 1.0);
+		lightingBG.getLight().setColor(cBG);
+		lightingFG.getLight().setColor(cFG);
+		lightingBO.getLight().setColor(cBG.interpolate(cFG, 0.3));
     }
 
     @FXML
     public void onShufflePress() {
     	queue.setShuffleState(shuffleButton.isSelected());
+    	shuffleButtonImage_O.setOpacity(shuffleButton.isSelected() ? 1.0 : 0.0);
+    	shuffleButtonImage_I.setOpacity(shuffleButton.isSelected() ? 0.0 : 1.0);
     }
 
     @FXML
     public void onQueuePress() {
     	queue.setQueueState(queueButton.isSelected());
+    	queueButtonImage_O.setOpacity(queueButton.isSelected() ? 1.0 : 0.0);
+    	queueButtonImage_I.setOpacity(queueButton.isSelected() ? 0.0 : 1.0);
     }
 
     @FXML
     public void onRepeatPress() throws Exception {
     	queue.setRepeatState(repeatButton.isSelected());
+    	repeatButtonImage_O.setOpacity(repeatButton.isSelected() ? 1.0 : 0.0);
+    	repeatButtonImage_I.setOpacity(repeatButton.isSelected() ? 0.0 : 1.0);
     }
 
     @FXML

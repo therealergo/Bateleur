@@ -108,6 +108,8 @@ public class App extends Application {
 	    	});
 	    	Parent root = (Parent)loader.load();
 	        BorderlessScene scene = new BorderlessScene(primaryStage, root);
+	        
+	        scene.getStylesheets().add(Main.resource.getResourceFileClass("css>StyleGlobal.css", App.class).getPath().toUri().toURL().toExternalForm());
 
 	        primaryStage.setTitle("Bateleur INDEV");
 	        ((Label)root.lookup("#topBarLabel")).setText(primaryStage.getTitle());
