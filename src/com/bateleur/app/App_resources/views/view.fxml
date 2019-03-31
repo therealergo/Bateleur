@@ -108,11 +108,11 @@
                                  <children>
                                     <Label fx:id="textTop" layoutX="8.0" layoutY="46.0" prefHeight="17.0" style="-fx-text-fill: #ffffff;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
                                        <font>
-                                          <Font name="Arial" size="15.0" />
+                                          <Font name="Arial" size="14.0" />
                                        </font></Label>
                                     <Label fx:id="textBot" layoutX="8.0" layoutY="69.0" prefHeight="17.0" style="-fx-text-fill: #ffffff;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
                                        <font>
-                                          <Font name="Arial" size="15.0" />
+                                          <Font name="Arial" size="14.0" />
                                        </font></Label>
                                     <AnchorPane layoutX="5.0" layoutY="90.0" AnchorPane.leftAnchor="8.0">
                                        <children>
@@ -235,11 +235,14 @@
             <AnchorPane id="colorBO" fx:id="topBarBG1" layoutX="10.0" layoutY="10.0" mouseTransparent="true" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 1 1 0 1;" styleClass="border" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <AnchorPane id="colorFG" fx:id="topBarFG" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Label id="topBarLabel" fx:id="topBarLabel" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label id="topBarLabel" fx:id="topBarLabel" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font></Label>
                   <Button id="topBarDrag" mnemonicParsing="false" style="-fx-background-color: rgba(255, 255, 255, 0.0);" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <Button id="topBarClose" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: rgba(255, 255, 255, 0.0);" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <graphic>
-                        <ImageView fitHeight="10.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../textures/btnClo.png" />
                            </image>
@@ -248,7 +251,7 @@
                   </Button>
                   <Button id="topBarMaximize" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: rgba(255, 255, 255, 0.0);" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
                      <graphic>
-                        <ImageView fitHeight="10.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../textures/btnMax.png" />
                            </image>
@@ -257,7 +260,7 @@
                   </Button>
                   <Button id="topBarMinimize" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: rgba(255, 255, 255, 0.0);" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="0.0">
                      <graphic>
-                        <ImageView fitHeight="10.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../textures/btnMin.png" />
                            </image>
