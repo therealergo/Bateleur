@@ -1,4 +1,4 @@
-package com.bateleur.app.test.model;
+package com.bateleur.test.model;
 
 import com.bateleur.app.App;
 import com.bateleur.app.datatype.BAudio;

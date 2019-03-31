@@ -1,4 +1,4 @@
-package com.bateleur.app.test.datatype;
+package com.bateleur.test.datatype;
 
 import static junit.framework.TestCase.assertEquals;
 
