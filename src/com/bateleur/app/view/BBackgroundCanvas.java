@@ -2,15 +2,21 @@ package com.bateleur.app.view;
 
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.SettingsModel;
+import com.therealergo.main.math.Vector3D;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 public class BBackgroundCanvas extends Canvas {
 	private SettingsModel settings;
@@ -71,19 +77,22 @@ public class BBackgroundCanvas extends Canvas {
 	public void redraw(double width, double height) {
 	    try {
 		    GraphicsContext gc = getGraphicsContext2D();
-	    	Image im = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImage();
+	    	Image im = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImagePrimary();
+	    	Image im_bl = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImageBlurred();
 	    	
 			gc.setGlobalAlpha(1.0);
 	    	drawImageCover(
 	    			gc, 
-	    			im, 
+	    			im_bl, 
 	    			0, 
 	    			0, 
 	    			width, 
 	    			height
 	    	);
-			gc.applyEffect(new GaussianBlur( Math.max(width, height) * settings.get(settings.UI_BLUR_RADIUS) ));
-			getParent().setStyle("-fx-background-color: #000000");
+			
+			Vector3D cBG_VEC = playback.getLoadedAudio().get(settings.AUDIO_PROP_COLR_BG);
+			Color cBG = new Color(cBG_VEC.x, cBG_VEC.y, cBG_VEC.z, 1.0);
+			((Pane)getParent()).setBackground(new Background(new BackgroundFill(cBG, CornerRadii.EMPTY, Insets.EMPTY)));
 			
 			double areaWidth  = width     ;
 			double areaHeight = height-107;
@@ -103,14 +112,12 @@ public class BBackgroundCanvas extends Canvas {
 	}
 	
 	@Override
-	public boolean isResizable()
-	{
+	public boolean isResizable() {
 	    return true;
 	}
 	
 	@Override
-	public void resize(double width, double height)
-	{
+	public void resize(double width, double height) {
 	    super.setWidth(width);
 	    super.setHeight(height);
 	    
