@@ -32,13 +32,6 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class PlaybackController {
-
-    enum RepeatSetting {
-        REPEAT_OFF,
-        REPEAT_QUEUE,
-        REPEAT_ONE
-    }
-    
     @FXML
     private BBackgroundCanvas backgroundCanvas;
     
