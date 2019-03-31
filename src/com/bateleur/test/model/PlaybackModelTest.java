@@ -87,7 +87,8 @@ public class PlaybackModelTest {
     }
 
     /**
-     * Pauses the thread to verify that the playback model is playing
+     * Pauses the thread to verify that the playback model is playing. This is necessary to avoid
+     * MediaPlayer.Status.UNKNOWN when validating player state.
      * @param playing whether the desired state is playing or not
      * @throws InterruptedException part of thread.sleep
      */
