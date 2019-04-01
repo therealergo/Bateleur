@@ -80,7 +80,7 @@ public class BAudioLocalTest {
      * Tests whether metadata is read properly from the test.mp3 audio file.
      */
     @Test
-    public void test_readAudioMetadata() throws Exception {
+    public void test_readAudioMetadata() {
     	assertEquals(testAudio.get(settings.AUDIO_PROP_ARTIST), "therealergo"    );
     	assertEquals(testAudio.get(settings.AUDIO_PROP_ALBUM) , "Pre-Alpha (TRE)");
     	assertEquals(testAudio.get(settings.AUDIO_PROP_TITLE) , "Proving Grounds");
