@@ -7,6 +7,7 @@ import com.bateleur.app.model.LibraryModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.Main;
+import com.therealergo.main.MainException;
 import de.saxsys.javafx.test.JfxRunner;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -26,6 +27,10 @@ public class QueueModelTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
+        try {
+            Main.mainStop();
+        }
+        catch (MainException e) { }
         Main.mainInit(App.class, new String[]{});
 
     	// Ensure that there are no existing library files

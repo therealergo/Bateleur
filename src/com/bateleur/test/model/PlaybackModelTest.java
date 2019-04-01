@@ -6,6 +6,7 @@ import com.bateleur.app.datatype.BAudioLocal;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.Main;
+import com.therealergo.main.MainException;
 import de.saxsys.javafx.test.JfxRunner;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -28,11 +29,15 @@ public class PlaybackModelTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
+        try {
+            Main.mainStop();
+        }
+        catch (MainException e) { }
         Main.mainInit(App.class, new String[]{});
-        
+
     	// Ensure that there is no existing metadata file
     	Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class).create().delete();
-        
+
         settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
         testAudio = new BAudioLocal(settings,
                                    Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class),
@@ -80,7 +85,7 @@ public class PlaybackModelTest {
 
         // When
         playbackModel.loadAudio(testAudio, FADE_TIME);
-        
+
         // Then
         assertTrue(playbackModel.isAudioLoaded());
         assertEquals(testAudio, playbackModel.getLoadedAudio());

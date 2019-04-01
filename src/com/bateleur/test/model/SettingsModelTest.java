@@ -2,6 +2,7 @@ package com.bateleur.test.model;
 
 import static junit.framework.TestCase.assertEquals;
 
+import com.therealergo.main.MainException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,7 +20,11 @@ public class SettingsModelTest {
     private static SettingsModel settings;
 
     @BeforeClass
-    public static void setupClass() throws Exception {
+    public static void setupClass() {
+        try {
+            Main.mainStop();
+        }
+        catch (MainException e) { }
         Main.mainInit(App.class, new String[]{});
     }
 
@@ -30,7 +35,7 @@ public class SettingsModelTest {
     public void setup() throws Exception {
     	// Ensure that there is no existing settings file
     	Main.resource.getResourceFileClass("test_out>SettingsModelTest>test_settings.ser", App.class).create().delete();
-    	
+
     	// Create settings object to be tested
         settings = new SettingsModel(Main.resource.getResourceFileClass("test_out>SettingsModelTest>test_settings.ser", App.class));
     }
@@ -42,7 +47,7 @@ public class SettingsModelTest {
     public void test_getSetSettingFromRAM() {
     	// TEST_VAL's initial value should be its default value
         assertEquals(settings.<Integer>get(settings.TEST_VAL), settings.TEST_VAL.val);
-        
+
         // Setting and then getting a setting should return the set value
     	Integer test_val = ArgumentMatchers.any(Integer.class);
     	settings.set(settings.TEST_VAL.to(test_val));
@@ -56,7 +61,7 @@ public class SettingsModelTest {
     public void test_getSetSettingFromDisk() throws Exception {
     	// TEST_VAL's initial value should be its default value
         assertEquals(settings.<Integer>get(settings.TEST_VAL), settings.TEST_VAL.val);
-        
+
         // Setting a setting and then reloading the settings object should retain the setting
     	Integer test_val = ArgumentMatchers.any(Integer.class);
     	settings.set(settings.TEST_VAL.to(test_val));
