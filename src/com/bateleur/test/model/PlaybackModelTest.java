@@ -6,6 +6,7 @@ import com.bateleur.app.datatype.BAudioLocal;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.Main;
+import com.therealergo.main.MainException;
 import de.saxsys.javafx.test.JfxRunner;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -19,6 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 @RunWith(JfxRunner.class)
 public class PlaybackModelTest {
     private static final int FADE_TIME = 0;
+    private static final long PLAY_TIME = 175L;
     private static final double PLAYBACK_TIME = 10000.0;
 
     private PlaybackModel playbackModel;
@@ -28,11 +30,15 @@ public class PlaybackModelTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
+        try {
+            Main.mainStop();
+        }
+        catch (MainException e) { }
         Main.mainInit(App.class, new String[]{});
-        
+
     	// Ensure that there is no existing metadata file
     	Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class).create().delete();
-        
+
         settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
         testAudio = new BAudioLocal(settings,
                                    Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class),
@@ -80,7 +86,7 @@ public class PlaybackModelTest {
 
         // When
         playbackModel.loadAudio(testAudio, FADE_TIME);
-        
+
         // Then
         assertTrue(playbackModel.isAudioLoaded());
         assertEquals(testAudio, playbackModel.getLoadedAudio());
@@ -113,10 +119,11 @@ public class PlaybackModelTest {
 
     /**
      * This tests that the PlaybackModel begins playback
+     * @throws InterruptedException if the Thread is interrupted
      */
     @Test
     public void test_audioLoaded_play_isPlaying()
-    throws Exception {
+    throws InterruptedException {
         // Given
         playbackModel.loadAudio(testAudio, FADE_TIME);
 
@@ -134,8 +141,25 @@ public class PlaybackModelTest {
      * This tests that the PlaybackModel pauses audio playback
      */
     @Test
-    public void test_audioLoadedNotPlaying_isPlaying_false()
-    throws Exception {
+    public void test_audioLoadedNotPlaying_isPlaying_false() {
+        // Given
+        playbackModel.loadAudio(testAudio, FADE_TIME);
+        playbackModel.play(FADE_TIME);
+
+        boolean playingStatus = playbackModel.isPlaying();
+
+        // Then
+        assertTrue(playbackModel.isAudioLoaded());
+        assertFalse(playingStatus);
+    }
+
+    /**
+     * Validates that the pause method pauses playback
+     * @throws InterruptedException if the Thread is interrupted
+     */
+    @Test
+    public void test_audioLoadedPlaying_pause_notPlaying()
+    throws InterruptedException {
         // Given
         playbackModel.loadAudio(testAudio, FADE_TIME);
         playbackModel.play(FADE_TIME);
@@ -150,6 +174,35 @@ public class PlaybackModelTest {
         // Then
         assertTrue(playbackModel.isAudioLoaded());
         assertFalse(playbackModel.isPlaying());
+    }
+
+    /**
+     * Validates that
+     * @throws InterruptedException if the Thread is interrupted
+     */
+    @Test
+    public void test_audioPlayingPause_play_resumesFromTime()
+    throws InterruptedException {
+        // Given
+        playbackModel.loadAudio(testAudio, FADE_TIME);
+        playbackModel.play(FADE_TIME);
+        if (!assertPlaying(true)) {
+            fail();
+        }
+        Thread.sleep(PLAY_TIME);    // allows the media player to "play" the music for some time
+        playbackModel.pause(FADE_TIME);
+        double pausedTime = playbackModel.getPlaybackTimeMS();
+
+        // When
+        playbackModel.play(FADE_TIME);
+        assertPlaying(true);
+        Thread.sleep(PLAY_TIME);
+
+        // Then
+        // TODO find reliable way to check if the player resumes from right time
+        double playbackTime = playbackModel.getPlaybackTimeMS();
+        assertNotSame(pausedTime, playbackTime);
+        assertTrue(pausedTime < playbackTime);
     }
 
     /**
