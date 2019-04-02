@@ -38,7 +38,7 @@ public class App extends Application {
         queue.setQueue(library, library.iterator().next());
 
         { // Start FXML window
-			FXMLLoader loader = new FXMLLoader(Main.resource.getResourceFileClass("views>view.fxml", App.class).getPath().toUri().toURL());
+			FXMLLoader loader = new FXMLLoader(Main.resource.getResourceFileClass("views>PlaybackView.fxml", App.class).getPath().toUri().toURL());
 	    	BuilderFactory defaultBuilderFactory = new JavaFXBuilderFactory();
 	    	loader.setBuilderFactory(b -> {
 	    		switch (b.getSimpleName()) {
