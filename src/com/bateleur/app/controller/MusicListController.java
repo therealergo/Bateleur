@@ -41,11 +41,11 @@ public class MusicListController {
 		{
 			// Slide the entire lower pane up/down (the height of the music list pane, to show/hide it) when doing the vertical slide animation
 			// We don't need to worry about rebuilding for the music list pane's height because we already rebuild when the overall height changes
-	    	master.verticalSlideAnimation.rebuildSlideAnimationEvent.addListener(() -> {
+	    	master.verticalSlideAnimation.onRebuild(() -> {
 	    		master.verticalSlideAnimation.addKeyValue(
 	    			new KeyValue(
 		    			master.lowerPane.translateYProperty(), 
-		    			master.verticalSlideAnimation.rebuildIndex_C * musicListPane.getHeight()
+		    			master.verticalSlideAnimation.rebuildIndex() * musicListPane.getHeight()
 	    			)
 	    		);
 	    	});

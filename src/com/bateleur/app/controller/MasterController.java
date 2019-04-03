@@ -7,6 +7,7 @@ import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
 import com.bateleur.app.view.BBackgroundCanvas;
+import com.therealergo.main.NilConsumer;
 import com.therealergo.main.NilEvent;
 import com.therealergo.main.math.Vector3D;
 
@@ -114,7 +115,7 @@ public class MasterController {
 	    		verticalSlideAnimation.addKeyValue(
 	    			new KeyValue(
 	    				blurEffect.heightProperty(), 
-	    				(verticalSlideAnimation.rebuildIndex_P-verticalSlideAnimation.rebuildIndex_N) * settings.get(settings.UI_MOTION_BLUR_MUL) * root.getHeight()
+	    				(verticalSlideAnimation.rebuildRate) * settings.get(settings.UI_MOTION_BLUR_MUL) * root.getHeight()
 	    			)
 				);
 	    	});
@@ -122,7 +123,7 @@ public class MasterController {
 	    	
 	    	// Fade backgroundCanvas.artAlpha in/out when verticalSlideAnimation plays
 	    	verticalSlideAnimation.rebuildSlideAnimationEvent.addListener(() -> {
-	    		verticalSlideAnimation.addKeyValue(new KeyValue(backgroundCanvas.artAlpha, verticalSlideAnimation.rebuildIndex_C));
+	    		verticalSlideAnimation.addKeyValue(new KeyValue(backgroundCanvas.artAlpha, verticalSlideAnimation.rebuildIndex));
 	    	});
 			
 	    	// Rebuild the vertical slide animation every time the height of the root pane changes
@@ -139,29 +140,75 @@ public class MasterController {
     	musicListController.start();
     }
     
+    /**
+     * Container for all data about rebuilding and playing the animation that causes the lower list to slide up and down.
+     */
     public class VerticalSlideAnimation {
-        public final NilEvent rebuildSlideAnimationEvent;
+    	/**
+    	 * Event called whenever a new KeyFrame needs to be built by this VerticalSlideAnimation.
+    	 */
+        private final NilEvent rebuildSlideAnimationEvent;
         
+        /**
+         * List of KeyValues currently created as a part of building this KeyFrame.
+         */
         private final List<KeyValue> buildValues;
+        /**
+         * Boolean set to true while this VerticalSlideAnimation is being rebuilt and false otherwise.
+         */
+        private boolean isRebuilding;
+        /**
+         * The Timeline instance containing this VerticalSlideAnimation's actual animation.
+         */
         private Timeline slideAnimation;
-        public double rebuildIndex_N;
-        public double rebuildIndex_C;
-        public double rebuildIndex_P;
+        /**
+         * The index within the animation, from 0.0 to 1.0, at the currently-being-built KeyFrame.
+         */
+        private double rebuildIndex;
+        /**
+         * The rate of the animation, a value >=0.0, at the currently-being-built KeyFrame.
+         */
+        private double rebuildRate;
         
+        /**
+         * Constructor for VerticalSlideAnimation.
+         * Should be used only by MasterController to create its internal VerticalSlideAnimation instance.
+         */
         public VerticalSlideAnimation() {
         	this.rebuildSlideAnimationEvent = new NilEvent();
         	
         	this.buildValues = new ArrayList<KeyValue>();
+        	this.isRebuilding = false;
         }
     	
-    	private double smoothstep(double x) {
+        /**
+         * Internal implementation of the smoothstep() algorithm called repeatedly 3 times on the input value.
+         * The smoothstep function has derivatives of 0 and x=0.0 and x=1.0, giving a 'smoother' and 'more natural' interpolation.
+         * By applying this function three times, the animation will also be much slower towards its beginning and end and quicker towards its middle.
+         * @param x The input smoothstep interpolator, which should be between 0.0 and 1.0.
+         * @return The resulting value, which is between 0.0 and 1.0.
+         */
+    	private double smoothstep3(double x) {
     		x = x * x * (3 - 2 * x);
     		x = x * x * (3 - 2 * x);
     		x = x * x * (3 - 2 * x);
     		return x;
     	}
         
+    	/**
+    	 * Rebuild this VerticalSlideAnimation.
+    	 * This needs to be called whenever one of this VerticalSlideAnimation's KeyValues is to be regenerated.
+    	 * For example, if a KeyValue uses the value of another component's height, 
+    	 * this method must be called whenever that component's height changes.
+         * @throws This VerticalSlideAnimation must currently not be in the process of being rebuilt.
+    	 */
         public void rebuild() {
+        	assert(!isRebuilding);
+        	
+        	// Signal that we are rebuilding
+			isRebuilding = true;
+        	
+        	// Save the initial rate/time of the animation, if it has already been built
 			double   rate = 0.0 ;
 			Duration time = null;
 			if (slideAnimation != null) {
@@ -169,34 +216,100 @@ public class MasterController {
 				time = slideAnimation.getCurrentTime();
 			}
 			
+			// Create a new animation Timeline instance
 			slideAnimation = new Timeline();
 			slideAnimation.setRate(-1.0);
+			
+			// Add 100 KeyFrames to the Timeline instance
 			for (int i = 0; i<100; i++) {
-				rebuildIndex_N = smoothstep((i-1)/99.0);
-				rebuildIndex_C = smoothstep((i  )/99.0);
-				rebuildIndex_P = smoothstep((i+1)/99.0);
+				// Compute the index and rate for this KeyFrame
+				rebuildIndex = smoothstep3((i  )/99.0);
+				rebuildRate  = smoothstep3((i+1)/99.0) - smoothstep3((i-1)/99.0);
+				
+				// Regenerate the list of KeyValues used to build this KeyFrame
+				buildValues.clear();
 				rebuildSlideAnimationEvent.accept();
+				
+				// Add a KeyFrame made up of the generated list of KeyValues
 				slideAnimation.getKeyFrames().add(
 						new KeyFrame(
 								new Duration(i*settings.get(settings.UI_ANIM_TIME_MUL)),
 								buildValues.toArray(new KeyValue[buildValues.size()])
 						)
 				);
-				buildValues.clear();
 			}
 			
+			// Set the new animation to the initial animation's rate/time if applicable
 			if (time != null) {
 				slideAnimation.setRate(rate);
 				slideAnimation.jumpTo (time);
 				slideAnimation.play();
 			}
+			
+			// Signal that rebuilding has completed
+			isRebuilding = false;
         }
         
+        /**
+         * Add an action to be performed while rebuilding this VerticalSlideAnimation.
+         * This action is called whenever a new KeyValue needs to be added for this VerticalSlideAnimation's current animation index.
+         * Typically, it add a KeyValue that changes some parameter based upon this VerticalSlideAnimation's rebuildIndex() and rebuildRate() values.
+         * @param rebuildAction The action to be performed as this VerticalSlideAnimation is rebuilt.
+         * @throws This VerticalSlideAnimation must currently not be in the process of being rebuilt.
+         */
+        public void onRebuild(NilConsumer rebuildAction) {
+        	assert(!isRebuilding);
+        	
+        	rebuildSlideAnimationEvent.addListener(rebuildAction);
+        }
+        
+        /**
+         * Adds the given KeyValue to this VerticalSlideAnimation.
+         * A VerticalSlideAnimation is made up of many KeyValues, 
+         * each of which must be added using this method while the VerticalSlideAnimation is being rebuilt.
+         * @param val The KeyValue to add to this VerticalSlideAnimation.
+         * @throws This VerticalSlideAnimation must currently be in the process of being rebuilt.
+         */
         public void addKeyValue(KeyValue val) {
+        	assert(isRebuilding);
+        	
         	buildValues.add(val);
         }
         
+        /**
+         * @return The animation index in range 0.0 - 1.0 at the currently-being-built KeyFrame.
+         * @throws This VerticalSlideAnimation must currently be in the process of being rebuilt.
+         */
+        public double rebuildIndex() {
+        	assert(isRebuilding);
+        	
+        	return rebuildIndex;
+        }
+        
+        /**
+         * @return The animation rate (>=0.0) at the currently-being-built KeyFrame.
+         * @throws This VerticalSlideAnimation must currently be in the process of being rebuilt.
+         */
+        public double rebuildRate() {
+        	assert(isRebuilding);
+        	
+        	return rebuildRate;
+        }
+        
+        /**
+         * Play this VerticalSlideAnimation.
+         * This will cause the animation to play, toggling between sliding upwards and downwards motion on every call.
+         * @throws This VerticalSlideAnimation must currently not be in the process of being rebuilt.
+         */
         public void play() {
+        	assert(!isRebuilding);
+        	
+        	// Rebuild animation if it has not yet been built
+        	if (slideAnimation == null) {
+        		rebuild();
+        	}
+        	
+        	// Flip the animation's direction and play it
     		slideAnimation.setRate(-slideAnimation.getRate());
     		slideAnimation.play();
         }

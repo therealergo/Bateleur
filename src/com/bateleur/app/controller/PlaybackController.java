@@ -149,21 +149,21 @@ public class PlaybackController {
 		// Build the vertical slide animation
 		{
 			// Slide the top bar label left/right when doing the vertical slide animation
-	    	master.verticalSlideAnimation.rebuildSlideAnimationEvent.addListener(() -> {
+	    	master.verticalSlideAnimation.onRebuild(() -> {
 	    		master.verticalSlideAnimation.addKeyValue(
 	    			new KeyValue(
 		    			master.topBarLabel.translateXProperty(), 
-		    			(1.0-master.verticalSlideAnimation.rebuildIndex_C) * playbackImageContainer.getMinWidth()
+		    			(1.0-master.verticalSlideAnimation.rebuildIndex()) * playbackImageContainer.getMinWidth()
 	    			)
 	    		);
 	    	});
 			
 	    	// Slide the small audio file art left/right when doing the vertical slide animation
-	    	master.verticalSlideAnimation.rebuildSlideAnimationEvent.addListener(() -> {
+	    	master.verticalSlideAnimation.onRebuild(() -> {
 	    		master.verticalSlideAnimation.addKeyValue(
 	    			new KeyValue(
 	    				playbackBarLeft.translateXProperty(), 
-		    			-master.verticalSlideAnimation.rebuildIndex_C * playbackImageContainer.getMinWidth()
+		    			-master.verticalSlideAnimation.rebuildIndex() * playbackImageContainer.getMinWidth()
 	    			)
 	    		);
 	    	});
