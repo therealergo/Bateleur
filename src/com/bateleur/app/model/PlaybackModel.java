@@ -51,22 +51,19 @@ public class PlaybackModel {
 			player = null;
 			loadedAudio = null;
 		} else {
-			try {
-				Media media = new Media(audio.get(settings.PLAYBACK_URI).toString());
-				player = new MediaPlayer(media);
-				player.setOnPlaying(() -> {
-					for (int i = 0; i<onPlayHandlers.size(); i++) {
-						onPlayHandlers.get(i).run();
-					}
-				});
-				player.setOnPaused(() -> {
-					for (int i = 0; i<onPauseHandlers.size(); i++) {
-						onPauseHandlers.get(i).run();
-					}
-				});
-				player.setVolume(volume);
-			} catch (Exception e) { //TODO: This is a temporary fix for crashes from unsupported formats
-			}
+			Media media = new Media(audio.get(settings.PLAYBACK_URI).toString());
+			player = new MediaPlayer(media);
+			player.setOnPlaying(() -> {
+				for (int i = 0; i<onPlayHandlers.size(); i++) {
+					onPlayHandlers.get(i).run();
+				}
+			});
+			player.setOnPaused(() -> {
+				for (int i = 0; i<onPauseHandlers.size(); i++) {
+					onPauseHandlers.get(i).run();
+				}
+			});
+			player.setVolume(volume);
 			loadedAudio = audio;
 		}
 		
