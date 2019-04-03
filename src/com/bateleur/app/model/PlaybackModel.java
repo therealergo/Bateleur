@@ -17,8 +17,9 @@ public class PlaybackModel {
 	private BAudio loadedAudio;
 	private double volume;
 	
-	private List<Runnable> onPlayHandlers ;
-	private List<Runnable> onPauseHandlers;
+	private List<Runnable> onPlayHandlers      ;
+	private List<Runnable> onPauseHandlers     ;
+	private List<Runnable> onSongChangeHandlers;
 
 	public PlaybackModel(SettingsModel settings) {
 		this.settings = settings;
@@ -27,8 +28,9 @@ public class PlaybackModel {
 		this.loadedAudio = null;
 		this.volume = 1.0;
 		
-		onPlayHandlers  = new ArrayList<Runnable>();
-		onPauseHandlers = new ArrayList<Runnable>();
+		onPlayHandlers       = new ArrayList<Runnable>();
+		onPauseHandlers      = new ArrayList<Runnable>();
+		onSongChangeHandlers = new ArrayList<Runnable>();
 	}
 
 	public boolean isAudioLoaded() {
@@ -66,6 +68,10 @@ public class PlaybackModel {
 			} catch (Exception e) { //TODO: This is a temporary fix for crashes from unsupported formats
 			}
 			loadedAudio = audio;
+		}
+		
+		for (int i = 0; i<onSongChangeHandlers.size(); i++) {
+			onSongChangeHandlers.get(i).run();
 		}
 	}
 
@@ -138,5 +144,13 @@ public class PlaybackModel {
 	
 	public void removePauseHandler(Runnable handler) {
 		onPauseHandlers.remove(handler);
+	}
+	
+	public void addSongChangeHandler(Runnable handler) {
+		onSongChangeHandlers.add(handler);
+	}
+	
+	public void removSongChangeHandler(Runnable handler) {
+		onSongChangeHandlers.remove(handler);
 	}
 }

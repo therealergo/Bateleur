@@ -1,5 +1,6 @@
 package com.bateleur.app;
 
+import com.bateleur.app.controller.MasterController;
 import com.bateleur.app.controller.MusicListController;
 import com.bateleur.app.controller.PlaybackController;
 import com.bateleur.app.datatype.BAudio;
@@ -30,15 +31,9 @@ public class App extends Application {
     	LibraryModel  library  = new LibraryModel (settings, Main.resource.getResourceFolderClass("library", App.class));
 //    	PlaylistModel playlist = new PlaylistModel(settings);
     	QueueModel    queue    = new QueueModel   (settings);
-    	
-        library.update();
-        library.sortBy( (BAudio audio1, BAudio audio2) -> audio2.get(settings.AUDIO_PROP_TITLE).compareTo(audio1.get(settings.AUDIO_PROP_TITLE)) );
-        playback.loadAudio(library.iterator().next(), 0);
-        playback.play(0);
-        queue.setQueue(library, library.iterator().next());
 
         { // Start FXML window
-			FXMLLoader loader = new FXMLLoader(Main.resource.getResourceFileClass("views>PlaybackView.fxml", App.class).getPath().toUri().toURL());
+			FXMLLoader loader = new FXMLLoader(Main.resource.getResourceFileClass("views>MasterView.fxml", App.class).getPath().toUri().toURL());
 	    	BuilderFactory defaultBuilderFactory = new JavaFXBuilderFactory();
 	    	loader.setBuilderFactory(b -> {
 	    		switch (b.getSimpleName()) {
@@ -55,6 +50,8 @@ public class App extends Application {
 	    	});
 	    	loader.setControllerFactory(c -> {
 	    		switch (c.getSimpleName()) {
+		    		case "MasterController":
+		    			return new MasterController(settings, playback, queue);
 		    		case "PlaybackController":
 		    			return new PlaybackController(settings, playback, queue);
 		    		case "MusicListController":
@@ -89,6 +86,12 @@ public class App extends Application {
 	        		scene.getWindow().hide();
 				}
 	        });
+
+	        library.update();
+	        library.sortBy( (BAudio audio1, BAudio audio2) -> audio2.get(settings.AUDIO_PROP_TITLE).compareTo(audio1.get(settings.AUDIO_PROP_TITLE)) );
+	        playback.loadAudio(library.iterator().next(), 0);
+	        playback.play(0);
+	        queue.setQueue(library, library.iterator().next());
 
 	        primaryStage.setScene(scene);
 	        primaryStage.show();

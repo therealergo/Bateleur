@@ -1,5 +1,6 @@
 package com.bateleur.app.view.list;
 
+import com.bateleur.app.controller.MusicListController;
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.model.LibraryModel;
 import com.bateleur.app.model.PlaybackModel;
@@ -20,13 +21,17 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 
 public class BListTab extends Tab {
+	public final MusicListController musicListController;
+	
 	private LibraryModel library;
 	private PlaybackModel playback;
 	private SettingsModel settings;
 	
 	private GridPane innerGrid;
 
-	public BListTab(LibraryModel library, PlaybackModel playback, SettingsModel settings) {
+	public BListTab(MusicListController musicListController, LibraryModel library, PlaybackModel playback, SettingsModel settings) {
+		this.musicListController = musicListController;
+		
 		this.library = library;
 		this.playback = playback;
 		this.settings = settings;
@@ -44,7 +49,10 @@ public class BListTab extends Tab {
 			// This must be called in a 'runLater(...)' to ensure that the list does not flicker while resizing
 			Platform.runLater( () -> rebuildList(new_val.doubleValue()) );
 		});
-//		rebuildList();
+		
+		playback.addSongChangeHandler(() -> {
+			rebuildList(innerScroll.getWidth());
+		});
 	}
 	
 	public void rebuildList(double areaWidth) {
@@ -67,7 +75,7 @@ public class BListTab extends Tab {
 		innerGrid.getChildren().clear();
 		library.forEach((BAudio audio) -> {
 			int index = innerGrid.getChildren().size();
-			innerGrid.add(new BListOption(index%2==0, audio, playback, settings), 0, index);
+			innerGrid.add(new BListOption(this, index%2==0, audio, playback, settings), 0, index);
 		});
 		innerGrid.getColumnConstraints().clear();
 		innerGrid.getColumnConstraints().add(new ColumnConstraints(areaWidth));
@@ -75,5 +83,11 @@ public class BListTab extends Tab {
 		for (int i = 0; i<innerGrid.getChildren().size(); i++) {
 			innerGrid.getRowConstraints().add(new RowConstraints(30.0));
 		}
+	}
+	
+	public void onOptionSelected(BListOption bListOption) {
+		musicListController.master.queue.setQueue(library, bListOption.audio);
+		playback.loadAudio(bListOption.audio, settings.get(settings.FADE_TIME_USER));
+		playback.play(settings.get(settings.FADE_TIME_USER));
 	}
 }
