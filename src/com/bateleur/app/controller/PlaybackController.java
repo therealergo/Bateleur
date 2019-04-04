@@ -4,10 +4,15 @@ import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
 import com.bateleur.app.view.BBackgroundCanvas;
+import com.melloware.jintellitype.HotkeyListener;
+import com.melloware.jintellitype.IntellitypeListener;
+import com.melloware.jintellitype.JIntellitype;
+import com.therealergo.main.math.Vector3D;
 
 import javafx.animation.KeyValue;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,6 +20,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 
@@ -53,7 +59,7 @@ public class PlaybackController {
 	private SettingsModel settings;
 	private PlaybackModel playback;
 	private QueueModel queue;
-	
+
 	private boolean TEMP_OSS = false;
 
 	public PlaybackController(SettingsModel settings, PlaybackModel playback, QueueModel queue) {
@@ -65,13 +71,13 @@ public class PlaybackController {
 	public void setMasterController(MasterController master) {
 		this.master = master;
 	}
-	
+
 	public void start() {
 		playbackBarBG	  .setEffect(master.lightingBG);
 		playbackBarLeftFG .setEffect(master.lightingFG);
 		playbackBarRightFG.setEffect(master.lightingFG);
 		playbackBarBO	  .setEffect(master.lightingBO);
-		
+
 		shuffleButton.setSelected(queue.isShuffleEnabled());
 		shuffleButtonImage_O.setOpacity(shuffleButton.isSelected() ? 1.0 : 0.0);
 		shuffleButtonImage_I.setOpacity(shuffleButton.isSelected() ? 0.0 : 1.0);
@@ -83,7 +89,7 @@ public class PlaybackController {
 		repeatButton .setSelected(queue.isRepeatEnabled() );
 		repeatButtonImage_O .setOpacity(repeatButton .isSelected() ? 1.0 : 0.0);
 		repeatButtonImage_I .setOpacity(repeatButton .isSelected() ? 0.0 : 1.0);
-		
+
 		playback.addPlayHandler(() -> {
 			playPauseButtonImage_O.setOpacity(0.0);
 			playPauseButtonImage_I.setOpacity(1.0);
@@ -92,14 +98,14 @@ public class PlaybackController {
 			playPauseButtonImage_O.setOpacity(1.0);
 			playPauseButtonImage_I.setOpacity(0.0);
 		});
-		
+
 		volumeBar.setMin(0.0);
 		volumeBar.setMax(100.0);
 		volumeBar.setValue(playback.getVolume()*100.0);
 		volumeBar.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
 			onVolumeSet(new_val.doubleValue()/100.0);
 		});
-		
+
 		seekBar.setMin(0.0);
 		seekBar.setMax(1.0);
 		seekBar.setValue(0.0);
@@ -120,7 +126,7 @@ public class PlaybackController {
 				e.printStackTrace();
 			}
 		});
-		
+
 		Thread javaFXThread = Thread.currentThread();
 		new Thread() {
 			public void run() {
@@ -145,29 +151,29 @@ public class PlaybackController {
 				}
 			}
 		}.start();
-		
+
 		// Build the vertical slide animation
 		{
 			// Slide the top bar label left/right when doing the vertical slide animation
 	    	master.verticalSlideAnimation.onRebuild(() -> {
 	    		master.verticalSlideAnimation.addKeyValue(
 	    			new KeyValue(
-		    			master.topBarLabel.translateXProperty(), 
+		    			master.topBarLabel.translateXProperty(),
 		    			(1.0-master.verticalSlideAnimation.rebuildIndex()) * playbackImageContainer.getMinWidth()
 	    			)
 	    		);
 	    	});
-			
+
 	    	// Slide the small audio file art left/right when doing the vertical slide animation
 	    	master.verticalSlideAnimation.onRebuild(() -> {
 	    		master.verticalSlideAnimation.addKeyValue(
 	    			new KeyValue(
-	    				playbackBarLeft.translateXProperty(), 
+	    				playbackBarLeft.translateXProperty(),
 		    			-master.verticalSlideAnimation.rebuildIndex() * playbackImageContainer.getMinWidth()
 	    			)
 	    		);
 	    	});
-			
+
 	    	// Rebuild the vertical slide animation every time the width of the small audio file art changes
 			playbackImageContainer.minWidthProperty().addListener((ObservableValue<? extends Number> observableValue, Number oldVal, Number newVal) -> {
 				Platform.runLater(() -> {
@@ -219,15 +225,55 @@ public class PlaybackController {
 		playback.play(settings.get(settings.FADE_TIME_USER));
 	}
 
-	public void onPlayTimeIncrease() {
-	}
-	
-	public void onVolumeSet(double volume) {
-		playback.setVolume(volume);
-	}
+    @FXML
+    public void onKeyPress(KeyEvent event) {
+//        System.out.println(event);
 
-	public void onSeekSet(double seek) {
-		playback.setPlaybackTimeMS(playback.getPlaybackLengthMS() * seek);
-		playback.play(settings.get(settings.FADE_TIME_USER));
+    }
+
+    @Override
+    public void onHotKey(int aCommand) {
+
+    }
+
+    @Override
+    public void onIntellitype(int aCommand) {
+        switch (aCommand) {
+            case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
+                System.out.println("Play/Pause message received " + Integer.toString(aCommand));
+                break;
+            default:
+                System.out.println("Undefined INTELLITYPE message caught " + Integer.toString(aCommand));
+                break;
+        }
+    }
+
+    public void onPlayTimeIncrease() {
+    }
+
+    public void onVolumeSet(double volume) {
+    	playback.setVolume(volume);
+    }
+
+    public void onSeekSet(double seek) {
+    	playback.setPlaybackTimeMS(playback.getPlaybackLengthMS() * seek);
+    	playback.play(settings.get(settings.FADE_TIME_USER));
+    }
+
+
+   	/**
+	 * Initialize the JInitellitype library making sure the DLL is located.
+	 */
+	public void initJIntellitype() {
+		try {
+
+			// initialize JIntellitype with the frame so all windows commands can
+			// be attached to this window
+			JIntellitype.getInstance().addHotKeyListener(this);
+			JIntellitype.getInstance().addIntellitypeListener(this);
+			System.out.println("JIntellitype initialized");
+		} catch (RuntimeException ex) {
+			System.out.println("Either you are not on Windows, or there is a problem with the JIntellitype library!");
+		}
 	}
 }
