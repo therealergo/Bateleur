@@ -32,15 +32,6 @@ public class App extends Application {
     	LibraryModel  library  = new LibraryModel (settings, Main.resource.getResourceFolderClass("library", App.class));
 //    	PlaylistModel playlist = new PlaylistModel(settings);
     	QueueModel    queue    = new QueueModel   (settings);
-<<<<<<< Updated upstream
-=======
-
-        library.update();
-        library.sortBy( (BAudio audio1, BAudio audio2) -> audio2.get(settings.AUDIO_PROP_TITLE).compareTo(audio1.get(settings.AUDIO_PROP_TITLE)) );
-        playback.loadAudio(library.iterator().next(), 0);
-        playback.play(0);
-        queue.setQueue(library, library.iterator().next());
->>>>>>> Stashed changes
 
         { // Start FXML window
 			FXMLLoader loader = new FXMLLoader(Main.resource.getResourceFileClass("views>MasterView.fxml", App.class).getPath().toUri().toURL());
@@ -97,7 +88,6 @@ public class App extends Application {
 	        		scene.getWindow().hide();
 				}
 	        });
-<<<<<<< Updated upstream
 
 	        library.update();
 	        library.sortBy( (BAudio audio1, BAudio audio2) -> audio2.get(settings.AUDIO_PROP_TITLE).compareTo(audio1.get(settings.AUDIO_PROP_TITLE)) );
@@ -105,8 +95,6 @@ public class App extends Application {
 	        playback.play(0);
 	        queue.setQueue(library, library.iterator().next());
 
-=======
->>>>>>> Stashed changes
 	        primaryStage.setScene(scene);
 	        primaryStage.show();
         }
