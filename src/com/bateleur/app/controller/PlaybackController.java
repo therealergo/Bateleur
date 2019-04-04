@@ -4,15 +4,12 @@ import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
 import com.bateleur.app.view.BBackgroundCanvas;
-import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.IntellitypeListener;
 import com.melloware.jintellitype.JIntellitype;
-import com.therealergo.main.math.Vector3D;
 
 import javafx.animation.KeyValue;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
-import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -20,11 +17,10 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 
-public class PlaybackController {
+public class PlaybackController implements IntellitypeListener {
 	@FXML private BBackgroundCanvas backgroundCanvas;
 	@FXML private AnchorPane root;
 	@FXML private AnchorPane playbackBarBG;
@@ -180,6 +176,8 @@ public class PlaybackController {
 					master.verticalSlideAnimation.rebuild();
 				});
 			});
+
+			initJIntellitype();
 		}
 	}
 
@@ -225,29 +223,6 @@ public class PlaybackController {
 		playback.play(settings.get(settings.FADE_TIME_USER));
 	}
 
-    @FXML
-    public void onKeyPress(KeyEvent event) {
-//        System.out.println(event);
-
-    }
-
-    @Override
-    public void onHotKey(int aCommand) {
-
-    }
-
-    @Override
-    public void onIntellitype(int aCommand) {
-        switch (aCommand) {
-            case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
-                System.out.println("Play/Pause message received " + Integer.toString(aCommand));
-                break;
-            default:
-                System.out.println("Undefined INTELLITYPE message caught " + Integer.toString(aCommand));
-                break;
-        }
-    }
-
     public void onPlayTimeIncrease() {
     }
 
@@ -264,16 +239,40 @@ public class PlaybackController {
    	/**
 	 * Initialize the JInitellitype library making sure the DLL is located.
 	 */
-	public void initJIntellitype() {
+	private void initJIntellitype() {
 		try {
 
 			// initialize JIntellitype with the frame so all windows commands can
 			// be attached to this window
-			JIntellitype.getInstance().addHotKeyListener(this);
 			JIntellitype.getInstance().addIntellitypeListener(this);
 			System.out.println("JIntellitype initialized");
 		} catch (RuntimeException ex) {
 			System.out.println("Either you are not on Windows, or there is a problem with the JIntellitype library!");
+		}
+	}
+
+	/**
+	 * Performs the action associated with a media key
+	 *
+	 * @param keyCommand the integer for JIntellitype's internal representation
+	 */
+	@Override
+	public void onIntellitype(int keyCommand) {
+		switch (keyCommand) {
+			case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
+				onPlayPausePress();
+				break;
+
+			case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
+				onSkipForwardPress();
+				break;
+
+			case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
+				onSkipBackwardPress();
+				break;
+
+			default:
+				break;
 		}
 	}
 }
