@@ -3,10 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -16,9 +13,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bateleur.app.controller.PlaybackController" fx:id="playbackBar" cache="true" cacheHint="SPEED" onMouseClicked="#onBarPress" prefHeight="66.0" prefWidth="899.0">
+<AnchorPane fx:id="playbackBar" cache="true" cacheHint="SPEED" onMouseClicked="#onBarPress" prefHeight="66.0" prefWidth="899.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bateleur.app.controller.PlaybackController">
 	<children>
-		<AnchorPane fx:id="playbackBarBG" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to top, rgba(255, 255, 255, 1.0), rgba(255, 255, 255, 0.0));" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+		<AnchorPane fx:id="playbackBarBG" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to top,  colorPlaybackBG, rgba(255, 255, 255, 0.0));" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 		<AnchorPane fx:id="playbackBarLeft" prefHeight="107.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="0.0">
 			<children>
 				<GridPane prefHeight="107.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -33,16 +30,18 @@
 						<ImageView fx:id="playbackImage" fitHeight="107.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" />
 						<AnchorPane fx:id="playbackBarLeftFG" prefHeight="200.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
 							<children>
-								<Label fx:id="textTop" layoutX="8.0" layoutY="46.0" prefHeight="17.0" style="-fx-text-fill: #ffffff;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
+								<Label fx:id="textTop" layoutX="8.0" layoutY="46.0" prefHeight="17.0" style="-fx-text-fill: colorPlaybackFG;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
 									<font><Font name="Arial" size="14.0" />
 									</font>
 								</Label>
-								<Label fx:id="textBot" layoutX="8.0" layoutY="69.0" prefHeight="17.0" style="-fx-text-fill: #ffffff;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
+								<Label fx:id="textBot" layoutX="8.0" layoutY="69.0" prefHeight="17.0" style="-fx-text-fill: colorPlaybackFG;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
 									<font><Font name="Arial" size="14.0" />
 									</font>
 								</Label>
 								<AnchorPane layoutX="5.0" layoutY="90.0" AnchorPane.leftAnchor="8.0">
-									<children><Slider fx:id="volumeBar" layoutX="3.0" layoutY="1.0" opacity="0.0" /><com.bateleur.app.view.BSliderCanvas mouseTransparent="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+									<children>
+										<Slider fx:id="volumeBar" layoutX="3.0" layoutY="1.0" opacity="0.0" />
+										<com.bateleur.app.view.BSliderCanvas fx:id="volumeBarCanvas" mouseTransparent="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 									</children>
 								</AnchorPane>
 							</children>
@@ -56,7 +55,7 @@
 				<AnchorPane layoutX="38.0" layoutY="90.0" AnchorPane.rightAnchor="8.0">
 					<children>
 						<Slider fx:id="seekBar" layoutX="3.0" layoutY="1.0" opacity="0.0" prefHeight="14.0" prefWidth="451.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-						<com.bateleur.app.view.BSliderCanvas mouseTransparent="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+						<com.bateleur.app.view.BSliderCanvas fx:id="seekBarCanvas" mouseTransparent="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 					</children>
 				</AnchorPane>
 				<ToggleButton fx:id="playPauseButton" graphicTextGap="0.0" layoutY="24.0" mnemonicParsing="false" onMouseClicked="#onPlayPausePress" prefHeight="60.0" prefWidth="60.0" style="-fx-padding: 0;" styleClass="playbackBarButton" AnchorPane.rightAnchor="61.0">
@@ -77,7 +76,7 @@
 				</ToggleButton>
 				<Button fx:id="skipBackwardButton" layoutY="33.0" mnemonicParsing="false" onMouseClicked="#onSkipBackwardPress" prefHeight="43.0" prefWidth="43.0" style="-fx-padding: 0;" styleClass="playbackBarButton" AnchorPane.rightAnchor="130.0">
 					<graphic>
-						<ImageView fitHeight="43.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="skipBackwardButtonImage" fitHeight="43.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@../textures/btnBac.png" />
 							</image>
@@ -86,7 +85,7 @@
 				</Button>
 				<Button fx:id="skipForwardButton" layoutY="33.0" mnemonicParsing="false" onMouseClicked="#onSkipForwardPress" prefHeight="43.0" prefWidth="43.0" style="-fx-padding: 0;" styleClass="playbackBarButton" AnchorPane.rightAnchor="8.0">
 					<graphic>
-						<ImageView fitHeight="43.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true">
+						<ImageView fx:id="skipForwardButtonImage" fitHeight="43.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@../textures/btnFor.png" />
 							</image>
@@ -98,28 +97,26 @@
 						<ToggleButton fx:id="shuffleButton" minHeight="29.0" minWidth="43.0" mnemonicParsing="false" onMouseClicked="#onShufflePress" prefHeight="29.0" prefWidth="43.0" styleClass="playbackBarButton">
 							<graphic>
 								<AnchorPane>
-									<children><ImageView fx:id="shuffleButtonImage_O" fitHeight="29.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"><image><Image url="@../textures/btnShu_O.png" />
-											</image>
+									<children>
+										<ImageView fx:id="shuffleButtonImage_O" fitHeight="29.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+											<image><Image url="@../textures/btnShu_O.png" /></image>
 										</ImageView>
 										<ImageView fx:id="shuffleButtonImage_I" fitHeight="29.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-											<image><Image url="@../textures/btnShu_I.png" />
-											</image>
+											<image><Image url="@../textures/btnShu_I.png" /></image>
 										</ImageView>
 									</children>
 								</AnchorPane>
 							</graphic>
 						</ToggleButton>
-						<ToggleButton fx:id="queueButton" minHeight="29.0" minWidth="43.0" mnemonicParsing="false" onMouseClicked="#onQueuePress" prefHeight="29.0" prefWidth="43.0" styleClass="playbackBarButton">
+						<ToggleButton fx:id="queueButton" minHeight="29.0" minWidth="43.0" mnemonicParsing="false" onMouseClicked="#onQueuePress" prefHeight="29.0" prefWidth="43.0" styleClass="playbackBarButton" >
 							<graphic>
 								<AnchorPane>
 									<children>
 										<ImageView fx:id="queueButtonImage_O" fitHeight="29.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-											<image><Image url="@../textures/btnQue_O.png" />
-											</image>
+											<image><Image url="@../textures/btnQue_O.png" /></image>
 										</ImageView>
 										<ImageView fx:id="queueButtonImage_I" fitHeight="29.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-											<image><Image url="@../textures/btnQue_I.png" />
-											</image>
+											<image><Image url="@../textures/btnQue_I.png" /></image>
 										</ImageView>
 									</children>
 								</AnchorPane>
@@ -130,12 +127,10 @@
 								<AnchorPane>
 									<children>
 										<ImageView fx:id="repeatButtonImage_O" fitHeight="29.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-											<image><Image url="@../textures/btnRep_O.png" />
-											</image>
+											<image><Image url="@../textures/btnRep_O.png" /></image>
 										</ImageView>
 										<ImageView fx:id="repeatButtonImage_I" fitHeight="29.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-											<image><Image url="@../textures/btnRep_I.png" />
-											</image>
+											<image><Image url="@../textures/btnRep_I.png" /></image>
 										</ImageView>
 									</children>
 								</AnchorPane>
@@ -145,6 +140,5 @@
 				</ButtonBar>
 			</children>
 		</AnchorPane>
-		<AnchorPane fx:id="playbackBarBO" mouseTransparent="true" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 0 1 1 1;" styleClass="border" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 	</children>
 </AnchorPane>
