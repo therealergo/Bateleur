@@ -9,6 +9,7 @@ import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
 import com.bateleur.app.view.BBackgroundCanvas;
+import com.melloware.jintellitype.JIntellitype;
 import com.therealergo.main.Main;
 
 import borderless.BorderlessScene;
@@ -70,22 +71,20 @@ public class App extends Application {
 			scene.setMoveControl(root.lookup("#topBarDrag"));
 			
 			root.lookup("#topBarMinimize").setOnMousePressed(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
+				@Override public void handle(MouseEvent event) {
 					scene.minimise();
 				}
 			});
 			
 			root.lookup("#topBarMaximize").setOnMousePressed(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
+				@Override public void handle(MouseEvent event) {
 					scene.maximise();
 				}
 			});
 			
 			root.lookup("#topBarClose").setOnMousePressed(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
+				@Override public void handle(MouseEvent event) {
+					JIntellitype.getInstance().cleanUp();
 					scene.getWindow().hide();
 				}
 			});
