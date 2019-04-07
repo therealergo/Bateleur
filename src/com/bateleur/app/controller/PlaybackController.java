@@ -1,5 +1,6 @@
 package com.bateleur.app.controller;
 
+import com.bateleur.app.App;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
@@ -7,6 +8,9 @@ import com.bateleur.app.view.BBackgroundCanvas;
 import com.bateleur.app.view.BSliderCanvas;
 import com.melloware.jintellitype.IntellitypeListener;
 import com.melloware.jintellitype.JIntellitype;
+import com.therealergo.main.Main;
+import com.therealergo.main.MainException;
+import com.therealergo.main.os.EnumOS;
 
 import javafx.animation.KeyValue;
 import javafx.application.Platform;
@@ -252,14 +256,18 @@ public class PlaybackController implements IntellitypeListener {
 	 * Initialize the JInitellitype library making sure the DLL is located.
 	 */
 	private void initJIntellitype() {
-		try {
+		// JIntellitype only initialized on Windows, which is the only OS it supports
+		if (Main.os.getOS().equals(EnumOS.WINDOWS)) {
+			// Get the 64-bit / 32-bit specific path to the native library
+			String libraryName = System.getProperty("os.arch").contains("64") ? "JIntellitype64.dll" : "JIntellitype.dll";
+			String libraryPath = Main.resource.getResourceFileClass("natives>" + libraryName, App.class).getPath().toAbsolutePath().toString();
 
-			// initialize JIntellitype with the frame so all windows commands can
-			// be attached to this window
+			// initialize JIntellitype with the frame so all windows commands can be attached to this window
+			JIntellitype.setLibraryLocation(libraryPath);
 			JIntellitype.getInstance().addIntellitypeListener(this);
-			System.out.println("JIntellitype initialized");
-		} catch (RuntimeException ex) {
-			System.out.println("Either you are not on Windows, or there is a problem with the JIntellitype library!");
+			Main.log.log("JIntellitype initialized");
+		} else {
+			Main.log.log(new MainException(PlaybackController.class, "JIntellitype not initialized as we are not on Windows!"));
 		}
 	}
 
