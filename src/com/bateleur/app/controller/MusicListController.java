@@ -36,6 +36,7 @@ public class MusicListController {
     
     public void start() {
         listTabPane.getTabs().add(new BListTab(this, library, playback, settings));
+        listTabPane.getTabs().add(new BListTab(this, library, playback, settings));
 
 		// Build the vertical slide animation
 		{
