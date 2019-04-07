@@ -4,6 +4,7 @@ import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
 import com.bateleur.app.view.BBackgroundCanvas;
+import com.bateleur.app.view.BSliderCanvas;
 
 import javafx.animation.KeyValue;
 import javafx.application.Platform;
@@ -20,9 +21,8 @@ import javafx.scene.layout.ColumnConstraints;
 
 public class PlaybackController {
 	@FXML private BBackgroundCanvas backgroundCanvas;
-	@FXML private AnchorPane root;
 	@FXML private AnchorPane playbackBarBG;
-	@FXML private AnchorPane playbackBar;
+	@FXML AnchorPane playbackBar;
 	@FXML private AnchorPane playbackBarLeft;
 	@FXML private AnchorPane playbackBarLeftFG;
 	@FXML private AnchorPane playbackBarRightFG;
@@ -37,6 +37,8 @@ public class PlaybackController {
 	@FXML private ToggleButton shuffleButton;
 	@FXML private ToggleButton queueButton;
 	@FXML private ToggleButton repeatButton;
+	@FXML private ImageView skipBackwardButtonImage;
+	@FXML private ImageView skipForwardButtonImage;
 	@FXML private ImageView playPauseButtonImage_O;
 	@FXML private ImageView shuffleButtonImage_O;
 	@FXML private ImageView queueButtonImage_O;
@@ -46,7 +48,9 @@ public class PlaybackController {
 	@FXML private ImageView queueButtonImage_I;
 	@FXML private ImageView repeatButtonImage_I;
 	@FXML private Slider seekBar;
+	@FXML private BSliderCanvas seekBarCanvas;
 	@FXML private Slider volumeBar;
+	@FXML private BSliderCanvas volumeBarCanvas;
 
 	public MasterController master;
 
@@ -67,22 +71,8 @@ public class PlaybackController {
 	}
 	
 	public void start() {
-		playbackBarBG	  .setEffect(master.lightingBG);
-		playbackBarLeftFG .setEffect(master.lightingFG);
-		playbackBarRightFG.setEffect(master.lightingFG);
-		playbackBarBO	  .setEffect(master.lightingBO);
-		
-		shuffleButton.setSelected(queue.isShuffleEnabled());
-		shuffleButtonImage_O.setOpacity(shuffleButton.isSelected() ? 1.0 : 0.0);
-		shuffleButtonImage_I.setOpacity(shuffleButton.isSelected() ? 0.0 : 1.0);
-
-		queueButton  .setSelected(queue.isQueueEnabled()  );
-		queueButtonImage_O  .setOpacity(queueButton  .isSelected() ? 1.0 : 0.0);
-		queueButtonImage_I  .setOpacity(queueButton  .isSelected() ? 0.0 : 1.0);
-
-		repeatButton .setSelected(queue.isRepeatEnabled() );
-		repeatButtonImage_O .setOpacity(repeatButton .isSelected() ? 1.0 : 0.0);
-		repeatButtonImage_I .setOpacity(repeatButton .isSelected() ? 0.0 : 1.0);
+		skipBackwardButtonImage.setEffect(master.playbackColorAnimation.lightingFG);
+		skipForwardButtonImage .setEffect(master.playbackColorAnimation.lightingFG);
 		
 		playback.addPlayHandler(() -> {
 			playPauseButtonImage_O.setOpacity(0.0);
@@ -92,6 +82,26 @@ public class PlaybackController {
 			playPauseButtonImage_O.setOpacity(1.0);
 			playPauseButtonImage_I.setOpacity(0.0);
 		});
+		playPauseButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
+		playPauseButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
+		
+		shuffleButton.setSelected(queue.isShuffleEnabled());
+		shuffleButtonImage_O.setOpacity(shuffleButton.isSelected() ? 1.0 : 0.0);
+		shuffleButtonImage_I.setOpacity(shuffleButton.isSelected() ? 0.0 : 1.0);
+		shuffleButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
+		shuffleButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
+
+		queueButton  .setSelected(queue.isQueueEnabled()  );
+		queueButtonImage_O  .setOpacity(queueButton  .isSelected() ? 1.0 : 0.0);
+		queueButtonImage_I  .setOpacity(queueButton  .isSelected() ? 0.0 : 1.0);
+		queueButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
+		queueButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
+
+		repeatButton .setSelected(queue.isRepeatEnabled() );
+		repeatButtonImage_O .setOpacity(repeatButton .isSelected() ? 1.0 : 0.0);
+		repeatButtonImage_I .setOpacity(repeatButton .isSelected() ? 0.0 : 1.0);
+		repeatButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
+		repeatButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
 		
 		volumeBar.setMin(0.0);
 		volumeBar.setMax(100.0);
@@ -99,6 +109,7 @@ public class PlaybackController {
 		volumeBar.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
 			onVolumeSet(new_val.doubleValue()/100.0);
 		});
+		volumeBarCanvas.drawColor.bind(master.playbackColorAnimation.colorPlayback_FG);
 		
 		seekBar.setMin(0.0);
 		seekBar.setMax(1.0);
@@ -108,6 +119,7 @@ public class PlaybackController {
 				onSeekSet(new_val.doubleValue());
 			}
 		});
+		seekBarCanvas.drawColor.bind(master.playbackColorAnimation.colorPlayback_FG);
 
 		playback.addSongChangeHandler(() -> {
 			textTop.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_ARTIST));
