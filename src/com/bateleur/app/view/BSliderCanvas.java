@@ -1,11 +1,19 @@
 package com.bateleur.app.view;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Slider;
 import javafx.scene.paint.Color;
 
 public class BSliderCanvas extends Canvas {
+	public final ObjectProperty<Color> drawColor;
+	
+	public BSliderCanvas() {
+		drawColor = new SimpleObjectProperty<Color>();
+	}
+	
 	public void redraw(double width, double height) {
 	    GraphicsContext gc = getGraphicsContext2D();
 	    
@@ -23,7 +31,7 @@ public class BSliderCanvas extends Canvas {
 	    
 	    gc.clearRect(0, 0, width, height);
 	    gc.setLineWidth(2);
-	    gc.setStroke(Color.WHITE);
+	    gc.setStroke(drawColor.getValue());
 	    if (sliderPos - seekHeadRadius - seekHeadEdging > 0) {
 		    gc.strokeLine(
 		    		0, 
