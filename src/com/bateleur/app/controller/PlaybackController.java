@@ -280,15 +280,21 @@ public class PlaybackController implements IntellitypeListener {
 	public void onIntellitype(int keyCommand) {
 		switch (keyCommand) {
 			case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
-				onPlayPausePress();
+				Platform.runLater(() -> {
+					onPlayPausePress();
+				});
 				break;
 
 			case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
-				onSkipForwardPress();
+				Platform.runLater(() -> {
+					onSkipForwardPress();
+				});
 				break;
 
 			case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
-				onSkipBackwardPress();
+				Platform.runLater(() -> {
+					onSkipBackwardPress();
+				});
 				break;
 
 			default:
