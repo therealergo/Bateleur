@@ -11,6 +11,7 @@ import com.bateleur.app.model.SettingsModel;
 import com.bateleur.app.view.BBackgroundCanvas;
 import com.melloware.jintellitype.JIntellitype;
 import com.therealergo.main.Main;
+import com.therealergo.main.os.EnumOS;
 
 import borderless.BorderlessScene;
 import javafx.application.Application;
@@ -84,7 +85,9 @@ public class App extends Application {
 			
 			root.lookup("#topBarClose").setOnMousePressed(new EventHandler<MouseEvent>() {
 				@Override public void handle(MouseEvent event) {
-					JIntellitype.getInstance().cleanUp();
+					if (Main.os.getOS().equals(EnumOS.WINDOWS)) {
+						JIntellitype.getInstance().cleanUp();
+					}
 					scene.getWindow().hide();
 				}
 			});
