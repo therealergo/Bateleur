@@ -33,6 +33,9 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class MasterController {
+	/**
+	 * FXML-injected component references.
+	 */
     @FXML private BBackgroundCanvas backgroundCanvas;
     @FXML private AnchorPane        root            ;
     @FXML private AnchorPane        topBar          ;
@@ -43,16 +46,31 @@ public class MasterController {
     @FXML public  Label             topBarLabel     ;
 	@FXML public  GridPane          lowerPane       ;
     
+	/**
+	 * FXML-injected sub-controller references
+	 */
     @FXML private PlaybackController  playbackController ;
     @FXML private MusicListController musicListController;
 
+    /** Reference to the SettingsModel that manages all of the application settings. */
     public final SettingsModel settings;
+    /** Reference to the SettingsModel that manages application playback. */
 	public final PlaybackModel playback;
+    /** Reference to the SettingsModel that manages application queue state. */
 	public final QueueModel    queue   ;
 
+	/** PlaybackColorAnimation instance that is used to colorize the window and fade between different window color settings. */
     public final PlaybackColorAnimation playbackColorAnimation;
+    /** VerticalSlideAnimation instance that is used to animate the playback bar at the bottom of the window sliding up/down. */
     public final VerticalSlideAnimation verticalSlideAnimation;
 
+    /**
+     * Constructor for MasterController that supplies Model instances for it to refer to, 
+     * should be called by a custom builder that provides each instance to the generated MasterController instance.
+     * @param settings The SettingsModel that this MasterController will use.
+     * @param playback The PlaybackModel that this MasterController will use.
+     * @param queue    The QueueModel that this MasterController will use.
+     */
     public MasterController(SettingsModel settings, PlaybackModel playback, QueueModel queue) {
     	this.settings = settings;
     	this.playback = playback;
@@ -62,6 +80,9 @@ public class MasterController {
     	this.verticalSlideAnimation = new VerticalSlideAnimation();
     }
     
+    /**
+     * FXML callback that initializes this MasterController after it has been created and FXML startup is complete.
+     */
     @FXML public void initialize() {
     	// Build the playback color animation
     	{
@@ -100,6 +121,7 @@ public class MasterController {
 			});
     	}
     	
+    	// Initialize sub-controllers
     	playbackController .setMasterController(this);
     	playbackController .start();
     	musicListController.setMasterController(this);
