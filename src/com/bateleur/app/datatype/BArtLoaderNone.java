@@ -9,14 +9,14 @@ public class BArtLoaderNone extends BArtLoader {
 	private static final long serialVersionUID = -4271906009974761079L;
 	
 	public Image getImagePrimary() throws Exception {
-		return new Image(Main.resource.getResourceFileClass("textures>none.png", App.class).getInputStream());
+		return new Image(Main.resource.getResourceFileClass("textures>none_TH.png", App.class).getInputStream());
 	}
 	
 	public Image getImageThumbnail() throws Exception {
-		return new Image(Main.resource.getResourceFileClass("textures>none.png", App.class).getInputStream());
+		return new Image(Main.resource.getResourceFileClass("textures>none_TH.png", App.class).getInputStream());
 	}
 	
 	public Image getImageBlurred() throws Exception {
-		return new Image(Main.resource.getResourceFileClass("textures>none.png", App.class).getInputStream());
+		return new Image(Main.resource.getResourceFileClass("textures>none_BL.png", App.class).getInputStream());
 	}
 }
