@@ -1,7 +1,5 @@
 package com.bateleur.test.model;
 
-import java.util.Iterator;
-
 import com.therealergo.main.MainException;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -62,25 +60,42 @@ public class LibraryModelTest {
     @Test
     public void test_truePredicate_filterBy_removesOtherAudio() {
         // Given
-        int librarySize = library.size();
+        int originalLibrarySize = library.size();
 
         // When
         library.filterBy((BAudio audio) -> audio.get(settings.TEST_VAL) > 1234);
 
         // Then
-        assertNotEquals(librarySize, library.size());
+        assertNotEquals(originalLibrarySize, library.size());
     }
 
     @Test
     public void test_falsePredicate_filterBy_noRemoval() {
         // Given
-        int librarySize = library.size();
+        int originalLibrarySize = library.size();
 
         // When
         library.filterBy((BAudio audio) -> audio.get(settings.TEST_VAL) < 1234);
 
         // Then
-        assertEquals(librarySize, library.size());
+        assertEquals(originalLibrarySize, library.size());
+    }
+
+    @Test
+    public void test_filteredLibrary_reset_originalLibrary() {
+        // Given
+        int originalLibrarySize = library.size();
+        library.filterBy((BAudio audio) -> audio.get(settings.TEST_VAL) > 1234);
+        int filteredLibrarySize = library.size();
+
+        // When
+        library.reset();
+
+        // Then
+        int resetLibrarySize = library.size();
+        assertNotEquals(filteredLibrarySize, resetLibrarySize);
+        assertTrue(filteredLibrarySize < resetLibrarySize);
+        assertEquals(originalLibrarySize, resetLibrarySize);
     }
 
 }

@@ -230,18 +230,22 @@ public class PlaybackModelTest {
         // Given
         playbackModel.loadAudio(testAudio, FADE_TIME);
         playbackModel.play(FADE_TIME);
-        playbackModel.play(FADE_TIME);
         if (!assertPlaying(true)) {
             fail();
         }
         double originalPlaybackTime = playbackModel.getPlaybackTimeMS();
 
-        // When
-        playbackModel.setPlaybackTimeMS(1000.0);
+        playbackModel.pause(FADE_TIME);
+        if (!assertPlaying(false)) {
+            fail();
+        }
 
-        //Then
+        // When
+        playbackModel.setPlaybackTimeMS(playbackModel.getPlaybackLengthMS() * 0.5);
+
+        // Then
         // TODO find reliable way to check if the player resumes from right time
-        assertFalse(originalPlaybackTime <= playbackModel.getPlaybackTimeMS());
+        assertTrue(originalPlaybackTime <= playbackModel.getPlaybackTimeMS());
     }
 
 }
