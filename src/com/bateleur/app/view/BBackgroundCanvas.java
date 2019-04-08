@@ -75,40 +75,36 @@ public class BBackgroundCanvas extends Canvas {
 	}
 	
 	public void redraw(double width, double height) {
-	    try {
-		    GraphicsContext gc = getGraphicsContext2D();
-	    	Image im = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImagePrimary();
-	    	Image im_bl = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImageBlurred();
-	    	
-			gc.setGlobalAlpha(1.0);
-	    	drawImageCover(
-	    			gc, 
-	    			im_bl, 
-	    			0, 
-	    			0, 
-	    			width, 
-	    			height
-	    	);
-			
-			Vector3D cBG_VEC = playback.getLoadedAudio().get(settings.AUDIO_PROP_COLR_BG);
-			Color cBG = new Color(cBG_VEC.x, cBG_VEC.y, cBG_VEC.z, 1.0);
-			((Pane)getParent()).setBackground(new Background(new BackgroundFill(cBG, CornerRadii.EMPTY, Insets.EMPTY)));
-			
-			double areaWidth  = width     ;
-			double areaHeight = height-107;
-			double scaling = settings.get(settings.UI_ART_SCALING);
-			gc.setGlobalAlpha(Math.min(Math.max(artAlpha.doubleValue(), 0.0), 1.0));
-	    	drawImageFit(
-	    			gc, 
-	    			im, 
-	    			(areaWidth  - areaWidth  * scaling) / 2.0, 
-	    			(areaHeight - areaHeight * scaling) / 2.0, 
-	    			areaWidth  * scaling, 
-	    			areaHeight * scaling
-	    	);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	    GraphicsContext gc = getGraphicsContext2D();
+    	Image im = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImagePrimary();
+    	Image im_bl = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImageBlurred();
+    	
+		gc.setGlobalAlpha(1.0);
+    	drawImageCover(
+    			gc, 
+    			im_bl, 
+    			0, 
+    			0, 
+    			width, 
+    			height
+    	);
+		
+		Vector3D cBG_VEC = playback.getLoadedAudio().get(settings.AUDIO_PROP_COLR_BG);
+		Color cBG = new Color(cBG_VEC.x, cBG_VEC.y, cBG_VEC.z, 1.0);
+		((Pane)getParent()).setBackground(new Background(new BackgroundFill(cBG, CornerRadii.EMPTY, Insets.EMPTY)));
+		
+		double areaWidth  = width     ;
+		double areaHeight = height-107;
+		double scaling = settings.get(settings.UI_ART_SCALING);
+		gc.setGlobalAlpha(Math.min(Math.max(artAlpha.doubleValue(), 0.0), 1.0));
+    	drawImageFit(
+    			gc, 
+    			im, 
+    			(areaWidth  - areaWidth  * scaling) / 2.0, 
+    			(areaHeight - areaHeight * scaling) / 2.0, 
+    			areaWidth  * scaling, 
+    			areaHeight * scaling
+    	);
 	}
 	
 	@Override

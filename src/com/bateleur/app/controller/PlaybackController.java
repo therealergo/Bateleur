@@ -131,13 +131,9 @@ public class PlaybackController implements IntellitypeListener {
 		master.playback.addSongChangeHandler(() -> {
 			textTop.setText(master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ARTIST));
 			textBot.setText(master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_TITLE));
-			try {
-				Image im = master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ART).getImageThumbnail();
-				playbackImageContainer.setMinWidth(im.getWidth() / im.getHeight() * 107.0);
-				playbackImage.setImage(im);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			Image im = master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ART).getImageThumbnail();
+			playbackImageContainer.setMinWidth(im.getWidth() / im.getHeight() * 107.0);
+			playbackImage.setImage(im);
 		});
 		
 		// TEMPORARY code that spawns a thread updating the seekbar's on-screen position to the current position
