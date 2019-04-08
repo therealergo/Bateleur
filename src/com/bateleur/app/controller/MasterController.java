@@ -3,6 +3,7 @@ package com.bateleur.app.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bateleur.app.model.LibraryModel;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
@@ -33,9 +34,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class MasterController {
-	/**
-	 * FXML-injected component references.
-	 */
+	/** FXML-injected component references. */
     @FXML private BBackgroundCanvas backgroundCanvas;
     @FXML private AnchorPane        root            ;
     @FXML private AnchorPane        topBar          ;
@@ -46,9 +45,7 @@ public class MasterController {
     @FXML public  Label             topBarLabel     ;
 	@FXML public  GridPane          lowerPane       ;
     
-	/**
-	 * FXML-injected sub-controller references
-	 */
+	/** FXML-injected sub-controller references */
     @FXML private PlaybackController  playbackController ;
     @FXML private MusicListController musicListController;
 
@@ -56,6 +53,8 @@ public class MasterController {
     public final SettingsModel settings;
     /** Reference to the SettingsModel that manages application playback. */
 	public final PlaybackModel playback;
+    /** Reference to the LibraryModel that manages the application's audio library. */
+	public final LibraryModel  library ;
     /** Reference to the SettingsModel that manages application queue state. */
 	public final QueueModel    queue   ;
 
@@ -69,11 +68,13 @@ public class MasterController {
      * should be called by a custom builder that provides each instance to the generated MasterController instance.
      * @param settings The SettingsModel that this MasterController will use.
      * @param playback The PlaybackModel that this MasterController will use.
+     * @param library  The LibraryModel that this MasterController will use.
      * @param queue    The QueueModel that this MasterController will use.
      */
-    public MasterController(SettingsModel settings, PlaybackModel playback, QueueModel queue) {
+    public MasterController(SettingsModel settings, PlaybackModel playback, LibraryModel library, QueueModel queue) {
     	this.settings = settings;
     	this.playback = playback;
+    	this.library  = library ;
     	this.queue    = queue   ;
     	
     	this.playbackColorAnimation = new PlaybackColorAnimation();
@@ -124,8 +125,7 @@ public class MasterController {
     	// Initialize sub-controllers
     	playbackController .setMasterController(this);
     	playbackController .start();
-    	musicListController.setMasterController(this);
-    	musicListController.start();
+    	musicListController.initialize(this);
     }
 
     /**

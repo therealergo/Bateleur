@@ -53,11 +53,11 @@ public class App extends Application {
 			loader.setControllerFactory(c -> {
 				switch (c.getSimpleName()) {
 				case "MasterController":
-					return new MasterController(settings, playback, queue);
+					return new MasterController(settings, playback, library, queue);
 				case "PlaybackController":
 					return new PlaybackController(settings, playback, queue);
 				case "MusicListController":
-					return new MusicListController(settings, library, playback, queue);
+					return new MusicListController();
 				}
 				throw new RuntimeException("Unable to locate controller class: " + c + "!");
 			});

@@ -1,10 +1,6 @@
 package com.bateleur.app.controller;
 
 import com.bateleur.app.datatype.BAudio;
-import com.bateleur.app.model.LibraryModel;
-import com.bateleur.app.model.PlaybackModel;
-import com.bateleur.app.model.QueueModel;
-import com.bateleur.app.model.SettingsModel;
 import com.bateleur.app.view.list.BListTab;
 
 import javafx.animation.KeyValue;
@@ -13,30 +9,24 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 
 public class MusicListController {
+	/** FXML-injected component references. */
     @FXML private TabPane listTabPane;
 	@FXML private AnchorPane musicListPane;
-
+	
+	/** Reference to this MusicListController's MasterController. */
     public MasterController master;
     
-	private SettingsModel settings;
-	private LibraryModel  library ;
-	private PlaybackModel playback;
-	private QueueModel    queue   ;
-	
-    public MusicListController(SettingsModel settings, LibraryModel library, PlaybackModel playback, QueueModel queue) {
-    	this.settings = settings;
-    	this.library  = library ;
-    	this.playback = playback;
-    	this.queue    = queue   ;
-    }
-
-	public void setMasterController(MasterController master) {
+	/**
+	 * Perform any initialization required by this MusicListController.
+	 * Should only be called by the MasterController when the master is ready and this MusicListController is to be initialized.
+     * @param master This MusicListController's master controller.
+	 */
+    public void initialize(MasterController master) {
 		this.master = master;
-	}
-    
-    public void start() {
-        listTabPane.getTabs().add(new BListTab(this, library, playback, settings));
-        listTabPane.getTabs().add(new BListTab(this, library, playback, settings));
+		
+    	// Create each of the BListTabs that present music options to the user
+        listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings));
+        listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings));
 
 		// Build the vertical slide animation
 		{
@@ -53,9 +43,15 @@ public class MusicListController {
 		}
     }
     
+    /**
+     * Callback called from each of the BListTab instances when an audio option is clicked/selected.
+     * This will update the Queue according to the current state of master.library, 
+     * and set the supplied BAudio to begin playback.
+     * @param audio The BAudio instance that was selected.
+     */
     public void onAudioSelected(BAudio audio) {
-    	queue.setQueue(library, audio);
-    	playback.loadAudio(audio, settings.get(settings.FADE_TIME_USER));
-    	playback.play(settings.get(settings.FADE_TIME_USER));
+    	master.queue.setQueue(master.library, audio);
+    	master.playback.loadAudio(audio, master.settings.get(master.settings.FADE_TIME_USER));
+    	master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
     }
 }
