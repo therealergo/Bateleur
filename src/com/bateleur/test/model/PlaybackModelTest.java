@@ -224,15 +224,24 @@ public class PlaybackModelTest {
     /**
      * Verifies that the playback time changes correctly in the player
      */
-    public void test_originalPlaybackTime_setPlaybackTime_changes() {
+    @Test
+    public void test_originalPlaybackTime_setPlaybackTime_changes()
+    throws InterruptedException {
         // Given
         playbackModel.loadAudio(testAudio, FADE_TIME);
+        playbackModel.play(FADE_TIME);
+        playbackModel.play(FADE_TIME);
+        if (!assertPlaying(true)) {
+            fail();
+        }
         double originalPlaybackTime = playbackModel.getPlaybackTimeMS();
 
         // When
-        playbackModel.setPlaybackTimeMS(PLAYBACK_TIME);
+        playbackModel.setPlaybackTimeMS(1000.0);
 
-        assertFalse(originalPlaybackTime == playbackModel.getPlaybackTimeMS());
+        //Then
+        // TODO find reliable way to check if the player resumes from right time
+        assertFalse(originalPlaybackTime <= playbackModel.getPlaybackTimeMS());
     }
 
 }
