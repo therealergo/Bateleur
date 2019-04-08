@@ -73,7 +73,10 @@ public class LibraryModel implements Iterable<BAudio> {
 	}
 	
 	public void update() throws Exception {
-		updateFromFolder(Main.resource.getResourceFolderGlobal(settings.get(settings.LIBRARY_PATH)));
+		List<ResourceFolder> folders = settings.get(settings.LIBRARY_PATH);
+		for (ResourceFolder folder : folders) {
+			updateFromFolder(folder);
+		}
 	}
 	
 	public void sortBy(Comparator<BAudio> comparator) {
