@@ -1,25 +1,102 @@
+/* Color the window border with BO color. */
 .border {
-    -fx-border-color: white;
+	-fx-border-color: colorPlaybackBO;
 }
 
+/* Add 2px FG-colored rounded border to all playback buttons. */
 .playbackBarButton {
 	-fx-border-radius: 300;
-	-fx-border-color: white;
+	-fx-border-color: colorPlaybackFG;
 	-fx-border-width: 2;
-	-fx-background-color: rgba(255, 255, 255, 0.0);
-	-fx-text-fill: white;
+	-fx-background-color: transparent;
 	-fx-padding: 0;
 }
 
+/* Set text labels of list options to FG coloring. */
+.listOptionLabel {
+	-fx-text-fill: colorPlaybackFG;
+}
+
+/********************** TAB PANE STYLING **********************/
+
+/* Remove white tab background. */
 .tab-content-area {
-	-fx-background-color: rgba(255, 255, 255, 0.0);
+	-fx-background-color: transparent;
 }
 
+/* Set the entire tab-header background to the BG color. */
 .tab-pane *.tab-header-background {
-	-fx-background-color: -fx-outer-border, -fx-inner-border, derive(-fx-color, -20%);
-	-fx-effect: innershadow(two-pass-box , rgba(0,0,0,0.6) , 4, 0.0 , 0 , 0);
+	-fx-background-color: colorPlaybackBG;
+}
+.tab {
+	-fx-background-color: colorPlaybackBG;
 }
 
+/* Remove blue border on focused tabs. */
+.tab {
+	-fx-focus-color: transparent;
+	-fx-faint-focus-color: transparent;
+}
+
+/* Color tab text based on current FG color (or BO color when not selected). */
+.tab .tab-label {
+	-fx-text-fill: colorPlaybackBO;
+}
+.tab:hover .tab-label {
+	-fx-text-fill: colorPlaybackFG;
+}
+.tab:selected .tab-label {
+	-fx-text-fill: colorPlaybackFG;
+}
+
+/********************** SCROLL PANE BORDER STYLING **********************/
+
+/* Add a BG-colored fade to the top and bottom of the scroll pane. */
+.scroll-pane-border {
+	-fx-border-color: linear-gradient(to bottom, colorPlaybackBG, transparent)
+	                  transparent
+	                  linear-gradient(to top   , colorPlaybackBG, transparent)
+	                  transparent;
+	-fx-border-style: solid;
+	-fx-border-width: 40px 0px 40px 0px;
+}
+
+/********************** SCROLL PANE STYLING **********************/
+
+/* Made the right-side scrollbar 'float' over top of the content rather than running into it. */
+.scroll-bar {
+	-fx-translate-x: -13px;
+}
+.scroll-pane {
+	-fx-padding: 0 -13px 0 0;
+}
+
+/* Hide all of the scrollbar backgrounds, scroll arrows, and scroll pane backgrounds.*/
+.scroll-pane {
+	-fx-background-color: transparent;
+}
 .scroll-pane > .viewport {
 	-fx-background-color: transparent;
+}
+.scroll-bar:vertical {
+	-fx-background-color: transparent;
+}
+.scroll-bar:vertical .decrement-button {
+	-fx-background-color: transparent;
+}
+.scroll-bar:vertical .decrement-arrow {
+	-fx-background-color: transparent;
+}
+.scroll-bar:vertical .increment-button {
+	-fx-background-color: transparent;
+}
+.scroll-bar:vertical .increment-arrow {
+	-fx-background-color: transparent;
+}
+
+/* Create a minimalist vertical scroll bar thumb with FG color. */
+.scroll-bar:vertical .thumb {
+	-fx-background-color: colorPlaybackFG;
+	-fx-background-radius: 0;
+	-fx-background-insets: 0 5 0 6;
 }

@@ -1,11 +1,16 @@
 package com.bateleur.app.controller;
 
+import com.bateleur.app.App;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
 import com.bateleur.app.view.BBackgroundCanvas;
+import com.bateleur.app.view.BSliderCanvas;
 import com.melloware.jintellitype.IntellitypeListener;
 import com.melloware.jintellitype.JIntellitype;
+import com.therealergo.main.Main;
+import com.therealergo.main.MainException;
+import com.therealergo.main.os.EnumOS;
 
 import javafx.animation.KeyValue;
 import javafx.application.Platform;
@@ -22,7 +27,6 @@ import javafx.scene.layout.ColumnConstraints;
 
 public class PlaybackController implements IntellitypeListener {
 	@FXML private BBackgroundCanvas backgroundCanvas;
-	@FXML private AnchorPane root;
 	@FXML private AnchorPane playbackBarBG;
 	@FXML private AnchorPane playbackBar;
 	@FXML private AnchorPane playbackBarLeft;
@@ -39,6 +43,8 @@ public class PlaybackController implements IntellitypeListener {
 	@FXML private ToggleButton shuffleButton;
 	@FXML private ToggleButton queueButton;
 	@FXML private ToggleButton repeatButton;
+	@FXML private ImageView skipBackwardButtonImage;
+	@FXML private ImageView skipForwardButtonImage;
 	@FXML private ImageView playPauseButtonImage_O;
 	@FXML private ImageView shuffleButtonImage_O;
 	@FXML private ImageView queueButtonImage_O;
@@ -48,7 +54,9 @@ public class PlaybackController implements IntellitypeListener {
 	@FXML private ImageView queueButtonImage_I;
 	@FXML private ImageView repeatButtonImage_I;
 	@FXML private Slider seekBar;
+	@FXML private BSliderCanvas seekBarCanvas;
 	@FXML private Slider volumeBar;
+	@FXML private BSliderCanvas volumeBarCanvas;
 
 	public MasterController master;
 
@@ -69,22 +77,8 @@ public class PlaybackController implements IntellitypeListener {
 	}
 
 	public void start() {
-		playbackBarBG	  .setEffect(master.lightingBG);
-		playbackBarLeftFG .setEffect(master.lightingFG);
-		playbackBarRightFG.setEffect(master.lightingFG);
-		playbackBarBO	  .setEffect(master.lightingBO);
-
-		shuffleButton.setSelected(queue.isShuffleEnabled());
-		shuffleButtonImage_O.setOpacity(shuffleButton.isSelected() ? 1.0 : 0.0);
-		shuffleButtonImage_I.setOpacity(shuffleButton.isSelected() ? 0.0 : 1.0);
-
-		queueButton  .setSelected(queue.isQueueEnabled()  );
-		queueButtonImage_O  .setOpacity(queueButton  .isSelected() ? 1.0 : 0.0);
-		queueButtonImage_I  .setOpacity(queueButton  .isSelected() ? 0.0 : 1.0);
-
-		repeatButton .setSelected(queue.isRepeatEnabled() );
-		repeatButtonImage_O .setOpacity(repeatButton .isSelected() ? 1.0 : 0.0);
-		repeatButtonImage_I .setOpacity(repeatButton .isSelected() ? 0.0 : 1.0);
+		skipBackwardButtonImage.setEffect(master.playbackColorAnimation.lightingFG);
+		skipForwardButtonImage .setEffect(master.playbackColorAnimation.lightingFG);
 
 		playback.addPlayHandler(() -> {
 			playPauseButtonImage_O.setOpacity(0.0);
@@ -94,6 +88,26 @@ public class PlaybackController implements IntellitypeListener {
 			playPauseButtonImage_O.setOpacity(1.0);
 			playPauseButtonImage_I.setOpacity(0.0);
 		});
+		playPauseButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
+		playPauseButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
+
+		shuffleButton.setSelected(queue.isShuffleEnabled());
+		shuffleButtonImage_O.setOpacity(shuffleButton.isSelected() ? 1.0 : 0.0);
+		shuffleButtonImage_I.setOpacity(shuffleButton.isSelected() ? 0.0 : 1.0);
+		shuffleButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
+		shuffleButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
+
+		queueButton  .setSelected(queue.isQueueEnabled()  );
+		queueButtonImage_O  .setOpacity(queueButton  .isSelected() ? 1.0 : 0.0);
+		queueButtonImage_I  .setOpacity(queueButton  .isSelected() ? 0.0 : 1.0);
+		queueButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
+		queueButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
+
+		repeatButton .setSelected(queue.isRepeatEnabled() );
+		repeatButtonImage_O .setOpacity(repeatButton .isSelected() ? 1.0 : 0.0);
+		repeatButtonImage_I .setOpacity(repeatButton .isSelected() ? 0.0 : 1.0);
+		repeatButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
+		repeatButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
 
 		volumeBar.setMin(0.0);
 		volumeBar.setMax(100.0);
@@ -101,6 +115,7 @@ public class PlaybackController implements IntellitypeListener {
 		volumeBar.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
 			onVolumeSet(new_val.doubleValue()/100.0);
 		});
+		volumeBarCanvas.drawColor.bind(master.playbackColorAnimation.colorPlayback_FG);
 
 		seekBar.setMin(0.0);
 		seekBar.setMax(1.0);
@@ -110,6 +125,7 @@ public class PlaybackController implements IntellitypeListener {
 				onSeekSet(new_val.doubleValue());
 			}
 		});
+		seekBarCanvas.drawColor.bind(master.playbackColorAnimation.colorPlayback_FG);
 
 		playback.addSongChangeHandler(() -> {
 			textTop.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_ARTIST));
@@ -176,9 +192,9 @@ public class PlaybackController implements IntellitypeListener {
 					master.verticalSlideAnimation.rebuild();
 				});
 			});
-
-			initJIntellitype();
 		}
+
+		initJIntellitype();
 	}
 
 	@FXML public void onShufflePress() {
@@ -240,14 +256,18 @@ public class PlaybackController implements IntellitypeListener {
 	 * Initialize the JInitellitype library making sure the DLL is located.
 	 */
 	private void initJIntellitype() {
-		try {
+		// JIntellitype only initialized on Windows, which is the only OS it supports
+		if (Main.os.getOS().equals(EnumOS.WINDOWS)) {
+			// Get the 64-bit / 32-bit specific path to the native library
+			String libraryName = System.getProperty("os.arch").contains("64") ? "JIntellitype64.dll" : "JIntellitype.dll";
+			String libraryPath = Main.resource.getResourceFileClass("natives>" + libraryName, App.class).getPath().toAbsolutePath().toString();
 
-			// initialize JIntellitype with the frame so all windows commands can
-			// be attached to this window
+			// initialize JIntellitype with the frame so all windows commands can be attached to this window
+			JIntellitype.setLibraryLocation(libraryPath);
 			JIntellitype.getInstance().addIntellitypeListener(this);
-			System.out.println("JIntellitype initialized");
-		} catch (RuntimeException ex) {
-			System.out.println("Either you are not on Windows, or there is a problem with the JIntellitype library!");
+			Main.log.log("JIntellitype initialized");
+		} else {
+			Main.log.log(new MainException(PlaybackController.class, "JIntellitype not initialized as we are not on Windows!"));
 		}
 	}
 
@@ -260,15 +280,21 @@ public class PlaybackController implements IntellitypeListener {
 	public void onIntellitype(int keyCommand) {
 		switch (keyCommand) {
 			case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
-				onPlayPausePress();
+				Platform.runLater(() -> {
+					onPlayPausePress();
+				});
 				break;
 
 			case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
-				onSkipForwardPress();
+				Platform.runLater(() -> {
+					onSkipForwardPress();
+				});
 				break;
 
 			case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
-				onSkipBackwardPress();
+				Platform.runLater(() -> {
+					onSkipBackwardPress();
+				});
 				break;
 
 			default:
