@@ -55,7 +55,7 @@ public class App extends Application {
 				case "MasterController":
 					return new MasterController(settings, playback, library, queue);
 				case "PlaybackController":
-					return new PlaybackController(settings, playback, queue);
+					return new PlaybackController();
 				case "MusicListController":
 					return new MusicListController();
 				}

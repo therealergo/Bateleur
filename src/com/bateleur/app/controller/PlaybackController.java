@@ -1,9 +1,6 @@
 package com.bateleur.app.controller;
 
 import com.bateleur.app.App;
-import com.bateleur.app.model.PlaybackModel;
-import com.bateleur.app.model.QueueModel;
-import com.bateleur.app.model.SettingsModel;
 import com.bateleur.app.view.BBackgroundCanvas;
 import com.bateleur.app.view.BSliderCanvas;
 import com.melloware.jintellitype.IntellitypeListener;
@@ -26,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 
 public class PlaybackController implements IntellitypeListener {
+	/** FXML-injected component references. */
 	@FXML private BBackgroundCanvas backgroundCanvas;
 	@FXML private AnchorPane playbackBarBG;
 	@FXML private AnchorPane playbackBar;
@@ -57,66 +55,68 @@ public class PlaybackController implements IntellitypeListener {
 	@FXML private BSliderCanvas seekBarCanvas;
 	@FXML private Slider volumeBar;
 	@FXML private BSliderCanvas volumeBarCanvas;
-
+	
+	/** Reference to this PlaybackController's MasterController. */
 	public MasterController master;
-
-	private SettingsModel settings;
-	private PlaybackModel playback;
-	private QueueModel queue;
-
+	
+	/** TEMPORARY flag used to resolve seek bar dragging */
 	private boolean TEMP_OSS = false;
 
-	public PlaybackController(SettingsModel settings, PlaybackModel playback, QueueModel queue) {
-		this.settings = settings;
-		this.playback = playback;
-		this.queue = queue;
-	}
-
-	public void setMasterController(MasterController master) {
+	/**
+	 * Perform any initialization required by this PlaybackController.
+	 * Should only be called by the MasterController when the master is ready and this PlaybackController is to be initialized.
+	 * @param master This PlaybackController's master controller.
+	 */
+	public void initialize(MasterController master) {
 		this.master = master;
-	}
-
-	public void start() {
+		
+		// Setup the skip forwards/backwards buttons
 		skipBackwardButtonImage.setEffect(master.playbackColorAnimation.lightingFG);
 		skipForwardButtonImage .setEffect(master.playbackColorAnimation.lightingFG);
-
-		playback.addPlayHandler(() -> {
+		
+		// Setup the play/pause button
+		master.playback.addPlayHandler(() -> {
 			playPauseButtonImage_O.setOpacity(0.0);
 			playPauseButtonImage_I.setOpacity(1.0);
 		});
-		playback.addPauseHandler(() -> {
+		master.playback.addPauseHandler(() -> {
 			playPauseButtonImage_O.setOpacity(1.0);
 			playPauseButtonImage_I.setOpacity(0.0);
 		});
 		playPauseButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
 		playPauseButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
-
-		shuffleButton.setSelected(queue.isShuffleEnabled());
+		
+		// Setup the shuffle enable/disable button
+		shuffleButton.setSelected(master.queue.isShuffleEnabled());
 		shuffleButtonImage_O.setOpacity(shuffleButton.isSelected() ? 1.0 : 0.0);
 		shuffleButtonImage_I.setOpacity(shuffleButton.isSelected() ? 0.0 : 1.0);
 		shuffleButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
 		shuffleButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
-
-		queueButton  .setSelected(queue.isQueueEnabled()  );
+		
+		// Setup the queue enable/disable button
+		queueButton  .setSelected(master.queue.isQueueEnabled()  );
 		queueButtonImage_O  .setOpacity(queueButton  .isSelected() ? 1.0 : 0.0);
 		queueButtonImage_I  .setOpacity(queueButton  .isSelected() ? 0.0 : 1.0);
 		queueButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
 		queueButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
 
-		repeatButton .setSelected(queue.isRepeatEnabled() );
+		// Setup the repeat enable/disable button
+		repeatButton .setSelected(master.queue.isRepeatEnabled() );
 		repeatButtonImage_O .setOpacity(repeatButton .isSelected() ? 1.0 : 0.0);
 		repeatButtonImage_I .setOpacity(repeatButton .isSelected() ? 0.0 : 1.0);
 		repeatButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
 		repeatButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
-
+		
+		// Setup the volume bar
 		volumeBar.setMin(0.0);
 		volumeBar.setMax(100.0);
-		volumeBar.setValue(playback.getVolume()*100.0);
+		volumeBar.setValue(master.playback.getVolume()*100.0);
 		volumeBar.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
 			onVolumeSet(new_val.doubleValue()/100.0);
 		});
 		volumeBarCanvas.drawColor.bind(master.playbackColorAnimation.colorPlayback_FG);
-
+		
+		// Setup the seek bar
 		seekBar.setMin(0.0);
 		seekBar.setMax(1.0);
 		seekBar.setValue(0.0);
@@ -126,19 +126,21 @@ public class PlaybackController implements IntellitypeListener {
 			}
 		});
 		seekBarCanvas.drawColor.bind(master.playbackColorAnimation.colorPlayback_FG);
-
-		playback.addSongChangeHandler(() -> {
-			textTop.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_ARTIST));
-			textBot.setText(playback.getLoadedAudio().get(settings.AUDIO_PROP_TITLE));
+		
+		// Setup a callback to change the displayed audio info. text and image when the playing audio file changes
+		master.playback.addSongChangeHandler(() -> {
+			textTop.setText(master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ARTIST));
+			textBot.setText(master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_TITLE));
 			try {
-				Image im = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImageThumbnail();
+				Image im = master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ART).getImageThumbnail();
 				playbackImageContainer.setMinWidth(im.getWidth() / im.getHeight() * 107.0);
 				playbackImage.setImage(im);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
-
+		
+		// TEMPORARY code that spawns a thread updating the seekbar's on-screen position to the current position
 		Thread javaFXThread = Thread.currentThread();
 		new Thread() {
 			public void run() {
@@ -151,117 +153,55 @@ public class PlaybackController implements IntellitypeListener {
 					Platform.runLater(new Runnable() {
 						@Override  public void run() {
 							TEMP_OSS = true;
-							seekBar.setValue(playback.getPlaybackTimeMS() / playback.getPlaybackLengthMS());
+							seekBar.setValue(master.playback.getPlaybackTimeMS() / master.playback.getPlaybackLengthMS());
 							TEMP_OSS = false;
-							if (playback.getPlaybackTimeMS() >= playback.getPlaybackLengthMS()) {
-								queue.skipForwards();
-								playback.loadAudio(queue.get(), settings.get(settings.FADE_TIME_USER));
-								playback.play(settings.get(settings.FADE_TIME_USER));
+							if (master.playback.getPlaybackTimeMS() >= master.playback.getPlaybackLengthMS()) {
+								master.queue.skipForwards();
+								master.playback.loadAudio(master.queue.get(), master.settings.get(master.settings.FADE_TIME_USER));
+								master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
 							}
 						}
 					});
 				}
 			}
 		}.start();
-
+		
 		// Build the vertical slide animation
 		{
 			// Slide the top bar label left/right when doing the vertical slide animation
-	    	master.verticalSlideAnimation.onRebuild(() -> {
-	    		master.verticalSlideAnimation.addKeyValue(
-	    			new KeyValue(
-		    			master.topBarLabel.translateXProperty(),
-		    			(1.0-master.verticalSlideAnimation.rebuildIndex()) * playbackImageContainer.getMinWidth()
-	    			)
-	    		);
-	    	});
-
-	    	// Slide the small audio file art left/right when doing the vertical slide animation
-	    	master.verticalSlideAnimation.onRebuild(() -> {
-	    		master.verticalSlideAnimation.addKeyValue(
-	    			new KeyValue(
-	    				playbackBarLeft.translateXProperty(),
-		    			-master.verticalSlideAnimation.rebuildIndex() * playbackImageContainer.getMinWidth()
-	    			)
-	    		);
-	    	});
-
-	    	// Rebuild the vertical slide animation every time the width of the small audio file art changes
+			master.verticalSlideAnimation.onRebuild(() -> {
+				master.verticalSlideAnimation.addKeyValue(
+					new KeyValue(
+						master.topBarLabel.translateXProperty(),
+						(1.0-master.verticalSlideAnimation.rebuildIndex()) * playbackImageContainer.getMinWidth()
+					)
+				);
+			});
+			
+			// Slide the small audio file art left/right when doing the vertical slide animation
+			master.verticalSlideAnimation.onRebuild(() -> {
+				master.verticalSlideAnimation.addKeyValue(
+					new KeyValue(
+						playbackBarLeft.translateXProperty(),
+						-master.verticalSlideAnimation.rebuildIndex() * playbackImageContainer.getMinWidth()
+					)
+				);
+			});
+			
+			// Rebuild the vertical slide animation every time the width of the small audio file art changes
 			playbackImageContainer.minWidthProperty().addListener((ObservableValue<? extends Number> observableValue, Number oldVal, Number newVal) -> {
 				Platform.runLater(() -> {
 					master.verticalSlideAnimation.rebuild();
 				});
 			});
 		}
-
-		initJIntellitype();
-	}
-
-	@FXML public void onShufflePress() {
-		queue.setShuffleState(shuffleButton.isSelected());
-		shuffleButtonImage_O.setOpacity(shuffleButton.isSelected() ? 1.0 : 0.0);
-		shuffleButtonImage_I.setOpacity(shuffleButton.isSelected() ? 0.0 : 1.0);
-	}
-
-	@FXML public void onQueuePress() {
-		queue.setQueueState(queueButton.isSelected());
-		queueButtonImage_O.setOpacity(queueButton.isSelected() ? 1.0 : 0.0);
-		queueButtonImage_I.setOpacity(queueButton.isSelected() ? 0.0 : 1.0);
-	}
-
-	@FXML public void onRepeatPress() throws Exception {
-		queue.setRepeatState(repeatButton.isSelected());
-		repeatButtonImage_O.setOpacity(repeatButton.isSelected() ? 1.0 : 0.0);
-		repeatButtonImage_I.setOpacity(repeatButton.isSelected() ? 0.0 : 1.0);
-	}
-
-	@FXML public void onBarPress() throws Exception {
-		master.verticalSlideAnimation.play();
-	}
-
-	@FXML public void onPlayPausePress() {
-		if (playback.isPlaying()) {
-			playback.pause(settings.get(settings.FADE_TIME_USER));
-		} else {
-			playback.play(settings.get(settings.FADE_TIME_USER));
-		}
-	}
-
-	@FXML public void onSkipForwardPress() {
-		queue.skipForwards();
-		playback.loadAudio(queue.get(), settings.get(settings.FADE_TIME_USER));
-		playback.play(settings.get(settings.FADE_TIME_USER));
-	}
-
-	@FXML public void onSkipBackwardPress() {
-		queue.skipBackwards();
-		playback.loadAudio(queue.get(), settings.get(settings.FADE_TIME_USER));
-		playback.play(settings.get(settings.FADE_TIME_USER));
-	}
-
-    public void onPlayTimeIncrease() {
-    }
-
-    public void onVolumeSet(double volume) {
-    	playback.setVolume(volume);
-    }
-
-    public void onSeekSet(double seek) {
-    	playback.setPlaybackTimeMS(playback.getPlaybackLengthMS() * seek);
-    	playback.play(settings.get(settings.FADE_TIME_USER));
-    }
-
-
-   	/**
-	 * Initialize the JInitellitype library making sure the DLL is located.
-	 */
-	private void initJIntellitype() {
-		// JIntellitype only initialized on Windows, which is the only OS it supports
+		
+		// Initialize JIntellitype and its DLL only on Windows, which is the only OS that it supports
 		if (Main.os.getOS().equals(EnumOS.WINDOWS)) {
 			// Get the 64-bit / 32-bit specific path to the native library
 			String libraryName = System.getProperty("os.arch").contains("64") ? "JIntellitype64.dll" : "JIntellitype.dll";
 			String libraryPath = Main.resource.getResourceFileClass("natives>" + libraryName, App.class).getPath().toAbsolutePath().toString();
-
+			
 			// initialize JIntellitype with the frame so all windows commands can be attached to this window
 			JIntellitype.setLibraryLocation(libraryPath);
 			JIntellitype.getInstance().addIntellitypeListener(this);
@@ -270,10 +210,89 @@ public class PlaybackController implements IntellitypeListener {
 			Main.log.log(new MainException(PlaybackController.class, "JIntellitype not initialized as we are not on Windows!"));
 		}
 	}
+	
+	/**
+	 * Callback triggered whenever the volume is manually changed.
+	 * @param volume The volume to adjust the current playback volume to.
+	 */
+	public void onVolumeSet(double volume) {
+		master.playback.setVolume(volume);
+	}
+	
+	/**
+	 * Callback triggered whenever seeking is performed within the current song.
+	 * @param seek The time to which to seek, as a double between 0.0 and 1.0.
+	 */
+	public void onSeekSet(double seek) {
+		master.playback.setPlaybackTimeMS(master.playback.getPlaybackLengthMS() * seek);
+		master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
+	}
+	
+	/**
+	 * FXML-injected callback triggered whenever the shuffle toggle button is pressed.
+	 */
+	@FXML public void onShufflePress() {
+		master.queue.setShuffleState(shuffleButton.isSelected());
+		shuffleButtonImage_O.setOpacity(shuffleButton.isSelected() ? 1.0 : 0.0);
+		shuffleButtonImage_I.setOpacity(shuffleButton.isSelected() ? 0.0 : 1.0);
+	}
 
 	/**
+	 * FXML-injected callback triggered whenever the queue toggle button is pressed.
+	 */
+	@FXML public void onQueuePress() {
+		master.queue.setQueueState(queueButton.isSelected());
+		queueButtonImage_O.setOpacity(queueButton.isSelected() ? 1.0 : 0.0);
+		queueButtonImage_I.setOpacity(queueButton.isSelected() ? 0.0 : 1.0);
+	}
+
+	/**
+	 * FXML-injected callback triggered whenever the repeat toggle button is pressed.
+	 */
+	@FXML public void onRepeatPress() throws Exception {
+		master.queue.setRepeatState(repeatButton.isSelected());
+		repeatButtonImage_O.setOpacity(repeatButton.isSelected() ? 1.0 : 0.0);
+		repeatButtonImage_I.setOpacity(repeatButton.isSelected() ? 0.0 : 1.0);
+	}
+
+	/**
+	 * FXML-injected callback triggered whenever the sliding playback bar is pressed.
+	 */
+	@FXML public void onBarPress() throws Exception {
+		master.verticalSlideAnimation.play();
+	}
+
+	/**
+	 * FXML-injected callback triggered whenever the play/pause button is pressed.
+	 */
+	@FXML public void onPlayPausePress() {
+		if (master.playback.isPlaying()) {
+			master.playback.pause(master.settings.get(master.settings.FADE_TIME_USER));
+		} else {
+			master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
+		}
+	}
+
+	/**
+	 * FXML-injected callback triggered whenever the skip forwards button is pressed.
+	 */
+	@FXML public void onSkipForwardPress() {
+		master.queue.skipForwards();
+		master.playback.loadAudio(master.queue.get(), master.settings.get(master.settings.FADE_TIME_USER));
+		master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
+	}
+
+	/**
+	 * FXML-injected callback triggered whenever the skip backwards button is pressed.
+	 */
+	@FXML public void onSkipBackwardPress() {
+		master.queue.skipBackwards();
+		master.playback.loadAudio(master.queue.get(), master.settings.get(master.settings.FADE_TIME_USER));
+		master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
+	}
+	
+	/**
 	 * Performs the action associated with a media key
-	 *
 	 * @param keyCommand the integer for JIntellitype's internal representation
 	 */
 	@Override
@@ -284,19 +303,19 @@ public class PlaybackController implements IntellitypeListener {
 					onPlayPausePress();
 				});
 				break;
-
+				
 			case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
 				Platform.runLater(() -> {
 					onSkipForwardPress();
 				});
 				break;
-
+				
 			case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
 				Platform.runLater(() -> {
 					onSkipBackwardPress();
 				});
 				break;
-
+				
 			default:
 				break;
 		}

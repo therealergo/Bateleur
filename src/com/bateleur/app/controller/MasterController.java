@@ -123,8 +123,7 @@ public class MasterController {
 		}
 		
 		// Initialize sub-controllers
-		playbackController .setMasterController(this);
-		playbackController .start();
+		playbackController .initialize(this);
 		musicListController.initialize(this);
 	}
 	
