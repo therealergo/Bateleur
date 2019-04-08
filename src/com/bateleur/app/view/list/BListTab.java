@@ -6,8 +6,6 @@ import com.bateleur.app.model.LibraryModel;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.SettingsModel;
 
-import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Tab;
@@ -52,28 +50,19 @@ public class BListTab extends Tab {
 		innerGrid.prefWidthProperty().bind(innerScroll.widthProperty());
 		innerScroll.setContent(innerGrid);
 		
-		innerScroll.widthProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
-			// This must be called in a 'runLater(...)' to ensure that the list does not flicker while resizing
-			Platform.runLater( () -> rebuildList(new_val.doubleValue()) );
-		});
-		
 		playback.addSongChangeHandler(() -> {
-			rebuildList(innerScroll.getWidth());
+			innerGrid.getChildren().clear();
+			library.forEach((BAudio audio) -> {
+				int index = innerGrid.getChildren().size();
+				innerGrid.add(new BListOption(this, index%2==0, audio, playback, settings), 0, index);
+			});
+			innerGrid.getColumnConstraints().clear();
+			innerGrid.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
+			innerGrid.getRowConstraints().clear();
+			for (int i = 0; i<innerGrid.getChildren().size(); i++) {
+				innerGrid.getRowConstraints().add(new RowConstraints(30.0));
+			}
 		});
-	}
-	
-	public void rebuildList(double areaWidth) {
-		innerGrid.getChildren().clear();
-		library.forEach((BAudio audio) -> {
-			int index = innerGrid.getChildren().size();
-			innerGrid.add(new BListOption(this, index%2==0, audio, playback, settings), 0, index);
-		});
-		innerGrid.getColumnConstraints().clear();
-		innerGrid.getColumnConstraints().add(new ColumnConstraints(areaWidth));
-		innerGrid.getRowConstraints().clear();
-		for (int i = 0; i<innerGrid.getChildren().size(); i++) {
-			innerGrid.getRowConstraints().add(new RowConstraints(30.0));
-		}
 	}
 	
 	public void onOptionSelected(BListOption bListOption) {
