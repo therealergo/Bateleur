@@ -38,6 +38,7 @@ public class QueueModelTest {
 
         settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
         library = new LibraryModel(settings, Main.resource.getResourceFolderClass("test_out>QueueModelTest>library", App.class));
+        library.update();
     }
 
     /**
@@ -50,17 +51,16 @@ public class QueueModelTest {
         // Ensure that there is no existing metadata file
         Main.resource.getResourceFileClass("test_out>QueueModelTest>test_meta.ser", App.class).create().delete();
 
-        // Ensure that there is no existing metadata file
-        Main.resource.getResourceFileClass("test_out>QueueModelTest>test_meta.ser", App.class).create().delete();
-
         testAudio = new BAudioLocal(settings,
                                     Main.resource.getResourceFileClass("test_out>QueueModelTest>test_meta.ser", App.class),
-                                    Main.resource.getResourceFileClass("test_in>test.mp3", App.class).getPath().toUri());
+                                    Main.resource.getResourceFileClass("test_in>QueueModelTest>library>test.mp3", App.class).getPath().toUri());
         queueModel.setQueue(library, testAudio);
     }
 
+
+
     @Test
-    public void test_firstAudioQueueEn_skipForwards_nextSong() {
+    public void test_lastAudioQueueEn_skipForwards_firstSong() {
         // Given
         queueModel.setQueueState(true);
         BAudio startingAudio = queueModel.get();
@@ -76,6 +76,22 @@ public class QueueModelTest {
     }
 
     @Test
+    public void test_queueLoaded_setQueue_changesQueue() {
+
+    }
+
+    /**
+     * Validates that the queue status changes within the settings
+     */
+    @Test
+    public void test_firstAudioNoQueue_setQueueEnabled_queueEnabled() {
+
+    }
+
+    /**
+     * Validates that the Queue can load the previous song
+     */
+    @Test
     public void test_firstAudioQueueEn_skipBackwards_lastSong() {
         // Given
         queueModel.setQueueState(true);
@@ -90,5 +106,64 @@ public class QueueModelTest {
         assertNotNull(prevAudio);
         assertNotSame(startingAudio, prevAudio);
         assertNotSame(prevAudio, testAudio);
+    }
+
+    /**
+     * Validates that the Queue can load the next song
+     */
+    @Test
+    public void test_firstAudioNoQueue_skipForwards_loadsNextSong() {
+        BAudio startingAudio = queueModel.get();
+
+        queueModel.skipForwards();
+        BAudio nextAudio = queueModel.get();
+
+        // Then
+        assertNotNull(nextAudio);
+        assertNotSame(startingAudio, nextAudio);
+        assertNotSame(nextAudio, testAudio);
+    }
+
+    /**
+     * Validates that the queue can load the previous song
+     */
+    @Test
+    public void test_lastAudioNoQueue_skipBackwards_loadsPrevSong() {
+
+    }
+
+    /**
+     * Validates that advancing the Queue past the last song
+     * finishes the Queue
+     */
+    @Test
+    public void test_lastAudioNoQueue_skipForwards_endsQueue() {
+
+    }
+
+    /**
+     * Validates that the regressing the Queue past the first song
+     * finishes the Queue
+     */
+    @Test
+    public void test_firstAudioNoQueue_skipBackwards_endsQueue() {
+
+    }
+
+
+    /**
+     * Validates that shuffle creates a new Queue
+     */
+    @Test
+    public void test_shuffleOff_shuffleQueue_createsNewQueue() {
+
+    }
+
+    /**
+     * Validates that disabling shuffle recreates the original Queue
+     */
+    @Test
+    public void test_ShuffleOn_ShuffleQueue_recreatesOldQueue() {
+
     }
 }
