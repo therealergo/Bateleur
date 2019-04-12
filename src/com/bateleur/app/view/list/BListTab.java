@@ -1,5 +1,7 @@
 package com.bateleur.app.view.list;
 
+import java.util.ArrayList;
+
 import com.bateleur.app.controller.MusicListController;
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.model.LibraryModel;
@@ -21,8 +23,6 @@ public class BListTab extends Tab {
 	private LibraryModel library;
 	private PlaybackModel playback;
 	private SettingsModel settings;
-	
-	private GridPane innerGrid;
 
 	public BListTab(MusicListController musicListController, LibraryModel library, PlaybackModel playback, SettingsModel settings) {
 		this.musicListController = musicListController;
@@ -36,36 +36,71 @@ public class BListTab extends Tab {
 		StackPane innerStack = new StackPane();
 		this.setContent(innerStack);
 		
-		ScrollPane innerScroll = new ScrollPane();
-		innerScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
-		innerScroll.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-		innerStack.getChildren().add(innerScroll);
+		ScrollPane innerScrollBackground = new ScrollPane();
+		innerScrollBackground.setHbarPolicy(ScrollBarPolicy.NEVER);
+		innerScrollBackground.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		innerStack.getChildren().add(innerScrollBackground);
 		
-		Pane innerBorder = new Pane();
-		innerBorder.getStyleClass().add("scroll-pane-border");
-		innerBorder.setPickOnBounds(false);
-		innerStack.getChildren().add(innerBorder);
+		Pane innerBorderBack = new Pane();
+		innerBorderBack.getStyleClass().add("scroll-pane-border");
+		innerBorderBack.getStyleClass().add("scroll-pane-border-back");
+		innerBorderBack.setMouseTransparent(true);
+		innerStack.getChildren().add(innerBorderBack);
 		
-		innerGrid = new GridPane();
-		innerGrid.prefWidthProperty().bind(innerScroll.widthProperty());
-		innerScroll.setContent(innerGrid);
+		ScrollPane innerScrollForeground = new ScrollPane();
+		innerScrollForeground.setHbarPolicy(ScrollBarPolicy.NEVER);
+		innerScrollForeground.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		innerStack.getChildren().add(innerScrollForeground);
+		innerScrollForeground.setEffect(musicListController.master.playbackColorAnimation.lightingFG);
+		
+		Pane innerBorderFore = new Pane();
+		innerBorderFore.getStyleClass().add("scroll-pane-border");
+		innerBorderFore.getStyleClass().add("scroll-pane-border-fore");
+		innerBorderFore.setMouseTransparent(true);
+		innerStack.getChildren().add(innerBorderFore);
+		
+		innerScrollBackground.vvalueProperty().bind(innerScrollForeground.vvalueProperty());
+		
+		GridPane innerGridBackground = new GridPane();
+		innerGridBackground.prefWidthProperty().bind(innerScrollBackground.widthProperty());
+		innerScrollBackground.setContent(innerGridBackground);
+		
+		GridPane innerGridForeground = new GridPane();
+		innerGridForeground.prefWidthProperty().bind(innerScrollForeground.widthProperty());
+		innerScrollForeground.setContent(innerGridForeground);
 		
 		playback.addSongChangeHandler(() -> {
-			innerGrid.getChildren().clear();
+			ArrayList<BListOption> options = new ArrayList<BListOption>();
 			library.forEach((BAudio audio) -> {
-				int index = innerGrid.getChildren().size();
-				innerGrid.add(new BListOption(this, index%2==0, audio, playback, settings), 0, index);
+				int index = options.size();
+				options.add(new BListOptionFile(this, index%2==0, audio, playback, settings));
 			});
-			innerGrid.getColumnConstraints().clear();
-			innerGrid.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
-			innerGrid.getRowConstraints().clear();
-			for (int i = 0; i<innerGrid.getChildren().size(); i++) {
-				innerGrid.getRowConstraints().add(new RowConstraints(30.0));
+			
+			innerGridBackground.getChildren().clear();
+			for (int i = 0; i<options.size(); i++) {
+				innerGridBackground.add(options.get(i).buildBackground(), 0, i);
+			}
+			innerGridBackground.getColumnConstraints().clear();
+			innerGridBackground.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
+			innerGridBackground.getRowConstraints().clear();
+			for (int i = 0; i<innerGridBackground.getChildren().size(); i++) {
+				innerGridBackground.getRowConstraints().add(new RowConstraints(30.0));
+			}
+
+			innerGridForeground.getChildren().clear();
+			for (int i = 0; i<options.size(); i++) {
+				innerGridForeground.add(options.get(i).buildForeground(), 0, i);
+			}
+			innerGridForeground.getColumnConstraints().clear();
+			innerGridForeground.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
+			innerGridForeground.getRowConstraints().clear();
+			for (int i = 0; i<innerGridForeground.getChildren().size(); i++) {
+				innerGridForeground.getRowConstraints().add(new RowConstraints(30.0));
 			}
 		});
 	}
 	
-	public void onOptionSelected(BListOption bListOption) {
+	public void onOptionSelected(BListOptionFile bListOption) {
 		musicListController.master.queue.setQueue(library, bListOption.audio);
 		playback.loadAudio(bListOption.audio, settings.get(settings.FADE_TIME_USER));
 		playback.play(settings.get(settings.FADE_TIME_USER));

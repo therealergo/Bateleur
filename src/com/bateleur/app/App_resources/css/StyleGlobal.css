@@ -14,7 +14,7 @@
 
 /* Set text labels of list options to FG coloring. */
 .listOptionLabel {
-	-fx-text-fill: colorPlaybackFG;
+	-fx-text-fill: white;
 }
 
 /********************** TAB PANE STYLING **********************/
@@ -58,7 +58,16 @@
 	                  linear-gradient(to top   , colorPlaybackBG, transparent)
 	                  transparent;
 	-fx-border-style: solid;
-	-fx-border-width: 40px 0px 40px 0px;
+}
+
+/* This part of the fade is larger and positioned behind the text. */
+.scroll-pane-border-back {
+	-fx-border-width: 150px 0px 150px 0px;
+}
+
+/* This part of the fade is smaller and positioned in front of the text. */
+.scroll-pane-border-fore {
+	-fx-border-width: 10px 0px 10px 0px;
 }
 
 /********************** SCROLL PANE STYLING **********************/
@@ -96,7 +105,7 @@
 
 /* Create a minimalist vertical scroll bar thumb with FG color. */
 .scroll-bar:vertical .thumb {
-	-fx-background-color: colorPlaybackFG;
+	-fx-background-color: white;
 	-fx-background-radius: 0;
 	-fx-background-insets: 0 5 0 6;
 }
