@@ -21,6 +21,8 @@ public class BListOptionFile extends BListOption {
 	private boolean isEven;
 	
 	public final BAudio audio;
+	
+	private Label isPlayingLabel;
 
 	public BListOptionFile(BListTab bListTab, boolean isEven, BAudio audio, PlaybackModel playback, SettingsModel settings) {
 		super(bListTab);
@@ -56,13 +58,12 @@ public class BListOptionFile extends BListOption {
 		innerGrid.prefHeightProperty().bind(foreground.heightProperty());
 		foreground.setGraphic(innerGrid);
 		
-		Label innerLabel;
+		isPlayingLabel = new Label();
+		isPlayingLabel.getStyleClass().add("listOptionLabel");
+		isPlayingLabel.prefHeightProperty().bind(foreground.heightProperty());
+		innerGrid.add(isPlayingLabel, 0, 0);
 		
-		innerLabel= new Label();
-		innerLabel.getStyleClass().add("listOptionLabel");
-		innerLabel.setText(bListTab.musicListController.master.playback.getLoadedAudio().equals(audio) ? ">>" : "");
-		innerLabel.prefHeightProperty().bind(foreground.heightProperty());
-		innerGrid.add(innerLabel, 0, 0);
+		Label innerLabel;
 		
 		innerLabel = new Label();
 		innerLabel.getStyleClass().add("listOptionLabel");
@@ -92,5 +93,9 @@ public class BListOptionFile extends BListOption {
 		});
 		
 		return foreground;
+	}
+	
+	@Override public void onSongChange(BAudio loadedAudio) {
+		isPlayingLabel.setText(loadedAudio.equals(audio) ? ">>" : "");
 	}
 }

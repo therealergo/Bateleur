@@ -53,9 +53,9 @@
 
 /* Add a BG-colored fade to the top and bottom of the scroll pane. */
 .scroll-pane-border {
-	-fx-border-color: linear-gradient(to bottom, colorPlaybackBG, transparent)
+	-fx-border-color: linear-gradient(to bottom, white, transparent)
 	                  transparent
-	                  linear-gradient(to top   , colorPlaybackBG, transparent)
+	                  linear-gradient(to top   , white, transparent)
 	                  transparent;
 	-fx-border-style: solid;
 }
