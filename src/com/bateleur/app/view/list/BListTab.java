@@ -34,7 +34,7 @@ public class BListTab extends Tab {
 		this.settings = settings;
 		
 		setText("Tracks");
-
+		
 		StackPane innerStack = new StackPane();
 		this.setContent(innerStack);
 		

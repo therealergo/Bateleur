@@ -15,7 +15,7 @@
 
 <AnchorPane fx:id="playbackBar" cache="true" cacheHint="SPEED" onMouseClicked="#onBarPress" prefHeight="66.0" prefWidth="899.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bateleur.app.controller.PlaybackController">
 	<children>
-		<AnchorPane fx:id="playbackBarBG" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to top,  colorPlaybackBG, rgba(255, 255, 255, 0.0));" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+		<AnchorPane fx:id="playbackBarBG" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to top, white, rgba(255, 255, 255, 0.0));" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 		<AnchorPane fx:id="playbackBarLeft" prefHeight="107.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="0.0">
 			<children>
 				<GridPane prefHeight="107.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -30,11 +30,11 @@
 						<ImageView fx:id="playbackImage" fitHeight="107.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" />
 						<AnchorPane fx:id="playbackBarLeftFG" prefHeight="200.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
 							<children>
-								<Label fx:id="textTop" layoutX="8.0" layoutY="46.0" prefHeight="17.0" style="-fx-text-fill: colorPlaybackFG;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
+								<Label fx:id="textTop" layoutX="8.0" layoutY="46.0" prefHeight="17.0" style="-fx-text-fill: white;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
 									<font><Font name="Arial" size="14.0" />
 									</font>
 								</Label>
-								<Label fx:id="textBot" layoutX="8.0" layoutY="69.0" prefHeight="17.0" style="-fx-text-fill: colorPlaybackFG;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
+								<Label fx:id="textBot" layoutX="8.0" layoutY="69.0" prefHeight="17.0" style="-fx-text-fill: white;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
 									<font><Font name="Arial" size="14.0" />
 									</font>
 								</Label>

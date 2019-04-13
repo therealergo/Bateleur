@@ -70,9 +70,12 @@ public class PlaybackController implements IntellitypeListener {
 	public void initialize(MasterController master) {
 		this.master = master;
 		
-		// Setup the skip forwards/backwards buttons
-		skipBackwardButtonImage.setEffect(master.playbackColorAnimation.lightingFG);
-		skipForwardButtonImage .setEffect(master.playbackColorAnimation.lightingFG);
+		// Colorize the playback controls to the FG color
+		playbackBarLeftFG.setEffect(master.playbackColorAnimation.lightingFG);
+		playbackBarRightFG.setEffect(master.playbackColorAnimation.lightingFG);
+
+		// Colorize the background fade to the BG color
+		playbackBarBG.setEffect(master.playbackColorAnimation.lightingBG);
 		
 		// Setup the play/pause button
 		master.playback.addPlayHandler(() -> {
@@ -83,29 +86,21 @@ public class PlaybackController implements IntellitypeListener {
 			playPauseButtonImage_O.setOpacity(1.0);
 			playPauseButtonImage_I.setOpacity(0.0);
 		});
-		playPauseButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
-		playPauseButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
 		
 		// Setup the shuffle enable/disable button
 		shuffleButton.setSelected(master.queue.isShuffleEnabled());
 		shuffleButtonImage_O.setOpacity(shuffleButton.isSelected() ? 1.0 : 0.0);
 		shuffleButtonImage_I.setOpacity(shuffleButton.isSelected() ? 0.0 : 1.0);
-		shuffleButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
-		shuffleButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
 		
 		// Setup the queue enable/disable button
 		queueButton  .setSelected(master.queue.isQueueEnabled()  );
 		queueButtonImage_O  .setOpacity(queueButton  .isSelected() ? 1.0 : 0.0);
 		queueButtonImage_I  .setOpacity(queueButton  .isSelected() ? 0.0 : 1.0);
-		queueButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
-		queueButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
 
 		// Setup the repeat enable/disable button
 		repeatButton .setSelected(master.queue.isRepeatEnabled() );
 		repeatButtonImage_O .setOpacity(repeatButton .isSelected() ? 1.0 : 0.0);
 		repeatButtonImage_I .setOpacity(repeatButton .isSelected() ? 0.0 : 1.0);
-		repeatButtonImage_O.setEffect(master.playbackColorAnimation.lightingFG);
-		repeatButtonImage_I.setEffect(master.playbackColorAnimation.lightingFG);
 		
 		// Setup the volume bar
 		volumeBar.setMin(0.0);
@@ -114,7 +109,6 @@ public class PlaybackController implements IntellitypeListener {
 		volumeBar.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
 			onVolumeSet(new_val.doubleValue()/100.0);
 		});
-		volumeBarCanvas.drawColor.bind(master.playbackColorAnimation.colorPlayback_FG);
 		
 		// Setup the seek bar
 		seekBar.setMin(0.0);
@@ -125,7 +119,6 @@ public class PlaybackController implements IntellitypeListener {
 				onSeekSet(new_val.doubleValue());
 			}
 		});
-		seekBarCanvas.drawColor.bind(master.playbackColorAnimation.colorPlayback_FG);
 		
 		// Setup a callback to change the displayed audio info. text and image when the playing audio file changes
 		master.playback.addSongChangeHandler(() -> {

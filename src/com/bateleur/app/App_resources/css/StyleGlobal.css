@@ -1,12 +1,12 @@
 /* Color the window border with BO color. */
 .border {
-	-fx-border-color: colorPlaybackBO;
+	-fx-border-color: white;
 }
 
 /* Add 2px FG-colored rounded border to all playback buttons. */
 .playbackBarButton {
 	-fx-border-radius: 300;
-	-fx-border-color: colorPlaybackFG;
+	-fx-border-color: white;
 	-fx-border-width: 2;
 	-fx-background-color: transparent;
 	-fx-padding: 0;
@@ -26,10 +26,10 @@
 
 /* Set the entire tab-header background to the BG color. */
 .tab-pane *.tab-header-background {
-	-fx-background-color: colorPlaybackBG;
+	-fx-background-color: white;
 }
 .tab {
-	-fx-background-color: colorPlaybackBG;
+	-fx-background-color: transparent;
 }
 
 /* Remove blue border on focused tabs. */
@@ -40,13 +40,13 @@
 
 /* Color tab text based on current FG color (or BO color when not selected). */
 .tab .tab-label {
-	-fx-text-fill: colorPlaybackBO;
+	-fx-text-fill: white;
 }
 .tab:hover .tab-label {
-	-fx-text-fill: colorPlaybackFG;
+	-fx-text-fill: white;
 }
 .tab:selected .tab-label {
-	-fx-text-fill: colorPlaybackFG;
+	-fx-text-fill: white;
 }
 
 /********************** SCROLL PANE BORDER STYLING **********************/
@@ -62,7 +62,7 @@
 
 /* This part of the fade is larger and positioned behind the text. */
 .scroll-pane-border-back {
-	-fx-border-width: 150px 0px 150px 0px;
+	-fx-border-width: 250px 0px 250px 0px;
 }
 
 /* This part of the fade is smaller and positioned in front of the text. */

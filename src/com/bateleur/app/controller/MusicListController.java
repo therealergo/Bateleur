@@ -1,11 +1,17 @@
 package com.bateleur.app.controller;
 
+import java.util.Set;
+
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.view.list.BListTab;
 
 import javafx.animation.KeyValue;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 public class MusicListController {
@@ -15,6 +21,9 @@ public class MusicListController {
 	
 	/** Reference to this MusicListController's MasterController. */
 	public MasterController master;
+	
+	/** Boolean used to ensure that the listTabPane is only initialized once. */
+	private boolean listTabPaneHasSetup;
 	
 	/**
 	 * Perform any initialization required by this MusicListController.
@@ -41,6 +50,57 @@ public class MusicListController {
 					);
 			});
 		}
+		
+		// Colorize 'listTabPane' based on the FG and BG colors
+		// Components can only be looked up once layout has been applied, so we have to wrap everything in this listener
+		listTabPane.needsLayoutProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
+			if (!listTabPaneHasSetup) {
+				listTabPaneHasSetup = true;
+				
+				// Make the background of the tab header BG colored
+				listTabPane.lookup(".tab-header-background").setEffect(master.playbackColorAnimation.lightingBG);
+				
+				// Color each of the tab labels in the header
+				Set<Node> tabs = listTabPane.lookupAll(".tab");
+				for (Node tab : tabs) {
+					
+					// Each tab defaults to BO colors
+					tab.setEffect(master.playbackColorAnimation.lightingBO);
+					
+					// Highlight the tab with FG colors when it is hovered over
+					tab.setOnMouseEntered((MouseEvent evt) -> {
+						tab.setEffect(master.playbackColorAnimation.lightingFG);
+					});
+					
+					// Set the 'selected' user property when the tab is clicked
+					// This property prevents the selected tab being reset to BO colors when it stops being hovered
+					EventHandler<? super MouseEvent> tabPressHandler = tab.getOnMousePressed();
+					tab.setOnMousePressed((MouseEvent evt) -> {
+						// Reset all other tabs to BO colors
+						for (Node tab2 : tabs) {
+							tab2.getProperties().put("selected", false);
+							tab2.setEffect(master.playbackColorAnimation.lightingBO);
+						}
+						
+						// Set this tab to FG colors when it is selected
+						tab.setEffect(master.playbackColorAnimation.lightingFG);
+						tab.getProperties().put("selected", true);
+						
+						// Actually perform the original action of the tab click
+						tabPressHandler.handle(evt);
+					});
+					
+					// Un-highlight the tab back to BO colors when it stops being hovered over
+					tab.setOnMouseExited((MouseEvent evt) -> {
+						if (Boolean.TRUE.equals(tab.getProperties().get("selected"))) {
+							tab.setEffect(master.playbackColorAnimation.lightingFG);
+						} else {
+							tab.setEffect(master.playbackColorAnimation.lightingBO);
+						}
+					});
+				}
+			}
+		});
 	}
 	
 	/**

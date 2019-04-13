@@ -28,7 +28,7 @@
 		</GridPane>
 		<AnchorPane fx:id="topBar" layoutX="-157.0" layoutY="-242.0" prefHeight="25.0" prefWidth="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<children>
-				<AnchorPane fx:id="topBarBG" opacity="0.3" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to bottom, colorPlaybackBG, rgba(255, 255, 255, 0.0));" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+				<AnchorPane fx:id="topBarBG" opacity="0.3" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to bottom, white, rgba(255, 255, 255, 0.0));" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 				<AnchorPane fx:id="topBarFG" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 					<children>
 						<Label id="topBarLabel" fx:id="topBarLabel" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

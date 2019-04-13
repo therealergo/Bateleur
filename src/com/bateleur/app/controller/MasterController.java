@@ -88,11 +88,8 @@ public class MasterController {
 		// Build the playback color animation
 		{
 			topBarFG.setEffect(playbackColorAnimation.lightingFG);
-			
-			root.setStyle("colorPlaybackBG: black;\n" + 
-					"colorPlaybackFG: white;\n" + 
-					"colorPlaybackBO: black;\n" + 
-					"colorPlaybackLI: white;");
+			topBarBG.setEffect(playbackColorAnimation.lightingBG);
+			canvasBorderBO.setEffect(playbackColorAnimation.lightingBO);
 		}
 		
 		// Build the vertical slide animation
@@ -146,7 +143,7 @@ public class MasterController {
 		/**
 		 * Current BG color.
 		 * This color can directly be used to style components, 
-		 * but generally looked-up color 'colorPlaybackBG' and effect 'lightingBG' are used for convenience.
+		 * but generally effect 'lightingBG' is both faster and more convenient.
 		 */
 		public final ObjectProperty<Color> colorPlayback_BG ;
 		/** Start point of BG color animation -- when colorPlaybackFade is 0.0 colorPlayback_BG is this. */
@@ -157,7 +154,7 @@ public class MasterController {
 		/**
 		 * Current FG color.
 		 * This color can directly be used to style components, 
-		 * but generally looked-up color 'colorPlaybackFG' and effect 'lightingFG' are used for convenience.
+		 * but generally effect 'lightingFG' is both faster and more convenient.
 		 */
 		public final ObjectProperty<Color> colorPlayback_FG ;
 		/**  Start point of FG color animation -- when colorPlaybackFade is 0.0 colorPlayback_FG is this. */
@@ -168,7 +165,7 @@ public class MasterController {
 		/**
 		 * Current BO color.
 		 * This color can directly be used to style components, 
-		 * but generally looked-up color 'colorPlaybackBO' and effect 'lightingBO' are used for convenience.
+		 * but generally effect 'lightingBO' is both faster and more convenient.
 		 */
 		public final ObjectProperty<Color> colorPlayback_BO ;
 		/**  Start point of BO color animation -- when colorPlaybackFade is 0.0 colorPlayback_BO is this. */
@@ -179,7 +176,7 @@ public class MasterController {
 		/**
 		 * Current LI color.
 		 * This color can directly be used to style components, 
-		 * but generally looked-up color 'colorPlaybackLI' and effect 'lightingLI' are used for convenience.
+		 * but generally effect 'lightingLI' is both faster and more convenient.
 		 */
 		public final ObjectProperty<Color> colorPlayback_LI ;
 		/**  Start point of LI color animation -- when colorPlaybackFade is 0.0 colorPlayback_LI is this. */
@@ -188,23 +185,19 @@ public class MasterController {
 		private      Color                 colorPlayback1_LI;
 		
 		/**
-		 * Effect that can be applied to multiply a component by the BG-color.
-		 * Using CSS looked-up color 'colorPlaybackBG' is preferred, but for components this effect is necessary.
+		 * Effect that is applied to multiply a component by the BG-color.
 		 */
 		public final Lighting lightingBG;
 		/**
-		 * Effect that can be applied to multiply a component by the FG-color.
-		 * Using CSS looked-up color 'colorPlaybackFG' is preferred, but for components this effect is necessary.
+		 * Effect that is applied to multiply a component by the FG-color.
 		 */
 		public final Lighting lightingFG;
 		/**
-		 * Effect that can be applied to multiply a component by the BO-color.
-		 * Using CSS looked-up color 'colorPlaybackBO' is preferred, but for components this effect is necessary.
+		 * Effect that is applied to multiply a component by the BO-color.
 		 */
 		public final Lighting lightingBO;
 		/**
-		 * Effect that can be applied to multiply a component by the LI-color.
-		 * Using CSS looked-up color 'colorPlaybackLI' is preferred, but for components this effect is necessary.
+		 * Effect that is applied to multiply a component by the LI-color.
 		 */
 		public final Lighting lightingLI;
 		
@@ -262,12 +255,6 @@ public class MasterController {
 					colorPlayback_FG.set(colorPlayback0_FG.interpolate(colorPlayback1_FG, index));
 					colorPlayback_BO.set(colorPlayback0_BO.interpolate(colorPlayback1_BO, index));
 					colorPlayback_LI.set(colorPlayback0_LI.interpolate(colorPlayback1_LI, index));
-					
-					// Set the looked-up colors to the newly-computed colors
-					root.setStyle("colorPlaybackBG: " + ('#' + colorPlayback_BG.get().toString().substring(2)) + ";\n" + 
-					              "colorPlaybackFG: " + ('#' + colorPlayback_FG.get().toString().substring(2)) + ";\n" + 
-					              "colorPlaybackBO: " + ('#' + colorPlayback_BO.get().toString().substring(2)) + ";\n" + 
-					              "colorPlaybackLI: " + ('#' + colorPlayback_LI.get().toString().substring(2)) );
 					
 					// Set the lighting effect colors to the newly-computed colors
 					lightingBG.setLight(new Light.Distant(0, 90.0, colorPlayback_BG.get()));
