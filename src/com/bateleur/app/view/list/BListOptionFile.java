@@ -35,10 +35,11 @@ public class BListOptionFile extends BListOption {
 	
 	@Override public Node buildBackground() {
 		Pane background = new Pane();
-		background.setMaxHeight(30.0);
+		background.setMinHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));
+		background.setMaxHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));
 		background.setPrefWidth(10000);
 		background.setPadding(Insets.EMPTY);
-		background.setOpacity(0.7);
+		background.setOpacity(0.6);
 		background.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		background.setEffect(isEven ? bListTab.musicListController.master.playbackColorAnimation.lightingBG : bListTab.musicListController.master.playbackColorAnimation.lightingLI);
 		
@@ -47,7 +48,8 @@ public class BListOptionFile extends BListOption {
 	
 	@Override public Node buildForeground() {
 		Button foreground = new Button();
-		foreground.setMaxHeight(30.0);
+		foreground.setMinHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));
+		foreground.setMaxHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));
 		foreground.setPrefWidth(10000);
 		foreground.setPadding(Insets.EMPTY);
 		foreground.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));

@@ -11,10 +11,8 @@ import com.bateleur.app.model.SettingsModel;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Tab;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 
 public class BListTab extends Tab {
@@ -87,22 +85,10 @@ public class BListTab extends Tab {
 		for (int i = 0; i<options.size(); i++) {
 			innerGridBackground.add(options.get(i).buildBackground(), 0, i);
 		}
-		innerGridBackground.getColumnConstraints().clear();
-		innerGridBackground.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
-		innerGridBackground.getRowConstraints().clear();
-		for (int i = 0; i<innerGridBackground.getChildren().size(); i++) {
-			innerGridBackground.getRowConstraints().add(new RowConstraints(30.0));
-		}
 		
 		innerGridForeground.getChildren().clear();
 		for (int i = 0; i<options.size(); i++) {
 			innerGridForeground.add(options.get(i).buildForeground(), 0, i);
-		}
-		innerGridForeground.getColumnConstraints().clear();
-		innerGridForeground.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
-		innerGridForeground.getRowConstraints().clear();
-		for (int i = 0; i<innerGridForeground.getChildren().size(); i++) {
-			innerGridForeground.getRowConstraints().add(new RowConstraints(30.0));
 		}
 		
 		playback.addSongChangeHandler(() -> {
