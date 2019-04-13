@@ -5,8 +5,6 @@ import java.awt.image.BufferedImageOp;
 import java.awt.image.Kernel;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.net.URI;
 
 import javax.imageio.ImageIO;
 
@@ -27,24 +25,27 @@ public class BAudioLocal extends BAudio {
 		super(file);
 	}
 	
-	public BAudioLocal(SettingsModel settings, ResourceFile file, URI audioURI) throws Exception {
+	public BAudioLocal(SettingsModel settings, ResourceFile file, ResourceFile audioFile) throws Exception {
 		super(file);
-		loadMetadataFromURI(settings, audioURI);
+		loadMetadataFromURI(settings, audioFile);
 	}
 	
-	private void loadMetadataFromURI(SettingsModel settings, URI audioURI) throws Exception {
-		// Locally store the URI pointing to the audio file
-		set(settings.PLAYBACK_URI.to(audioURI));
+	private void loadMetadataFromURI(SettingsModel settings, ResourceFile audioFile) throws Exception {
+		// Locally store the path to the audio file
+		set(settings.PLAYBACK_FILE.to(audioFile));
 		
 		// Read all metadata from the audio file
-		AudioFile f = AudioFileIO.read(new File(audioURI));
+		AudioFile f = AudioFileIO.read(audioFile.toFile());
 		Tag tag = f.getTag();
 		
 		// Read and locally store all of the audio file's metadata tags
-		set(settings.AUDIO_PROP_TITLE .to(tag.getFirst(FieldKey.TITLE )));
-		set(settings.AUDIO_PROP_ARTIST.to(tag.getFirst(FieldKey.ARTIST)));
-		set(settings.AUDIO_PROP_ALBUM .to(tag.getFirst(FieldKey.ALBUM )));
-		set(settings.AUDIO_PROP_TRACKN.to(tag.getFirst(FieldKey.TRACK )));
+		if (tag.hasField(FieldKey.TITLE )) { set(settings.AUDIO_PROP_TITLE .to(tag.getFirst(FieldKey.TITLE ))); }
+		if (tag.hasField(FieldKey.ARTIST)) { set(settings.AUDIO_PROP_ARTIST.to(tag.getFirst(FieldKey.ARTIST))); }
+		if (tag.hasField(FieldKey.ALBUM )) { set(settings.AUDIO_PROP_ALBUM .to(tag.getFirst(FieldKey.ALBUM ))); }
+		if (tag.hasField(FieldKey.TRACK )) { set(settings.AUDIO_PROP_TRACKN.to(tag.getFirst(FieldKey.TRACK ))); }
+
+		// Set title to filename if no title is found
+		if (get(settings.AUDIO_PROP_TITLE).equals(settings.AUDIO_PROP_TITLE.val)) { set(settings.AUDIO_PROP_TITLE.to(audioFile.getShortName())); }
 		
 		// Read and set all data pertaining to the audio file's art
 		Artwork art = tag.getFirstArtwork();
@@ -90,7 +91,7 @@ public class BAudioLocal extends BAudio {
 			image_bl_baos.close();
 			
 			// Create the BArtLoaderLocal instance which will locally store all of the image data
-			set(settings.AUDIO_PROP_ART.to(new BArtLoaderLocal(audioURI, image_th_encoded_bytes, image_bl_encoded_bytes)));
+			set(settings.AUDIO_PROP_ART.to(new BArtLoaderLocal(audioFile, image_th_encoded_bytes, image_bl_encoded_bytes)));
 			
 			// Compute the foreground and background colors of the album art
 			{

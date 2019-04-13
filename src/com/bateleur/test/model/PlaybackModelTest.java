@@ -1,5 +1,17 @@
 package com.bateleur.test.model;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotSame;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+import static org.mockito.ArgumentMatchers.any;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.bateleur.app.App;
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioLocal;
@@ -7,21 +19,13 @@ import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.Main;
 import com.therealergo.main.MainException;
+
 import de.saxsys.javafx.test.JfxRunner;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-
-import static junit.framework.TestCase.*;
-import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(JfxRunner.class)
 public class PlaybackModelTest {
     private static final int FADE_TIME = 0;
     private static final long PLAY_TIME = 175L;
-    private static final double PLAYBACK_TIME = 10000.0;
 
     private PlaybackModel playbackModel;
 
@@ -42,7 +46,7 @@ public class PlaybackModelTest {
         settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
         testAudio = new BAudioLocal(settings,
                                    Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class),
-                                   Main.resource.getResourceFileClass("test_in>test.mp3", App.class).getPath().toUri());
+                                   Main.resource.getResourceFileClass("test_in>test.mp3", App.class));
     }
 
     /**
@@ -77,7 +81,7 @@ public class PlaybackModelTest {
         // Given
         BAudio originalAudio = new BAudioLocal(settings,
                                                Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class),
-                                               Main.resource.getResourceFileClass("test_in>test.mp3", App.class).getPath().toUri());
+                                               Main.resource.getResourceFileClass("test_in>test.mp3", App.class));
 
         assert !(testAudio.equals(originalAudio));    // validates the test environment was created correctly, not unit
 

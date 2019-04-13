@@ -1,6 +1,5 @@
 package com.bateleur.app.model;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -47,10 +46,10 @@ public class LibraryModel implements Iterable<BAudio> {
 		
 		for (int i = 0; i<audioFileList.length; i++) {
 			if (settings.get(settings.LIBRARY_OKAY_TYPES).contains(audioFileList[i].getExtension())) {
-				URI searchURI = audioFileList[i].getPath().toUri();
+				ResourceFile searchFile = audioFileList[i];
 				
 				reset();
-				filterBy((BAudio audio) -> audio.get(settings.PLAYBACK_URI).equals(searchURI));
+				filterBy((BAudio audio) -> audio.get(settings.PLAYBACK_FILE).equals(searchFile));
 				
 				while (listFiltered.size() > 1) {
 					listLibarary.remove(listFiltered.remove(0).delete());
@@ -58,7 +57,7 @@ public class LibraryModel implements Iterable<BAudio> {
 				
 				if (listFiltered.size() < 1) {
 					long nameVal = settings.get(settings.LIBRARY_NEXT_VAL);
-					listLibarary.add(new BAudioLocal(settings, data.getChildFile(nameVal + ".ser"), searchURI));
+					listLibarary.add(new BAudioLocal(settings, data.getChildFile(nameVal + ".ser"), searchFile));
 					settings.set(settings.LIBRARY_NEXT_VAL.to(nameVal + 1));
 				}
 			}

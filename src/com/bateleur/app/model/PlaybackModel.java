@@ -51,7 +51,7 @@ public class PlaybackModel {
 			player = null;
 			loadedAudio = null;
 		} else {
-			Media media = new Media(audio.get(settings.PLAYBACK_URI).toString());
+			Media media = new Media(audio.get(settings.PLAYBACK_FILE).getFullURI());
 			player = new MediaPlayer(media);
 			player.setOnPlaying(() -> {
 				for (int i = 0; i<onPlayHandlers.size(); i++) {

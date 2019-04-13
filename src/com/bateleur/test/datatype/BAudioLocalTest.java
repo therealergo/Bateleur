@@ -46,7 +46,7 @@ public class BAudioLocalTest {
         // Create audio file to test with
         testAudio = new BAudioLocal(settings,
                                     Main.resource.getResourceFileClass("test_out>BAudioLocalTest>test_meta.ser", App.class),
-                                    Main.resource.getResourceFileClass("test_in>test.mp3", App.class).getPath().toUri());
+                                    Main.resource.getResourceFileClass("test_in>test.mp3", App.class));
     }
 
     /**

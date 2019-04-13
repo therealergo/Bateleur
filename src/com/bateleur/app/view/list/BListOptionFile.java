@@ -70,18 +70,27 @@ public class BListOptionFile extends BListOption {
 		innerLabel = new Label();
 		innerLabel.getStyleClass().add("listOptionLabel");
 		innerLabel.setText(audio.get(bListTab.musicListController.master.settings.AUDIO_PROP_TITLE));
+		if (innerLabel.getText().equals(bListTab.musicListController.master.settings.AUDIO_PROP_TITLE.val)) {
+			innerLabel.setOpacity(0.3);
+		}
 		innerLabel.prefHeightProperty().bind(foreground.heightProperty());
 		innerGrid.add(innerLabel, 1, 0);
 		
 		innerLabel = new Label();
 		innerLabel.getStyleClass().add("listOptionLabel");
 		innerLabel.setText(audio.get(bListTab.musicListController.master.settings.AUDIO_PROP_ARTIST));
+		if (innerLabel.getText().equals(bListTab.musicListController.master.settings.AUDIO_PROP_ARTIST.val)) {
+			innerLabel.setOpacity(0.3);
+		}
 		innerLabel.prefHeightProperty().bind(foreground.heightProperty());
 		innerGrid.add(innerLabel, 2, 0);
 		
 		innerLabel = new Label();
 		innerLabel.getStyleClass().add("listOptionLabel");
 		innerLabel.setText(audio.get(bListTab.musicListController.master.settings.AUDIO_PROP_ALBUM));
+		if (innerLabel.getText().equals(bListTab.musicListController.master.settings.AUDIO_PROP_ALBUM.val)) {
+			innerLabel.setOpacity(0.3);
+		}
 		innerLabel.prefHeightProperty().bind(foreground.heightProperty());
 		innerGrid.add(innerLabel, 3, 0);
 		

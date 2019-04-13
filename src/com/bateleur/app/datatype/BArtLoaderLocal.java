@@ -1,10 +1,8 @@
 package com.bateleur.app.datatype;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
-import java.net.URI;
 
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -12,13 +10,15 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 
+import com.therealergo.main.resource.ResourceFile;
+
 import javafx.scene.image.Image;
 
 public class BArtLoaderLocal extends BArtLoader {
 	private static final long serialVersionUID = -4271906009974761079L;
 	
-	/** The URI of the audio file that contains the image data that this BArtLoaderLocal represents. */
-	private final URI audioURI;
+	/** ResourceFile pointing to the audio file that contains the image data that this BArtLoaderLocal represents. */
+	private final ResourceFile audioFile;
 	/** This BArtLoaderLocal's thumbnail image, encoded into a format meant for on-disk storage. */
 	private final byte[] image_th_encoded_bytes;
 	/** This BArtLoaderLocal's blurred image, encoded into a format meant for on-disk storage. */
@@ -51,13 +51,13 @@ public class BArtLoaderLocal extends BArtLoader {
 	
 	/**
 	 * Creates a new BArtLoaderLocal instance, which represents audio art loaded from a local file.
-	 * @param audioURI               The URI of the audio file from which the audio art is loaded.
+	 * @param audioFile              ResourceFile pointing to the audio file from which the audio art is loaded.
 	 * @param image_th_encoded_bytes The thumbnail image of audio file, stored in a byte array as a disk-writable encoded format (e.g. PNG or JPEG).
 	 * @param image_bl_encoded_bytes The blurred image of audio file, stored in a byte array as a disk-writable encoded format (e.g. PNG or JPEG).
 	 */
-	public BArtLoaderLocal(URI audioURI, byte[] image_th_encoded_bytes, byte[] image_bl_encoded_bytes) {
-		if (audioURI == null) {
-			throw new NullPointerException("audioURI cannot be null!");
+	public BArtLoaderLocal(ResourceFile audioFile, byte[] image_th_encoded_bytes, byte[] image_bl_encoded_bytes) {
+		if (audioFile == null) {
+			throw new NullPointerException("audioFile cannot be null!");
 		}
 		if (image_th_encoded_bytes == null) {
 			throw new NullPointerException("image_th_encoded_bytes cannot be null!");
@@ -66,7 +66,7 @@ public class BArtLoaderLocal extends BArtLoader {
 			throw new NullPointerException("image_bl_encoded_bytes cannot be null!");
 		}
 		
-		this.audioURI = audioURI;
+		this.audioFile = audioFile;
 		this.image_th_encoded_bytes = image_th_encoded_bytes;
 		this.image_bl_encoded_bytes = image_bl_encoded_bytes;
 		
@@ -84,7 +84,7 @@ public class BArtLoaderLocal extends BArtLoader {
 			try {
 				retVal = new Image(
 					new ByteArrayInputStream(
-						AudioFileIO.read(new File(audioURI)).getTag().getFirstArtwork().getBinaryData()
+						AudioFileIO.read(audioFile.toFile()).getTag().getFirstArtwork().getBinaryData()
 					)
 				);
 			} catch (InvalidAudioFrameException | CannotReadException | IOException | TagException | ReadOnlyFileException e) {

@@ -189,7 +189,7 @@ public class PlaybackController implements IntellitypeListener {
 		if (Main.os.getOS().equals(EnumOS.WINDOWS)) {
 			// Get the 64-bit / 32-bit specific path to the native library
 			String libraryName = System.getProperty("os.arch").contains("64") ? "JIntellitype64.dll" : "JIntellitype.dll";
-			String libraryPath = Main.resource.getResourceFileClass("natives>" + libraryName, App.class).getPath().toAbsolutePath().toString();
+			String libraryPath = Main.resource.getResourceFileClass("natives>" + libraryName, App.class).toPath().toAbsolutePath().toString();
 			
 			// initialize JIntellitype with the frame so all windows commands can be attached to this window
 			JIntellitype.setLibraryLocation(libraryPath);

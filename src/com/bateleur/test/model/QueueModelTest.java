@@ -53,7 +53,7 @@ public class QueueModelTest {
 
         testAudio = new BAudioLocal(settings,
                                     Main.resource.getResourceFileClass("test_out>QueueModelTest>test_meta.ser", App.class),
-                                    Main.resource.getResourceFileClass("test_in>QueueModelTest>library>test.mp3", App.class).getPath().toUri());
+                                    Main.resource.getResourceFileClass("test_in>QueueModelTest>library>test.mp3", App.class));
         queueModel.setQueue(library, testAudio);
     }
 

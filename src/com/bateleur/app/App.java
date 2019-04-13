@@ -35,7 +35,7 @@ public class App extends Application {
 		QueueModel    queue    = new QueueModel   (settings                                                               );
 		
 		{ // Start FXML window
-			FXMLLoader loader = new FXMLLoader(Main.resource.getResourceFileClass("views>MasterView.fxml", App.class).getPath().toUri().toURL());
+			FXMLLoader loader = new FXMLLoader(Main.resource.getResourceFileClass("views>MasterView.fxml", App.class).toURL());
 			BuilderFactory defaultBuilderFactory = new JavaFXBuilderFactory();
 			loader.setBuilderFactory(b -> {
 				switch (b.getSimpleName()) {
@@ -64,7 +64,7 @@ public class App extends Application {
 			Parent root = (Parent) loader.load();
 			BorderlessScene scene = new BorderlessScene(primaryStage, root);
 			
-			scene.getStylesheets().add(Main.resource.getResourceFileClass("css>StyleGlobal.css", App.class).getPath().toUri().toURL().toExternalForm());
+			scene.getStylesheets().add(Main.resource.getResourceFileClass("css>StyleGlobal.css", App.class).toURL().toExternalForm());
 			
 			primaryStage.setTitle("Bateleur INDEV");
 			((Label) root.lookup("#topBarLabel")).setText(primaryStage.getTitle());

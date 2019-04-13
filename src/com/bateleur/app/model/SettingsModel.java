@@ -1,7 +1,6 @@
 package com.bateleur.app.model;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -16,7 +15,7 @@ public class SettingsModel extends BFile {
 	
 	public final BFile.Entry< Integer                   > TEST_VAL           = new BFile.Entry< Integer                   >( "__testVal"          , -1                          );
 	
-	public final BFile.Entry< URI                       > PLAYBACK_URI       = new BFile.Entry< URI                       >( "__playbackURI"      , URI.create("")              );
+	public final BFile.Entry< ResourceFile              > PLAYBACK_FILE      = new BFile.Entry< ResourceFile              >( "__playbackFile"     , Main.resource.getResourceFileGlobal(""));
 	
 	public final BFile.Entry< ArrayList<String>         > PLAYLIST_NAME_LIST = new BFile.Entry< ArrayList<String>         >( "__playlistNameList" , new ArrayList<String>()     );
 
@@ -34,10 +33,10 @@ public class SettingsModel extends BFile {
     public final BFile.Entry< Boolean                   > QUEUE_QUEUE_EN     = new BFile.Entry< Boolean                   >( "__queueQueueEn"     , true                        );
     public final BFile.Entry< Boolean                   > QUEUE_REPEAT_EN    = new BFile.Entry< Boolean                   >( "__queueRepeatEn"    , true                        );
     
-    public final BFile.Entry< String                    > AUDIO_PROP_TITLE   = new BFile.Entry< String                    >( "__title"            , "No title found!"           );
-    public final BFile.Entry< String                    > AUDIO_PROP_ARTIST  = new BFile.Entry< String                    >( "__artist"           , "No artist found!"          );
-    public final BFile.Entry< String                    > AUDIO_PROP_ALBUM   = new BFile.Entry< String                    >( "__album"            , "No album found!"           );
-    public final BFile.Entry< String                    > AUDIO_PROP_TRACKN  = new BFile.Entry< String                    >( "__trackn"           , "No track number found!"    );
+    public final BFile.Entry< String                    > AUDIO_PROP_TITLE   = new BFile.Entry< String                    >( "__title"            , "<<no title>>"              );
+    public final BFile.Entry< String                    > AUDIO_PROP_ARTIST  = new BFile.Entry< String                    >( "__artist"           , "<<no artist>>"             );
+    public final BFile.Entry< String                    > AUDIO_PROP_ALBUM   = new BFile.Entry< String                    >( "__album"            , "<<no album>>"              );
+    public final BFile.Entry< String                    > AUDIO_PROP_TRACKN  = new BFile.Entry< String                    >( "__trackn"           , "<<no track number>>"       );
     public final BFile.Entry< BArtLoader                > AUDIO_PROP_ART     = new BFile.Entry< BArtLoader                >( "__art"              , new BArtLoader()            );
     public final BFile.Entry< Vector3D                  > AUDIO_PROP_COLR_BG = new BFile.Entry< Vector3D                  >( "__colorBG"          , new Vector3D(0.0, 0.0, 0.0) );
     public final BFile.Entry< Vector3D                  > AUDIO_PROP_COLR_FG = new BFile.Entry< Vector3D                  >( "__colorFG"          , new Vector3D(1.0, 1.0, 1.0) );
