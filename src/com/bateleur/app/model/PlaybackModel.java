@@ -43,6 +43,9 @@ public class PlaybackModel {
 
 	public void loadAudio(BAudio audio, int fadeOutTimeMS) {
 		if (player != null) {
+			for (int i = 0; i<onPauseHandlers.size(); i++) {
+				onPauseHandlers.get(i).run();
+			}
 			player.dispose();
 			loadedAudio = null;
 		}

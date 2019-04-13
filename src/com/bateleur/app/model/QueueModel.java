@@ -38,25 +38,27 @@ public class QueueModel {
     }
     
     private void wrapQueueProcessedIndex() {
-		if (isRepeatEnabled()) {
-			queueProcessedIndex = ((queueProcessedIndex % queueProcessed.size()) + queueProcessed.size()) % queueProcessed.size();
-		} else {
-			queueProcessedIndex = Math.min(Math.max(queueProcessedIndex, 0), queueProcessed.size()-1);
-		}
+		queueProcessedIndex = ((queueProcessedIndex % queueProcessed.size()) + queueProcessed.size()) % queueProcessed.size();
     }
 
-    public void skipForwards() {
+    public boolean skipForwards() {
     	if (isQueueEnabled()) {
+    		int queueProcessedIndex_initial = queueProcessedIndex;
         	queueProcessedIndex++;
         	wrapQueueProcessedIndex();
+        	return isRepeatEnabled() || queueProcessedIndex > queueProcessedIndex_initial;
     	}
+    	return isRepeatEnabled();
     }
 
-    public void skipBackwards() {
+    public boolean skipBackwards() {
     	if (isQueueEnabled()) {
+    		int queueProcessedIndex_initial = queueProcessedIndex;
     		queueProcessedIndex--;
         	wrapQueueProcessedIndex();
+    		return isRepeatEnabled() || queueProcessedIndex < queueProcessedIndex_initial;
     	}
+    	return isRepeatEnabled();
     }
 
     public void setQueue(LibraryModel libraryModel, BAudio startingAudio) {

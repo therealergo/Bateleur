@@ -145,9 +145,11 @@ public class PlaybackController implements IntellitypeListener {
 							seekBar.setValue(master.playback.getPlaybackTimeMS() / master.playback.getPlaybackLengthMS());
 							TEMP_OSS = false;
 							if (master.playback.getPlaybackTimeMS() >= master.playback.getPlaybackLengthMS()) {
-								master.queue.skipForwards();
+								boolean shouldAutoPlay = master.queue.skipForwards();
 								master.playback.loadAudio(master.queue.get(), master.settings.get(master.settings.FADE_TIME_USER));
-								master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
+								if (shouldAutoPlay) {
+									master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
+								}
 							}
 						}
 					});
