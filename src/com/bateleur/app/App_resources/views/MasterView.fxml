@@ -26,7 +26,7 @@
 				<fx:include fx:id="musicList" source="MusicListView.fxml" GridPane.rowIndex="1" />
 			</children>
 		</GridPane>
-		<AnchorPane fx:id="topBar" layoutX="-157.0" layoutY="-242.0" prefHeight="25.0" prefWidth="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<AnchorPane fx:id="topBar" style="-fx-pref-height: __uiTitlebarVSize" layoutX="-157.0" layoutY="-242.0" prefHeight="25.0" prefWidth="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<children>
 				<AnchorPane fx:id="topBarBG" opacity="0.3" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to bottom, white, rgba(255, 255, 255, 0.0));" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 				<AnchorPane fx:id="topBarFG" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -36,7 +36,7 @@
 								<Font name="Arial" size="14.0" />
 							</font></Label>
 						<Button id="topBarDrag" mnemonicParsing="false" style="-fx-background-color: rgba(255, 255, 255, 0.0);" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-						<Button id="topBarClose" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+						<Button id="topBarClose" mnemonicParsing="false" prefWidth="48.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<graphic>
 								<ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
 									<image>
@@ -45,7 +45,7 @@
 								</ImageView>
 							</graphic>
 						</Button>
-						<Button id="topBarMaximize" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
+						<Button id="topBarMaximize" mnemonicParsing="false" prefWidth="48.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="48.0" AnchorPane.topAnchor="0.0">
 							<graphic>
 								<ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
 									<image>
@@ -54,7 +54,7 @@
 								</ImageView>
 							</graphic>
 						</Button>
-						<Button id="topBarMinimize" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="0.0">
+						<Button id="topBarMinimize" mnemonicParsing="false" prefWidth="48.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="96.0" AnchorPane.topAnchor="0.0">
 							<graphic>
 								<ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
 									<image>

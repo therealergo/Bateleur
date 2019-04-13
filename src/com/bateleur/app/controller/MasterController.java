@@ -92,6 +92,13 @@ public class MasterController {
 			canvasBorderBO.setEffect(playbackColorAnimation.lightingBO);
 		}
 		
+		// Set UI values looked up from settings
+		{
+			root.setStyle(
+				settings.UI_TITLEBAR_VSIZE.key + ": " + settings.UI_TITLEBAR_VSIZE.val + ";"
+			);
+		}
+		
 		// Build the vertical slide animation
 		{
 			// Blur lowerPane as verticalSlideAnimation plays to make the animation appear more smooth
