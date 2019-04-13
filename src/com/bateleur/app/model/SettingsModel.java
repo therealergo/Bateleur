@@ -47,6 +47,7 @@ public class SettingsModel extends BFile {
     public final BFile.Entry< Double                    > UI_MOTION_BLUR_MUL = new BFile.Entry< Double                    >( "__uiMotionBlurMul"  , 2.0                         );
     public final BFile.Entry< Double                    > UI_ANIM_TIME_MUL   = new BFile.Entry< Double                    >( "__uiAnimTimeMul"    , 5.0                         );
     public final BFile.Entry< Double                    > UI_ART_SCALING     = new BFile.Entry< Double                    >( "__uiArtScaling"     , 0.9                         );
+    public final BFile.Entry< Double                    > UI_TITLEBAR_VSIZE  = new BFile.Entry< Double                    >( "__uiTitlebarVSize"  , 25.0                        );
     public final BFile.Entry< Double                    > UI_BLUR_RADIUS     = new BFile.Entry< Double                    >( "__uiBlurRadius"     , 0.1                         );
 	
 	/** 

@@ -93,18 +93,22 @@ public class BBackgroundCanvas extends Canvas {
 		Color cBG = new Color(cBG_VEC.x, cBG_VEC.y, cBG_VEC.z, 1.0);
 		((Pane)getParent()).setBackground(new Background(new BackgroundFill(cBG, CornerRadii.EMPTY, Insets.EMPTY)));
 		
-		double areaWidth  = width     ;
-		double areaHeight = height-107;
+		double areaWidth  = width                                                  ;
+		double areaHeight = height - 107 - settings.get(settings.UI_TITLEBAR_VSIZE);
+		double areaOffX   = 0.0                                                    ;
+		double areaOffY   = settings.get(settings.UI_TITLEBAR_VSIZE)               ;
 		double scaling = settings.get(settings.UI_ART_SCALING);
-		gc.setGlobalAlpha(Math.min(Math.max(artAlpha.doubleValue(), 0.0), 1.0));
-    	drawImageFit(
-    			gc, 
-    			im, 
-    			(areaWidth  - areaWidth  * scaling) / 2.0, 
-    			(areaHeight - areaHeight * scaling) / 2.0, 
-    			areaWidth  * scaling, 
-    			areaHeight * scaling
-    	);
+		if (areaHeight > 0) {
+			gc.setGlobalAlpha(Math.min(Math.max(artAlpha.doubleValue(), 0.0), 1.0));
+	    	drawImageFit(
+	    			gc, 
+	    			im, 
+	    			(areaWidth  - areaWidth  * scaling) / 2.0 + areaOffX, 
+	    			(areaHeight - areaHeight * scaling) / 2.0 + areaOffY, 
+	    			areaWidth  * scaling, 
+	    			areaHeight * scaling
+	    	);
+		}
 	}
 	
 	@Override
