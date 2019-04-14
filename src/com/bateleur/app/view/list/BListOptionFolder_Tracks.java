@@ -21,7 +21,7 @@ public class BListOptionFolder_Tracks extends BListOptionFolder {
 		List<BListOption> options = new LinkedList<BListOption>();
 		library.reset();
 		library.forEach((BAudio audio) -> {
-			options.add(new BListOptionFile(bListTab, audio));
+			options.add(new BListOptionAudio(bListTab, audio));
 		});
 		return options;
 	}

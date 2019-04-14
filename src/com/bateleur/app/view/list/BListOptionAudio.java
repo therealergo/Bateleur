@@ -14,12 +14,12 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
-public class BListOptionFile extends BListOption {
+public class BListOptionAudio extends BListOption {
 	public final BAudio audio;
 	
 	private Label isPlayingLabel;
 
-	public BListOptionFile(BListTab bListTab, BAudio audio) {
+	public BListOptionAudio(BListTab bListTab, BAudio audio) {
 		super(bListTab);
 		
 		this.audio = audio;

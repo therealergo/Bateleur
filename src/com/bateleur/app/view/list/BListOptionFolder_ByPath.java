@@ -59,7 +59,7 @@ public class BListOptionFolder_ByPath extends BListOptionFolder {
 			library.reset();
 			library.forEach((BAudio audio) -> {
 				if (audio.get(settings.PLAYBACK_FILE).getParent().equals(folder)) {
-					options.add(new BListOptionFile(bListTab, audio));
+					options.add(new BListOptionAudio(bListTab, audio));
 				}
 			});
 			

@@ -26,7 +26,7 @@ public class BListOptionFolder_Queue extends BListOptionFolder {
 		List<BListOption> options = new LinkedList<BListOption>();
 		Iterator<BAudio> queueIterator = queue.getQueueIterator();
 		while (queueIterator.hasNext()) {
-			options.add(new BListOptionFile(bListTab, queueIterator.next()));
+			options.add(new BListOptionAudio(bListTab, queueIterator.next()));
 		};
 		return options;
 	}

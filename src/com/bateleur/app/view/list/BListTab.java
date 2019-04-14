@@ -89,7 +89,7 @@ public class BListTab extends Tab {
 		rebuildList(baseFolder);
 	}
 
-	public void onOptionSelected(BListOptionFile bListOption) {
+	public void onOptionSelected(BListOptionAudio bListOption) {
 		library.reset();
 		library.sortBy((BAudio a0, BAudio a1) -> {
 			return a0.get(settings.AUDIO_PROP_TITLE).compareTo(a1.get(settings.AUDIO_PROP_TITLE));
@@ -97,8 +97,8 @@ public class BListTab extends Tab {
 		
 		List<BAudio> audioList = new LinkedList<BAudio>();
 		options.forEach((BListOption option) -> {
-			if (option instanceof BListOptionFile) {
-				audioList.add(((BListOptionFile)option).audio);
+			if (option instanceof BListOptionAudio) {
+				audioList.add(((BListOptionAudio)option).audio);
 			}
 		});
 		musicListController.master.queue.setQueue(audioList, bListOption.audio);

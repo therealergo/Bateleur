@@ -53,7 +53,7 @@ public abstract class BListOptionFolder_ByType extends BListOptionFolder {
 				return audio.get(getType()).equals(artistName);
 			});
 			library.forEach((BAudio audio) -> {
-				options.add(new BListOptionFile(bListTab, audio));
+				options.add(new BListOptionAudio(bListTab, audio));
 			});
 			return options;
 		}
