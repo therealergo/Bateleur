@@ -48,10 +48,15 @@ public class MusicListController {
 		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolderByAlbum .class));
 		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_ByPath .class));
 		
+		// We can only get the scene after initialization finishes, so we wait until then
 		listTabPane.sceneProperty().addListener((ObservableValue<? extends Scene> ov, Scene old_val, Scene new_val) -> {
+			
+			// Add a key listener to detect the 'backspace' key being pressed
 			new_val.setOnKeyPressed(new EventHandler<KeyEvent>() {
 				@Override public void handle(KeyEvent evt) {
 					if (evt.getCode().equals(KeyCode.BACK_SPACE)) {
+						
+						// Tell the currently-selected tab to go to up a directory to its parent folder
 						((BListTab)listTabPane.getSelectionModel().getSelectedItem()).selectParent();
 					}
 				}
