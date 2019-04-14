@@ -3,6 +3,11 @@ package com.bateleur.app.controller;
 import java.util.Set;
 
 import com.bateleur.app.datatype.BAudio;
+import com.bateleur.app.view.list.BListOptionFolderByType.BListOptionFolderByAlbum;
+import com.bateleur.app.view.list.BListOptionFolderByType.BListOptionFolderByArtist;
+import com.bateleur.app.view.list.BListOptionFolderQueue;
+import com.bateleur.app.view.list.BListOptionFolderTracks;
+import com.bateleur.app.view.list.BListOptionFolder_ByPath;
 import com.bateleur.app.view.list.BListTab;
 
 import javafx.animation.KeyValue;
@@ -34,8 +39,11 @@ public class MusicListController {
 		this.master = master;
 		
 		// Create each of the BListTabs that present music options to the user
-		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings));
-		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings));
+		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolderTracks  .class));
+		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolderQueue   .class));
+		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolderByArtist.class));
+		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolderByAlbum .class));
+		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_ByPath .class));
 		
 		// Build the vertical slide animation
 		{

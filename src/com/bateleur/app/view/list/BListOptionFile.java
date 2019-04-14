@@ -1,8 +1,6 @@
 package com.bateleur.app.view.list;
 
 import com.bateleur.app.datatype.BAudio;
-import com.bateleur.app.model.PlaybackModel;
-import com.bateleur.app.model.SettingsModel;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -14,36 +12,17 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 public class BListOptionFile extends BListOption {
-	private boolean isEven;
-	
 	public final BAudio audio;
 	
 	private Label isPlayingLabel;
 
-	public BListOptionFile(BListTab bListTab, boolean isEven, BAudio audio, PlaybackModel playback, SettingsModel settings) {
+	public BListOptionFile(BListTab bListTab, BAudio audio) {
 		super(bListTab);
 		
-		this.isEven = isEven;
-		
 		this.audio = audio;
-		
-	}
-	
-	@Override public Node buildBackground() {
-		Pane background = new Pane();
-		background.setMinHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));
-		background.setMaxHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));
-		background.setPrefWidth(10000);
-		background.setPadding(Insets.EMPTY);
-		background.setOpacity(0.6);
-		background.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-		background.setEffect(isEven ? bListTab.musicListController.master.playbackColorAnimation.lightingBG : bListTab.musicListController.master.playbackColorAnimation.lightingLI);
-		
-		return background;
 	}
 	
 	@Override public Node buildForeground() {
@@ -63,6 +42,7 @@ public class BListOptionFile extends BListOption {
 		isPlayingLabel = new Label();
 		isPlayingLabel.getStyleClass().add("listOptionLabel");
 		isPlayingLabel.prefHeightProperty().bind(foreground.heightProperty());
+		isPlayingLabel.setText(audio.equals(bListTab.musicListController.master.playback.getLoadedAudio()) ? ">>" : "");
 		innerGrid.add(isPlayingLabel, 0, 0);
 		
 		Label innerLabel;
@@ -107,6 +87,6 @@ public class BListOptionFile extends BListOption {
 	}
 	
 	@Override public void onSongChange(BAudio loadedAudio) {
-		isPlayingLabel.setText(loadedAudio.equals(audio) ? ">>" : "");
+		isPlayingLabel.setText(audio.equals(loadedAudio) ? ">>" : "");
 	}
 }

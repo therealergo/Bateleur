@@ -89,6 +89,13 @@ public class LibraryModel implements Iterable<BAudio> {
 	public void reset() {
 		listFiltered.clear();
 		listFiltered.addAll(listLibarary);
+		
+		//TODO: This will eventally be a 'staticsorting' or some such parameter
+		// This will be used by the buttons that allow you to sort AND filter search
+		// This method will have to take a boolean as to whether or not to do that ('showInvisible?')
+		sortBy((BAudio a0, BAudio a1) -> {
+			return a0.get(settings.AUDIO_PROP_TITLE).compareTo(a1.get(settings.AUDIO_PROP_TITLE));
+		});
 	}
 
 	public int size() {
