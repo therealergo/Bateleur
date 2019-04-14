@@ -49,6 +49,8 @@ public class SettingsModel extends BFile {
     public final BFile.Entry< Double                    > UI_TITLEBAR_VSIZE  = new BFile.Entry< Double                    >( "__uiTitlebarVSize"  , 25.0                        );
     public final BFile.Entry< Double                    > UI_LISTOPT_VSIZE   = new BFile.Entry< Double                    >( "__uiListOptVSize"   , 30.0                        );
     public final BFile.Entry< Double                    > UI_BLUR_RADIUS     = new BFile.Entry< Double                    >( "__uiBlurRadius"     , 0.1                         );
+    public final BFile.Entry< Double                    > UI_SONG_ANIM_ISIZE = new BFile.Entry< Double                    >( "__uiSongAnimISize"  , 0.7                         );
+    public final BFile.Entry< Double                    > UI_SONG_ANIM_OSIZE = new BFile.Entry< Double                    >( "__uiSongAnimOSize"  , 4.0                         );
 	
 	/** 
 	 * @brief Constructor for SettingsModel, which stores all settings for the Bateleur application as a BFile-derived instance.

@@ -1,32 +1,31 @@
 package com.bateleur.app.view;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.SettingsModel;
-import com.therealergo.main.math.Vector3D;
 
+import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 
 public class BBackgroundCanvas extends Canvas {
 	private SettingsModel settings;
-	private PlaybackModel playback;
 	
 	public final DoubleProperty artAlpha;
 
+	private long lastUpdate;
+	private final AnimationTimer imageAnimation;
+	private final LinkedList<BackgroundImage> imageList;
+
 	public BBackgroundCanvas(SettingsModel settings, PlaybackModel playback) {
 		this.settings = settings;
-		this.playback = playback;
 		
 		this.artAlpha = new SimpleDoubleProperty(this, "artAlpha");
 		this.artAlpha.addListener(new ChangeListener<Number>() {
@@ -34,6 +33,61 @@ public class BBackgroundCanvas extends Canvas {
             	redraw(getWidth(), getHeight());
             }
         });
+		
+		imageAnimation = new AnimationTimer() {
+			@Override public void handle(long now) {
+				Iterator<BackgroundImage> imageIterator;
+				
+				// Compute an exponential decay base dependent on how long it has been since the last animation frame
+				long dt = now - lastUpdate;
+				lastUpdate = System.nanoTime();
+				double baseMul = Math.pow(0.9999, dt * 0.0001 / settings.get(settings.UI_ANIM_TIME_MUL));
+				
+				// Fade in the frontmost image
+		    	imageList.getLast().fade = imageList.getLast().fade * baseMul + (1.0-baseMul);
+		    	
+		    	// Grow in the frontmost image
+		    	imageList.getLast().size = imageList.getLast().size * baseMul + (1.0-baseMul);
+		    	
+		    	// Shrink/grow out the back images
+		    	imageIterator = imageList.descendingIterator();
+		    	imageIterator.next();
+		    	while (imageIterator.hasNext()) {
+		    		BackgroundImage img = imageIterator.next();
+		    		img.size = img.size * baseMul + (1.0-baseMul) * settings.get(settings.UI_SONG_ANIM_OSIZE);
+		    	}
+		    	
+		    	// Remove any images that are more than 99% obscured
+		    	double attenuation = 1.0;
+		    	imageIterator = imageList.descendingIterator();
+		    	while (imageIterator.hasNext()) {
+		    		BackgroundImage img = imageIterator.next();
+		    		if (attenuation < 0.01) {
+		    			imageIterator.remove();
+		    		} else {
+			    		attenuation = attenuation * (1.0-img.fade);
+		    		}
+		    	}
+		    	
+		    	// If there's only 1 image left, we can stop the animation
+		    	if (imageList.size() == 1) {
+		    		imageList.getLast().fade = 1.0;
+					imageAnimation.stop();
+		    	}
+		    	
+		    	// Redraw the entire canvas
+				redraw(getWidth(), getHeight());
+			}
+		};
+		
+		this.imageList = new LinkedList<BackgroundImage>();
+		playback.addSongChangeHandler(() -> {
+	    	Image image = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImagePrimary();
+	    	Image image_blurred = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImageBlurred();
+			imageList.add(new BackgroundImage(image, image_blurred));
+			lastUpdate = System.nanoTime();
+			imageAnimation.start();
+		});
 	}
 	
 	private void drawImageCover(GraphicsContext gc, Image im, double dx, double dy, double dw, double dh) {
@@ -76,51 +130,63 @@ public class BBackgroundCanvas extends Canvas {
 	
 	public void redraw(double width, double height) {
 	    GraphicsContext gc = getGraphicsContext2D();
-    	Image im = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImagePrimary();
-    	Image im_bl = playback.getLoadedAudio().get(settings.AUDIO_PROP_ART).getImageBlurred();
     	
-		gc.setGlobalAlpha(1.0);
-    	drawImageCover(
-    			gc, 
-    			im_bl, 
-    			0, 
-    			0, 
-    			width, 
-    			height
-    	);
-		
-		Vector3D cBG_VEC = playback.getLoadedAudio().get(settings.AUDIO_PROP_COLR_BG);
-		Color cBG = new Color(cBG_VEC.x, cBG_VEC.y, cBG_VEC.z, 1.0);
-		((Pane)getParent()).setBackground(new Background(new BackgroundFill(cBG, CornerRadii.EMPTY, Insets.EMPTY)));
-		
-		double areaWidth  = width                                                  ;
-		double areaHeight = height - 107 - settings.get(settings.UI_TITLEBAR_VSIZE);
-		double areaOffX   = 0.0                                                    ;
-		double areaOffY   = settings.get(settings.UI_TITLEBAR_VSIZE)               ;
-		double scaling = settings.get(settings.UI_ART_SCALING);
-		if (areaHeight > 0) {
-			gc.setGlobalAlpha(Math.min(Math.max(artAlpha.doubleValue(), 0.0), 1.0));
-	    	drawImageFit(
-	    			gc, 
-	    			im, 
-	    			(areaWidth  - areaWidth  * scaling) / 2.0 + areaOffX, 
-	    			(areaHeight - areaHeight * scaling) / 2.0 + areaOffY, 
-	    			areaWidth  * scaling, 
-	    			areaHeight * scaling
-	    	);
-		}
+    	imageList.forEach((BackgroundImage image) -> {
+    		image.draw(gc, width, height);
+    	});
 	}
 	
-	@Override
-	public boolean isResizable() {
+	@Override public boolean isResizable() {
 	    return true;
 	}
 	
-	@Override
-	public void resize(double width, double height) {
+	@Override public void resize(double width, double height) {
 	    super.setWidth(width);
 	    super.setHeight(height);
 	    
 	    redraw(width, height);
+	}
+	
+	private class BackgroundImage {
+		private Image image;
+		private Image image_blurred;
+		private double fade;
+		private double size;
+		
+		BackgroundImage(Image image, Image image_blurred) {
+			this.image = image;
+			this.image_blurred = image_blurred;
+			this.fade = 0.0;
+			this.size = settings.get(settings.UI_SONG_ANIM_ISIZE);
+		}
+		
+		private void draw(GraphicsContext gc, double width, double height) {
+			gc.setGlobalAlpha(fade);
+	    	drawImageCover(
+	    			gc, 
+	    			image_blurred, 
+	    			0, 
+	    			0, 
+	    			width, 
+	    			height
+	    	);
+	    	
+			double areaWidth  = width                                                  ;
+			double areaHeight = height - 107 - settings.get(settings.UI_TITLEBAR_VSIZE);
+			double areaOffX   = 0.0                                                    ;
+			double areaOffY   = settings.get(settings.UI_TITLEBAR_VSIZE)               ;
+			double scaling    = settings.get(settings.UI_ART_SCALING) * size           ;
+			if (areaHeight > 0) {
+				gc.setGlobalAlpha(fade * Math.min(Math.max(artAlpha.doubleValue(), 0.0), 1.0));
+		    	drawImageFit(
+		    			gc, 
+		    			image, 
+		    			(areaWidth  - areaWidth  * scaling) / 2.0 + areaOffX, 
+		    			(areaHeight - areaHeight * scaling) / 2.0 + areaOffY, 
+		    			areaWidth  * scaling, 
+		    			areaHeight * scaling
+		    	);
+			}
+		}
 	}
 }
