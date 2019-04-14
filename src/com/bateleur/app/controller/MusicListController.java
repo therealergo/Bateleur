@@ -3,10 +3,10 @@ package com.bateleur.app.controller;
 import java.util.Set;
 
 import com.bateleur.app.datatype.BAudio;
-import com.bateleur.app.view.list.BListOptionFolderByType.BListOptionFolderByAlbum;
-import com.bateleur.app.view.list.BListOptionFolderByType.BListOptionFolderByArtist;
-import com.bateleur.app.view.list.BListOptionFolderQueue;
-import com.bateleur.app.view.list.BListOptionFolderTracks;
+import com.bateleur.app.view.list.BListOptionFolder_ByType.BListOptionFolder_ByAlbum;
+import com.bateleur.app.view.list.BListOptionFolder_ByType.BListOptionFolder_ByArtist;
+import com.bateleur.app.view.list.BListOptionFolder_Queue;
+import com.bateleur.app.view.list.BListOptionFolder_Tracks;
 import com.bateleur.app.view.list.BListOptionFolder_ByPath;
 import com.bateleur.app.view.list.BListTab;
 
@@ -42,11 +42,11 @@ public class MusicListController {
 		this.master = master;
 		
 		// Create each of the BListTabs that present music options to the user
-		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolderTracks  .class));
-		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolderQueue   .class));
-		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolderByArtist.class));
-		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolderByAlbum .class));
-		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_ByPath .class));
+		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_Tracks  .class));
+		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_Queue   .class));
+		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_ByArtist.class));
+		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_ByAlbum .class));
+		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_ByPath  .class));
 		
 		// We can only get the scene after initialization finishes, so we wait until then
 		listTabPane.sceneProperty().addListener((ObservableValue<? extends Scene> ov, Scene old_val, Scene new_val) -> {

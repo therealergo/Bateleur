@@ -9,8 +9,8 @@ import com.bateleur.app.datatype.BFile;
 import com.bateleur.app.datatype.BFile.Entry;
 import com.bateleur.app.model.LibraryModel;
 
-public abstract class BListOptionFolderByType extends BListOptionFolder {
-	public BListOptionFolderByType(BListTab bListTab, BListOptionFolder parentFolder) {
+public abstract class BListOptionFolder_ByType extends BListOptionFolder {
+	public BListOptionFolder_ByType(BListTab bListTab, BListOptionFolder parentFolder) {
 		super(bListTab, parentFolder);
 	}
 	
@@ -26,16 +26,16 @@ public abstract class BListOptionFolderByType extends BListOptionFolder {
 			if (!generatedArtistFolders.contains(audio.get(getType()))) {
 				String artistName = audio.get(getType());
 				generatedArtistFolders.add(artistName);
-				options.add(new BListOptionFolderByTypeItem(bListTab, this, artistName));
+				options.add(new BListOptionFolder_ByType_Item(bListTab, this, artistName));
 			}
 		});
 		return options;
 	}
 	
-	private class BListOptionFolderByTypeItem extends BListOptionFolder {
+	private class BListOptionFolder_ByType_Item extends BListOptionFolder {
 		private String artistName;
 		
-		public BListOptionFolderByTypeItem(BListTab bListTab, BListOptionFolder parentFolder, String artistName) {
+		public BListOptionFolder_ByType_Item(BListTab bListTab, BListOptionFolder parentFolder, String artistName) {
 			super(bListTab, parentFolder);
 			this.artistName = artistName;
 		}
@@ -59,8 +59,8 @@ public abstract class BListOptionFolderByType extends BListOptionFolder {
 		}
 	}
 	
-	public static class BListOptionFolderByAlbum extends BListOptionFolderByType {
-		public BListOptionFolderByAlbum(BListTab bListTab, BListOptionFolder parentFolder) {
+	public static class BListOptionFolder_ByAlbum extends BListOptionFolder_ByType {
+		public BListOptionFolder_ByAlbum(BListTab bListTab, BListOptionFolder parentFolder) {
 			super(bListTab, parentFolder);
 		}
 
@@ -73,8 +73,8 @@ public abstract class BListOptionFolderByType extends BListOptionFolder {
 		}
 	}
 	
-	public static class BListOptionFolderByArtist extends BListOptionFolderByType {
-		public BListOptionFolderByArtist(BListTab bListTab, BListOptionFolder parentFolder) {
+	public static class BListOptionFolder_ByArtist extends BListOptionFolder_ByType {
+		public BListOptionFolder_ByArtist(BListTab bListTab, BListOptionFolder parentFolder) {
 			super(bListTab, parentFolder);
 		}
 

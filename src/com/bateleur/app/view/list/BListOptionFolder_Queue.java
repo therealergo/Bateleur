@@ -7,8 +7,8 @@ import java.util.List;
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.model.QueueModel;
 
-public class BListOptionFolderQueue extends BListOptionFolder {
-	public BListOptionFolderQueue(BListTab bListTab, BListOptionFolder parentFolder) {
+public class BListOptionFolder_Queue extends BListOptionFolder {
+	public BListOptionFolder_Queue(BListTab bListTab, BListOptionFolder parentFolder) {
 		super(bListTab, parentFolder);
 		
 		bListTab.musicListController.master.queue.queueChangedEvent.addListener(() -> {
