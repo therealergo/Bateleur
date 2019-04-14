@@ -15,7 +15,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
@@ -44,6 +47,16 @@ public class MusicListController {
 		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolderByArtist.class));
 		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolderByAlbum .class));
 		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_ByPath .class));
+		
+		listTabPane.sceneProperty().addListener((ObservableValue<? extends Scene> ov, Scene old_val, Scene new_val) -> {
+			new_val.setOnKeyPressed(new EventHandler<KeyEvent>() {
+				@Override public void handle(KeyEvent evt) {
+					if (evt.getCode().equals(KeyCode.BACK_SPACE)) {
+						((BListTab)listTabPane.getSelectionModel().getSelectedItem()).selectParent();
+					}
+				}
+			});
+		});
 		
 		// Build the vertical slide animation
 		{

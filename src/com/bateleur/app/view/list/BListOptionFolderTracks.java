@@ -7,8 +7,8 @@ import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.model.LibraryModel;
 
 public class BListOptionFolderTracks extends BListOptionFolder {
-	public BListOptionFolderTracks(BListTab bListTab) {
-		super(bListTab);
+	public BListOptionFolderTracks(BListTab bListTab, BListOptionFolder parentFolder) {
+		super(bListTab, parentFolder);
 	}
 	
 	public String getText() {

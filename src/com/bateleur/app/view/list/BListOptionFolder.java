@@ -16,8 +16,12 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
 public abstract class BListOptionFolder extends BListOption {
-	public BListOptionFolder(BListTab bListTab) {
+	public final BListOptionFolder parentFolder;
+
+	public BListOptionFolder(BListTab bListTab, BListOptionFolder parentFolder) {
 		super(bListTab);
+		
+		this.parentFolder = parentFolder;
 	}
 	
 	public abstract String getText();
@@ -40,7 +44,7 @@ public abstract class BListOptionFolder extends BListOption {
 		foreground.setGraphic(innerLabel);
 		
 		foreground.setOnMouseClicked((MouseEvent mce) -> {
-			bListTab.rebuildList(listOptions());
+			bListTab.rebuildList(this);
 		});
 		
 		return foreground;

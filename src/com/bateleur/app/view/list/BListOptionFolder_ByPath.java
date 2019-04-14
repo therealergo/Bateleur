@@ -10,8 +10,8 @@ import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.resource.ResourceFolder;
 
 public class BListOptionFolder_ByPath extends BListOptionFolder {
-	public BListOptionFolder_ByPath(BListTab bListTab) {
-		super(bListTab);
+	public BListOptionFolder_ByPath(BListTab bListTab, BListOptionFolder parentFolder) {
+		super(bListTab, parentFolder);
 	}
 	
 	public String getText() {
@@ -26,7 +26,7 @@ public class BListOptionFolder_ByPath extends BListOptionFolder {
 		Iterator<ResourceFolder> baseFolders = settings.get(settings.LIBRARY_PATH).iterator();
 		
 		while (baseFolders.hasNext()) {
-			options.add(new BListOptionFolder_ByPath_Item(bListTab, baseFolders.next()));
+			options.add(new BListOptionFolder_ByPath_Item(bListTab, this, baseFolders.next()));
 		}
 		
 		return options;
@@ -35,8 +35,8 @@ public class BListOptionFolder_ByPath extends BListOptionFolder {
 	private class BListOptionFolder_ByPath_Item extends BListOptionFolder {
 		private ResourceFolder folder;
 		
-		public BListOptionFolder_ByPath_Item(BListTab bListTab, ResourceFolder folder) {
-			super(bListTab);
+		public BListOptionFolder_ByPath_Item(BListTab bListTab, BListOptionFolder parentFolder, ResourceFolder folder) {
+			super(bListTab, parentFolder);
 			
 			this.folder = folder;
 		}
@@ -53,7 +53,7 @@ public class BListOptionFolder_ByPath extends BListOptionFolder {
 			
 			ResourceFolder[] folderChildren = folder.listFolderChildren();
 			for (int i = 0; i<folderChildren.length; i++) {
-				options.add(new BListOptionFolder_ByPath_Item(bListTab, folderChildren[i]));
+				options.add(new BListOptionFolder_ByPath_Item(bListTab, this, folderChildren[i]));
 			}
 			
 			library.reset();

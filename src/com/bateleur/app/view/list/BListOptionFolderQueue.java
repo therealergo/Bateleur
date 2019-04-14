@@ -8,11 +8,11 @@ import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.model.QueueModel;
 
 public class BListOptionFolderQueue extends BListOptionFolder {
-	public BListOptionFolderQueue(BListTab bListTab) {
-		super(bListTab);
+	public BListOptionFolderQueue(BListTab bListTab, BListOptionFolder parentFolder) {
+		super(bListTab, parentFolder);
 		
 		bListTab.musicListController.master.queue.queueChangedEvent.addListener(() -> {
-			bListTab.rebuildList(listOptions());
+			bListTab.rebuildList(this);
 		});
 	}
 	

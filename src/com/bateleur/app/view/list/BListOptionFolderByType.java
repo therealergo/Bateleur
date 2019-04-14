@@ -10,8 +10,8 @@ import com.bateleur.app.datatype.BFile.Entry;
 import com.bateleur.app.model.LibraryModel;
 
 public abstract class BListOptionFolderByType extends BListOptionFolder {
-	public BListOptionFolderByType(BListTab bListTab) {
-		super(bListTab);
+	public BListOptionFolderByType(BListTab bListTab, BListOptionFolder parentFolder) {
+		super(bListTab, parentFolder);
 	}
 	
 	public abstract BFile.Entry<String> getType();
@@ -26,7 +26,7 @@ public abstract class BListOptionFolderByType extends BListOptionFolder {
 			if (!generatedArtistFolders.contains(audio.get(getType()))) {
 				String artistName = audio.get(getType());
 				generatedArtistFolders.add(artistName);
-				options.add(new BListOptionFolderByTypeItem(bListTab, artistName));
+				options.add(new BListOptionFolderByTypeItem(bListTab, this, artistName));
 			}
 		});
 		return options;
@@ -35,8 +35,8 @@ public abstract class BListOptionFolderByType extends BListOptionFolder {
 	private class BListOptionFolderByTypeItem extends BListOptionFolder {
 		private String artistName;
 		
-		public BListOptionFolderByTypeItem(BListTab bListTab, String artistName) {
-			super(bListTab);
+		public BListOptionFolderByTypeItem(BListTab bListTab, BListOptionFolder parentFolder, String artistName) {
+			super(bListTab, parentFolder);
 			this.artistName = artistName;
 		}
 		
@@ -60,8 +60,8 @@ public abstract class BListOptionFolderByType extends BListOptionFolder {
 	}
 	
 	public static class BListOptionFolderByAlbum extends BListOptionFolderByType {
-		public BListOptionFolderByAlbum(BListTab bListTab) {
-			super(bListTab);
+		public BListOptionFolderByAlbum(BListTab bListTab, BListOptionFolder parentFolder) {
+			super(bListTab, parentFolder);
 		}
 
 		@Override public String getText() {
@@ -74,8 +74,8 @@ public abstract class BListOptionFolderByType extends BListOptionFolder {
 	}
 	
 	public static class BListOptionFolderByArtist extends BListOptionFolderByType {
-		public BListOptionFolderByArtist(BListTab bListTab) {
-			super(bListTab);
+		public BListOptionFolderByArtist(BListTab bListTab, BListOptionFolder parentFolder) {
+			super(bListTab, parentFolder);
 		}
 
 		@Override public String getText() {

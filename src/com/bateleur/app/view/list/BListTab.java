@@ -29,6 +29,8 @@ public class BListTab extends Tab {
 	private LibraryModel library;
 	private PlaybackModel playback;
 	private SettingsModel settings;
+	
+	private BListOptionFolder parentFolder;
 
 	public BListTab(MusicListController musicListController, LibraryModel library, PlaybackModel playback, SettingsModel settings, Class<? extends BListOptionFolder> baseFolderClass) {
 		this.musicListController = musicListController;
@@ -79,12 +81,12 @@ public class BListTab extends Tab {
 		
 		BListOptionFolder baseFolder;
 		try {
-			baseFolder = baseFolderClass.getConstructor(BListTab.class).newInstance(this);
+			baseFolder = baseFolderClass.getConstructor(BListTab.class, BListOptionFolder.class).newInstance(this, null);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			throw new MainException(BListTab.class, "Cannot instantiate base folder class: " + baseFolderClass + "!", e);
 		}
 		setText(baseFolder.getText());
-		rebuildList(baseFolder.listOptions());
+		rebuildList(baseFolder);
 	}
 
 	public void onOptionSelected(BListOptionFile bListOption) {
@@ -105,9 +107,11 @@ public class BListTab extends Tab {
 		playback.play(settings.get(settings.FADE_TIME_USER));
 	}
 
-	public void rebuildList(List<BListOption> listOptions) {
+	public void rebuildList(BListOptionFolder folder) {
+		parentFolder = folder.parentFolder;
+		
 		options.clear();
-		options.addAll(listOptions);
+		options.addAll(folder.listOptions());
 		
 		innerGridBackground.getChildren().clear();
 		for (int i = 0; i<options.size(); i++) {
@@ -124,5 +128,11 @@ public class BListTab extends Tab {
 				options.get(i).onSongChange(playback.getLoadedAudio());
 			}
 		});
+	}
+	
+	public void selectParent() {
+		if (parentFolder != null) {
+			rebuildList(parentFolder);
+		}
 	}
 }
