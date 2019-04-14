@@ -30,7 +30,12 @@
 						<ImageView fx:id="playbackImage" fitHeight="107.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" />
 						<AnchorPane fx:id="playbackBarLeftFG" prefHeight="200.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
 							<children>
-								<Label fx:id="textTop" layoutX="8.0" layoutY="46.0" prefHeight="17.0" style="-fx-text-fill: white;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
+                        <Label fx:id="textTop" layoutX="8.0" layoutY="25.0" prefHeight="17.0" style="-fx-text-fill: white;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
+                           <font>
+                              <Font name="Arial" size="14.0" />
+                           </font>
+                        </Label>
+								<Label fx:id="textMid" layoutX="8.0" layoutY="47.0" prefHeight="17.0" style="-fx-text-fill: white;" text="" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
 									<font><Font name="Arial" size="14.0" />
 									</font>
 								</Label>
@@ -108,7 +113,7 @@
 								</AnchorPane>
 							</graphic>
 						</ToggleButton>
-						<ToggleButton fx:id="queueButton" minHeight="29.0" minWidth="43.0" mnemonicParsing="false" onMouseClicked="#onQueuePress" prefHeight="29.0" prefWidth="43.0" styleClass="playbackBarButton" >
+						<ToggleButton fx:id="queueButton" minHeight="29.0" minWidth="43.0" mnemonicParsing="false" onMouseClicked="#onQueuePress" prefHeight="29.0" prefWidth="43.0" styleClass="playbackBarButton">
 							<graphic>
 								<AnchorPane>
 									<children>

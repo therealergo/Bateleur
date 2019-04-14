@@ -32,6 +32,7 @@ public class PlaybackController implements IntellitypeListener {
 	@FXML private AnchorPane playbackBarRightFG;
 	@FXML private AnchorPane playbackBarBO;
 	@FXML private Label textBot;
+	@FXML private Label textMid;
 	@FXML private Label textTop;
 	@FXML private ImageView playbackImage;
 	@FXML private ColumnConstraints playbackImageContainer;
@@ -122,8 +123,17 @@ public class PlaybackController implements IntellitypeListener {
 		
 		// Setup a callback to change the displayed audio info. text and image when the playing audio file changes
 		master.playback.addSongChangeHandler(() -> {
-			textTop.setText(master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ARTIST));
-			textBot.setText(master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_TITLE));
+			String text;
+			
+			text = master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ARTIST);
+			textTop.setText(text.equals(master.settings.AUDIO_PROP_ARTIST.val) ? "" : text);
+			
+			text = master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ALBUM);
+			textMid.setText(text.equals(master.settings.AUDIO_PROP_ALBUM.val) ? "" : text);
+			
+			text = master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_TITLE);
+			textBot.setText(text.equals(master.settings.AUDIO_PROP_TITLE.val) ? "" : text);
+			
 			Image im = master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ART).getImageThumbnail();
 			playbackImageContainer.setMinWidth(im.getWidth() / im.getHeight() * 107.0);
 			playbackImage.setImage(im);
