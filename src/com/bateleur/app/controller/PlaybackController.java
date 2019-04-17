@@ -1,5 +1,10 @@
 package com.bateleur.app.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
 import com.bateleur.app.App;
 import com.bateleur.app.view.BBackgroundCanvas;
 import com.bateleur.app.view.BSliderCanvas;
@@ -8,6 +13,7 @@ import com.melloware.jintellitype.JIntellitype;
 import com.therealergo.main.Main;
 import com.therealergo.main.MainException;
 import com.therealergo.main.os.EnumOS;
+import com.therealergo.main.resource.ResourceFile;
 
 import javafx.animation.KeyValue;
 import javafx.application.Platform;
@@ -201,11 +207,27 @@ public class PlaybackController implements IntellitypeListener {
 		if (Main.os.getOS().equals(EnumOS.WINDOWS)) {
 			// Get the 64-bit / 32-bit specific path to the native library
 			String libraryName = System.getProperty("os.arch").contains("64") ? "JIntellitype64.dll" : "JIntellitype.dll";
-			String libraryPath = Main.resource.getResourceFileClass("natives>" + libraryName, App.class).toPath().toAbsolutePath().toString();
+			
+			// Get the local resource that contains the native library itself
+			ResourceFile libraryFile = Main.resource.getResourceFileClass("natives>" + libraryName, App.class);
+			
+			// Copy the local resource native library to a temporary folder not contained within the jar
+			// This has to be done because Windows cannot load a native library directly out of a jar
+			File tempFile;
+			try {
+				tempFile = File.createTempFile("Bateleur_JIntellitype", ".dll");
+				tempFile.deleteOnExit();
+				Files.copy(libraryFile.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException e) {
+				throw new MainException(PlaybackController.class, "Unable to create or write to temporary JNI library file!", e);
+			}
+			
+			// Point JItellitype to the newly-copied native library
+			JIntellitype.setLibraryLocation(tempFile.toPath().toAbsolutePath().toString());
 			
 			// initialize JIntellitype with the frame so all windows commands can be attached to this window
-			JIntellitype.setLibraryLocation(libraryPath);
 			JIntellitype.getInstance().addIntellitypeListener(this);
+			
 			Main.log.log("JIntellitype initialized");
 		} else {
 			Main.log.log(new MainException(PlaybackController.class, "JIntellitype not initialized as we are not on Windows!"));
