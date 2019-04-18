@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import com.bateleur.app.datatype.BAudio;
 import com.therealergo.main.Main;
@@ -71,42 +70,34 @@ public class PlaybackModel {
 			player = null;
 			loadedAudio = null;
 		} else {
-//			String playbackURI = audio.get(settings.PLAYBACK_URI).toString();
-			String playbackURI = audio.get(settings.PLAYBACK_FILE).getFullURI().toString();
-			Optional<String> fileExt = getFileExtension(playbackURI);
-
-			Optional<Media> optionalMedia = Optional.empty();
-			if (fileExt.isPresent()) {
-
-				switch (fileExt.get().toLowerCase()) {
-					case "mp3":
-						optionalMedia = Optional.of(new Media(playbackURI));
-						break;
-					case "flac":
-						try {
-
-							if (createdFileMap.containsKey(playbackURI)) {
-								optionalMedia = Optional.of(new Media(createdFileMap.get(playbackURI)));
-							}
-							else {
-								optionalMedia = Optional.of(BFlacToWav.decode(settings, audio));
-							}
+			ResourceFile playbackFile = audio.get(settings.PLAYBACK_FILE);
+			String       playbackURI  = playbackFile.getFullURI();
+			String       fileExt      = playbackFile.getExtension();
+			Media        loadedMedia  = null;
+			
+			switch (fileExt.toLowerCase()) {
+				case "mp3":
+					loadedMedia = new Media(playbackURI);
+					break;
+				case "flac":
+					try {
+						if (createdFileMap.containsKey(playbackURI)) {
+							loadedMedia = new Media(createdFileMap.get(playbackURI));
+						} else {
+							loadedMedia = BFlacToWav.decode(settings, audio);
 						}
-						catch (IOException e) {
-							Main.log.logErr("Error decoding FLAC in PlaybackModel");
-						}
-						catch (URISyntaxException q) {
-							Main.log.logErr("Error decoding FLAC in PlaybackModel");
-						}
-						break;
-					default:
-						break;
-				}
+					} catch (IOException e) {
+						Main.log.logErr("Error decoding FLAC in PlaybackModel");
+					} catch (URISyntaxException q) {
+						Main.log.logErr("Error decoding FLAC in PlaybackModel");
+					}
+					break;
+				default:
+					break;
 			}
-
-			if (optionalMedia.isPresent()) {
-				Media media = optionalMedia.get();
-				player = new MediaPlayer(media);
+			
+			if (loadedMedia != null) {
+				player = new MediaPlayer(loadedMedia);
 				player.setOnPlaying(() -> {
 					for (int i = 0; i<onPlayHandlers.size(); i++) {
 						onPlayHandlers.get(i).run();
@@ -120,14 +111,13 @@ public class PlaybackModel {
 				player.setVolume(volume);
 				loadedAudio = audio;
 			}
-
 		}
-
+		
 		for (int i = 0; i<onSongChangeHandlers.size(); i++) {
 			onSongChangeHandlers.get(i).run();
 		}
 	}
-
+	
 	public void play(int fadeTimeMS) {
 		if (player == null) {
 			return;
@@ -202,11 +192,11 @@ public class PlaybackModel {
 	public void addSongChangeHandler(Runnable handler) {
 		onSongChangeHandlers.add(handler);
 	}
-
+	
 	public void removSongChangeHandler(Runnable handler) {
 		onSongChangeHandlers.remove(handler);
 	}
-
+	
 	// invoke this on exit of the program
 	// this will delete the created WAVs from the user library
 	public boolean deleteFilesInMap() {
@@ -223,14 +213,7 @@ public class PlaybackModel {
 		}
 		return true;
 	}
-
-	private Optional<String> getFileExtension(String filename) {
-		return Optional.ofNullable(filename)
-				.filter(f -> f.contains("."))
-				.map(f -> f.substring(filename.lastIndexOf(".") + 1));
-	}
-
-
+	
 	// Decoding of the FLAC follows the sample application in io.nayuki.flac.app very closely
 	// The library is licensed under the GPL.
 	private static class BFlacToWav {
