@@ -231,12 +231,9 @@ public class PlaybackModel {
 		private static DataOutputStream out;
 
 		static Media decode(SettingsModel settings, BAudio audio) throws IOException, URISyntaxException {
-//			String playbackURI = audio.get(settings.PLAYBACK_FILE).getFullURI().toString();
-			URI requestedURI = new URI(audio.get(settings.PLAYBACK_FILE).getFullURI());
-            Path requestedPath = Paths.get(requestedURI);
-			File inFile = new File(requestedURI);
-
-//			String tempURIString = audio.get(settings.AUDIO_PROP_TITLE) + ".wav";
+			URI  requestedURI  = audio.get(settings.PLAYBACK_FILE).toURI ();
+            Path requestedPath = audio.get(settings.PLAYBACK_FILE).toPath();
+			File inFile        = audio.get(settings.PLAYBACK_FILE).toFile();
 
 			StringBuilder outFileName = new StringBuilder();
 			outFileName.append(requestedPath.getParent().toString());
