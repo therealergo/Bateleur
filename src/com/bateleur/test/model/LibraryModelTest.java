@@ -37,8 +37,8 @@ public class LibraryModelTest {
      * Refreshes the state of the playbackModel being tested
      */
     @Before
-    public void setup() {
-    	// Ensure that there ars no existing library files
+    public void setup() throws Exception {
+    	// Ensure that there are no existing library files
     	Main.resource.getResourceFolderLocal("test_out>LibraryModelTest>library").create().delete();
 
         library = new LibraryModel(settings, Main.resource.getResourceFolderLocal("test_out>QueueModelTest>library"));
