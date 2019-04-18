@@ -81,9 +81,9 @@ public class BAudioLocalTest {
      */
     @Test
     public void test_readAudioMetadata() {
-    	assertEquals(testAudio.get(settings.AUDIO_PROP_ARTIST), "therealergo"    );
-    	assertEquals(testAudio.get(settings.AUDIO_PROP_ALBUM) , "Pre-Alpha (TRE)");
-    	assertEquals(testAudio.get(settings.AUDIO_PROP_TITLE) , "Proving Grounds");
-    	assertEquals(testAudio.get(settings.AUDIO_PROP_TRACKN), ""               );
+    	assertEquals(testAudio.get(settings.AUDIO_PROP_ARTIST), "therealergo"                 );
+    	assertEquals(testAudio.get(settings.AUDIO_PROP_ALBUM) , "Pre-Alpha (TRE)"             );
+    	assertEquals(testAudio.get(settings.AUDIO_PROP_TITLE) , "Proving Grounds"             );
+    	assertEquals(testAudio.get(settings.AUDIO_PROP_TRACKN), settings.AUDIO_PROP_TRACKN.val);
     }
 }
