@@ -1,15 +1,22 @@
 package com.bateleur.app.model;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 import com.bateleur.app.datatype.BAudio;
-
 import com.therealergo.main.Main;
+import com.therealergo.main.resource.ResourceFile;
+
 import io.nayuki.flac.common.StreamInfo;
 import io.nayuki.flac.decode.DataFormatException;
 import io.nayuki.flac.decode.FlacDecoder;
@@ -231,17 +238,10 @@ public class PlaybackModel {
 		private static DataOutputStream out;
 
 		static Media decode(SettingsModel settings, BAudio audio) throws IOException, URISyntaxException {
-			URI  requestedURI  = audio.get(settings.PLAYBACK_FILE).toURI ();
-            Path requestedPath = audio.get(settings.PLAYBACK_FILE).toPath();
-			File inFile        = audio.get(settings.PLAYBACK_FILE).toFile();
-
-			StringBuilder outFileName = new StringBuilder();
-			outFileName.append(requestedPath.getParent().toString());
-			outFileName.append("\\");
-			outFileName.append(requestedURI.hashCode());
-			outFileName.append(".wav");
-//            String outputPathName = requestedPath.getParent().toString() + '\\' + tempURIString;
-			File outFile = new File(outFileName.toString());
+			ResourceFile playbackFile = audio.get(settings.PLAYBACK_FILE);
+			URI          requestedURI = playbackFile.toURI ();
+			File         inFile       = playbackFile.toFile();
+			File         outFile      = playbackFile.getParent().getChildFile("" + requestedURI.hashCode()).toFile();
 			outFile.deleteOnExit();
 
 			createdFileMap.putIfAbsent(requestedURI.toString(), outFile.toURI().toString());
