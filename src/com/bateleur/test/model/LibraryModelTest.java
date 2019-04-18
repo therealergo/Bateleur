@@ -37,24 +37,16 @@ public class LibraryModelTest {
      * Refreshes the state of the playbackModel being tested
      */
     @Before
-    public void setup() {
-    	// Ensure that there ars no existing library files
-    	Main.resource.getResourceFileClass("test_out>LibraryModelTest>library", App.class).create().delete();
+    public void setup() 
+    throws Exception {
+    	// Ensure that there are no existing library files
+    	Main.resource.getResourceFileClass("test_out>LibraryModelTest", App.class).create().delete();
 
-        library = new LibraryModel(settings, Main.resource.getResourceFolderClass("test_out>QueueModelTest>library", App.class));
+        library = new LibraryModel(settings, Main.resource.getResourceFolderClass("test_out>LibraryModelTest", App.class));
     }
 
-//    @Test
-//    public void test_library() {
-//    	library.filterBy( (BAudio audio) -> audio.get(settings.TEST_VAL) > 1234 );
+
 //    	library.sortBy( (BAudio a0, BAudio a1) -> a1.get(settings.TEST_VAL) - a0.get(settings.TEST_VAL) );
-//		Iterator<BAudio> audioIterator = library.iterator();
-//		while (audioIterator.hasNext()) {
-//			Main.log.log(audioIterator.next().get(settings.TEST_VAL));
-//			assertTrue(true);
-//		}
-//		fail();
-//    }
 
 
     @Test
