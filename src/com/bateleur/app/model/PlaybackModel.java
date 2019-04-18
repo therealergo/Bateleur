@@ -241,7 +241,7 @@ public class PlaybackModel {
 			ResourceFile playbackFile = audio.get(settings.PLAYBACK_FILE);
 			URI          requestedURI = playbackFile.toURI ();
 			File         inFile       = playbackFile.toFile();
-			File         outFile      = playbackFile.getParent().getChildFile("" + requestedURI.hashCode()).toFile();
+			File         outFile      = playbackFile.getParent().getChildFile(requestedURI.hashCode() + ".wav").toFile();
 			outFile.deleteOnExit();
 
 			createdFileMap.putIfAbsent(requestedURI.toString(), outFile.toURI().toString());
