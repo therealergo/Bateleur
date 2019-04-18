@@ -26,13 +26,12 @@ import javafx.util.Builder;
 import javafx.util.BuilderFactory;
 
 public class App extends Application {
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		SettingsModel settings = new SettingsModel(          Main.resource.getResourceFileClass("settings.ser", App.class));
-		PlaybackModel playback = new PlaybackModel(settings                                                               );
-		LibraryModel  library  = new LibraryModel (settings, Main.resource.getResourceFolderClass("library", App.class)   );
-//		PlaylistModel playlist = new PlaylistModel(settings                                                               );
-		QueueModel    queue    = new QueueModel   (settings                                                               );
+	@Override public void start(Stage primaryStage) throws Exception {
+		SettingsModel settings = new SettingsModel(          Main.resource.getResourceFileLocal("settings.ser"));
+		PlaybackModel playback = new PlaybackModel(settings                                                    );
+		LibraryModel  library  = new LibraryModel (settings, Main.resource.getResourceFolderLocal("library")   );
+//		PlaylistModel playlist = new PlaylistModel(settings                                                    );
+		QueueModel    queue    = new QueueModel   (settings                                                    );
 		
 		{ // Start FXML window
 			FXMLLoader loader = new FXMLLoader(Main.resource.getResourceFileClass("views>MasterView.fxml", App.class).toURL());
@@ -101,6 +100,10 @@ public class App extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		}
+	}
+	
+	@Override public void stop() {
+		Main.mainStop();
 	}
 
 	public static void main(String[] args) {

@@ -43,6 +43,9 @@ public class QueueModel {
     }
     
     public BAudio get() {
+//    	if (queueProcessed.size() == 0) {
+//    		return null;
+//    	}
         return queueProcessed.get(queueProcessedIndex);
     }
     
@@ -51,6 +54,10 @@ public class QueueModel {
     }
     
     private void wrapQueueProcessedIndex() {
+//    	if (queueProcessed.size() == 0) {
+//    		queueProcessedIndex = 1;
+//    		return;
+//    	}
 		queueProcessedIndex = ((queueProcessedIndex % queueProcessed.size()) + queueProcessed.size()) % queueProcessed.size();
     }
 

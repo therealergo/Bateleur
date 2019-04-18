@@ -41,11 +41,11 @@ public class PlaybackModelTest {
         Main.mainInit(App.class, new String[]{});
 
     	// Ensure that there is no existing metadata file
-    	Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class).create().delete();
+    	Main.resource.getResourceFileLocal("test_out>PlaybackModelTest>test_meta.ser").create().delete();
 
-        settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
+        settings = new SettingsModel(Main.resource.getResourceFileLocal("settings.ser"));
         testAudio = new BAudioLocal(settings,
-                                   Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class),
+                                   Main.resource.getResourceFileLocal("test_out>PlaybackModelTest>test_meta.ser"),
                                    Main.resource.getResourceFileClass("test_in>test.mp3", App.class));
     }
 
@@ -80,7 +80,7 @@ public class PlaybackModelTest {
     public void test_loadedAudio_loadAudio_loadsNewAudio() throws Exception {
         // Given
         BAudio originalAudio = new BAudioLocal(settings,
-                                               Main.resource.getResourceFileClass("test_out>PlaybackModelTest>test_meta.ser", App.class),
+                                               Main.resource.getResourceFileLocal("test_out>PlaybackModelTest>test_meta.ser"),
                                                Main.resource.getResourceFileClass("test_in>test.mp3", App.class));
 
         assert !(testAudio.equals(originalAudio));    // validates the test environment was created correctly, not unit

@@ -34,10 +34,10 @@ public class SettingsModelTest {
     @Before
     public void setup() throws Exception {
     	// Ensure that there is no existing settings file
-    	Main.resource.getResourceFileClass("test_out>SettingsModelTest>test_settings.ser", App.class).create().delete();
+    	Main.resource.getResourceFileLocal("test_out>SettingsModelTest>test_settings.ser").create().delete();
 
     	// Create settings object to be tested
-        settings = new SettingsModel(Main.resource.getResourceFileClass("test_out>SettingsModelTest>test_settings.ser", App.class));
+        settings = new SettingsModel(Main.resource.getResourceFileLocal("test_out>SettingsModelTest>test_settings.ser"));
     }
 
     /**
@@ -65,7 +65,7 @@ public class SettingsModelTest {
         // Setting a setting and then reloading the settings object should retain the setting
     	Integer test_val = ArgumentMatchers.any(Integer.class);
     	settings.set(settings.TEST_VAL.to(test_val));
-        settings = new SettingsModel(Main.resource.getResourceFileClass("test_out>SettingsModelTest>test_settings.ser", App.class));
+        settings = new SettingsModel(Main.resource.getResourceFileLocal("test_out>SettingsModelTest>test_settings.ser"));
         assertEquals(settings.<Integer>get(settings.TEST_VAL), test_val);
     }
 }

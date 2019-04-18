@@ -34,10 +34,10 @@ public class QueueModelTest {
         Main.mainInit(App.class, new String[]{});
 
     	// Ensure that there are no existing library files
-    	Main.resource.getResourceFileClass("test_out>QueueModelTest>library", App.class).create().delete();
+    	Main.resource.getResourceFolderLocal("test_out>QueueModelTest>library").create().delete();
 
-        settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
-        library = new LibraryModel(settings, Main.resource.getResourceFolderClass("test_out>QueueModelTest>library", App.class));
+        settings = new SettingsModel(Main.resource.getResourceFileLocal("settings.ser"));
+        library = new LibraryModel(settings, Main.resource.getResourceFolderLocal("test_out>QueueModelTest>library"));
         library.update();
     }
 
@@ -49,10 +49,10 @@ public class QueueModelTest {
         queueModel = new QueueModel(settings);
 
         // Ensure that there is no existing metadata file
-        Main.resource.getResourceFileClass("test_out>QueueModelTest>test_meta.ser", App.class).create().delete();
+        Main.resource.getResourceFileLocal("test_out>QueueModelTest>test_meta.ser").create().delete();
 
         testAudio = new BAudioLocal(settings,
-                                    Main.resource.getResourceFileClass("test_out>QueueModelTest>test_meta.ser", App.class),
+                                    Main.resource.getResourceFileLocal("test_out>QueueModelTest>test_meta.ser"),
                                     Main.resource.getResourceFileClass("test_in>QueueModelTest>library>test.mp3", App.class));
         queueModel.setQueue(library, testAudio);
     }

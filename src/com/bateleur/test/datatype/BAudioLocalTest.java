@@ -38,14 +38,14 @@ public class BAudioLocalTest {
     @Before
     public void setup() throws Exception {
     	// Ensure that there is no existing metadata file
-    	Main.resource.getResourceFileClass("test_out>BAudioLocalTest>test_meta.ser", App.class).create().delete();
+    	Main.resource.getResourceFileLocal("test_out>BAudioLocalTest>test_meta.ser").create().delete();
 
     	// Test with existing user settings file
-        settings = new SettingsModel(Main.resource.getResourceFileClass("settings.ser", App.class));
+        settings = new SettingsModel(Main.resource.getResourceFileLocal("settings.ser"));
 
         // Create audio file to test with
         testAudio = new BAudioLocal(settings,
-                                    Main.resource.getResourceFileClass("test_out>BAudioLocalTest>test_meta.ser", App.class),
+                                    Main.resource.getResourceFileLocal("test_out>BAudioLocalTest>test_meta.ser"),
                                     Main.resource.getResourceFileClass("test_in>test.mp3", App.class));
     }
 
@@ -55,7 +55,7 @@ public class BAudioLocalTest {
     @Test
     public void test_getSetMetadataFromRAM() throws Exception {
         for (int i = 0; i<META_TEST_ITERS; i++) {
-            BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileClass("test_out>BAudioLocalTest>test_meta_" + i + ".ser", App.class));
+            BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileLocal("test_out>BAudioLocalTest>test_meta_" + i + ".ser"));
             audio.set(settings.TEST_VAL.to(i));
             assertEquals(audio.<Integer>get(settings.TEST_VAL), new Integer(i));
         }
@@ -67,11 +67,11 @@ public class BAudioLocalTest {
     @Test
     public void test_getSetMetadataFromDisk() throws Exception {
         for (int i = 0; i<META_TEST_ITERS; i++) {
-            BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileClass("test_out>BAudioLocalTest>test_meta_" + i + ".ser", App.class));
+            BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileLocal("test_out>BAudioLocalTest>test_meta_" + i + ".ser"));
             audio.set(settings.TEST_VAL.to(i));
         }
         for (int i = 0; i<META_TEST_ITERS; i++) {
-            BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileClass("test_out>BAudioLocalTest>test_meta_" + i + ".ser", App.class));
+            BAudio audio = new BAudioLocal(settings, Main.resource.getResourceFileLocal("test_out>BAudioLocalTest>test_meta_" + i + ".ser"));
             assertEquals(audio.<Integer>get(settings.TEST_VAL), new Integer(i));
         }
     }
