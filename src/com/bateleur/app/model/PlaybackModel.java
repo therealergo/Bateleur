@@ -197,23 +197,6 @@ public class PlaybackModel {
 		onSongChangeHandlers.remove(handler);
 	}
 	
-	// invoke this on exit of the program
-	// this will delete the created WAVs from the user library
-	public boolean deleteFilesInMap() {
-		for (String q : createdFileMap.keySet()) {
-			File wav = null;
-			try {
-				wav = new File(new URI(createdFileMap.get(q)));
-			} catch (URISyntaxException e) {
-				continue;
-			}
-			if (!wav.delete()) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
 	// Decoding of the FLAC follows the sample application in io.nayuki.flac.app very closely
 	// The library is licensed under the GPL.
 	private static class BFlacToWav {
