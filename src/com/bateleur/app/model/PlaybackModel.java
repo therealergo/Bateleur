@@ -224,7 +224,8 @@ public class PlaybackModel {
 			ResourceFile playbackFile = audio.get(settings.PLAYBACK_FILE);
 			URI          requestedURI = playbackFile.toURI ();
 			File         inFile       = playbackFile.toFile();
-			File         outFile      = playbackFile.getParent().getChildFile(requestedURI.hashCode() + ".wav").toFile();
+			//TODO: Add the hash of the original FLAC file here, so that if the original file changes we don't re-use the old converted file
+			File         outFile      = File.createTempFile("Bateleur_Convert_", ".wav");
 			outFile.deleteOnExit();
 
 			createdFileMap.putIfAbsent(requestedURI.toString(), outFile.toURI().toString());
