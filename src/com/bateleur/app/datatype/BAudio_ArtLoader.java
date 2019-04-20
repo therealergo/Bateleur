@@ -7,7 +7,7 @@ import com.therealergo.main.Main;
 
 import javafx.scene.image.Image;
 
-public class BArtLoader implements Serializable {
+public class BAudio_ArtLoader implements Serializable {
 	private static final long serialVersionUID = -295078939661918276L;
 	
 	/**

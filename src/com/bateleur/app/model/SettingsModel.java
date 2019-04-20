@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.bateleur.app.datatype.BArtLoader;
+import com.bateleur.app.datatype.BAudio_ArtLoader;
 import com.bateleur.app.datatype.BFile;
 import com.therealergo.main.Main;
 import com.therealergo.main.math.Vector3D;
@@ -40,7 +40,7 @@ public class SettingsModel extends BFile {
     public final BFile.Entry< String                    > AUDIO_PROP_ARTIST  = new BFile.Entry< String                    >( "__artist"           , "<<no artist>>"             );
     public final BFile.Entry< String                    > AUDIO_PROP_ALBUM   = new BFile.Entry< String                    >( "__album"            , "<<no album>>"              );
     public final BFile.Entry< String                    > AUDIO_PROP_TRACKN  = new BFile.Entry< String                    >( "__trackn"           , "<<no track number>>"       );
-    public final BFile.Entry< BArtLoader                > AUDIO_PROP_ART     = new BFile.Entry< BArtLoader                >( "__art"              , new BArtLoader()            );
+    public final BFile.Entry< BAudio_ArtLoader          > AUDIO_PROP_ART     = new BFile.Entry< BAudio_ArtLoader          >( "__art"              , new BAudio_ArtLoader()      );
     public final BFile.Entry< Vector3D                  > AUDIO_PROP_COLR_BG = new BFile.Entry< Vector3D                  >( "__colorBG"          , new Vector3D(0.0, 0.0, 0.0) );
     public final BFile.Entry< Vector3D                  > AUDIO_PROP_COLR_FG = new BFile.Entry< Vector3D                  >( "__colorFG"          , new Vector3D(1.0, 1.0, 1.0) );
     public final BFile.Entry< String                    > AUDIO_PROP_ART_ENC = new BFile.Entry< String                    >( "__artEncoding"      , "png"                       );

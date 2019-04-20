@@ -14,7 +14,7 @@ import com.therealergo.main.resource.ResourceFile;
 
 import javafx.scene.image.Image;
 
-public class BArtLoaderLocal extends BArtLoader {
+public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 	private static final long serialVersionUID = -4271906009974761079L;
 	
 	/** ResourceFile pointing to the audio file that contains the image data that this BArtLoaderLocal represents. */
@@ -55,7 +55,7 @@ public class BArtLoaderLocal extends BArtLoader {
 	 * @param image_th_encoded_bytes The thumbnail image of audio file, stored in a byte array as a disk-writable encoded format (e.g. PNG or JPEG).
 	 * @param image_bl_encoded_bytes The blurred image of audio file, stored in a byte array as a disk-writable encoded format (e.g. PNG or JPEG).
 	 */
-	public BArtLoaderLocal(ResourceFile audioFile, byte[] image_th_encoded_bytes, byte[] image_bl_encoded_bytes) {
+	public BAudioLocal_ArtLoader(ResourceFile audioFile, byte[] image_th_encoded_bytes, byte[] image_bl_encoded_bytes) {
 		if (audioFile == null) {
 			throw new NullPointerException("audioFile cannot be null!");
 		}

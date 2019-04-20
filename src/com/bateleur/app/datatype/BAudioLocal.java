@@ -91,7 +91,7 @@ public class BAudioLocal extends BAudio {
 			image_bl_baos.close();
 			
 			// Create the BArtLoaderLocal instance which will locally store all of the image data
-			set(settings.AUDIO_PROP_ART.to(new BArtLoaderLocal(audioFile, image_th_encoded_bytes, image_bl_encoded_bytes)));
+			set(settings.AUDIO_PROP_ART.to(new BAudioLocal_ArtLoader(audioFile, image_th_encoded_bytes, image_bl_encoded_bytes)));
 			
 			// Compute the foreground and background colors of the album art
 			{
