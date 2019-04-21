@@ -131,7 +131,7 @@ public class PlaybackController implements IntellitypeListener {
 		// Setup a callback to change the displayed audio info. text and image when the playing audio file changes
 		master.playback.addSongChangeHandler(() -> {
 			String text;
-			BAudio newLoadedAudio = master.playback.getLoadedAudio();
+			BAudio newLoadedAudio = master.library.getByReference(master.playback.getLoadedAudio());
 			
 			text = newLoadedAudio.get(master.settings.AUDIO_PROP_ARTIST);
 			textTop.setText(text.equals(master.settings.AUDIO_PROP_ARTIST.val) ? "" : text);

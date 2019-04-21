@@ -18,10 +18,14 @@ public class BReference implements Serializable {
 	private final byte[] audioFileHash;
 	
 	public BReference(ResourceFile audioFile) {
+		if (audioFile == null) {
+			throw new MainException(BReference.class, "BReference audioFile cannot be null!");
+		}
+		
 		this.audioFile = audioFile;
 		
 		// Compute hash of given audio file
-		if (audioFile != null) {
+		if (audioFile.exists()) {
 			try (InputStream is = audioFile.getInputStream()) {
 				byte[] buffer = new byte[1024];
 				MessageDigest digest = MessageDigest.getInstance("MD5");
@@ -38,7 +42,7 @@ public class BReference implements Serializable {
 				throw new MainException(BReference.class, "Cannot run MD5 hashing algorithm!", e);
 			}
 		} else {
-			audioFileHash = null;
+			audioFileHash = new byte[0];
 		}
 	}
 	

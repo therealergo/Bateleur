@@ -3,7 +3,6 @@ package com.bateleur.app;
 import com.bateleur.app.controller.MasterController;
 import com.bateleur.app.controller.MusicListController;
 import com.bateleur.app.controller.PlaybackController;
-import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.model.LibraryModel;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.QueueModel;
@@ -28,9 +27,8 @@ import javafx.util.BuilderFactory;
 public class App extends Application {
 	@Override public void start(Stage primaryStage) throws Exception {
 		SettingsModel settings = new SettingsModel(          Main.resource.getResourceFileLocal("settings.ser"));
-		PlaybackModel playback = new PlaybackModel(settings                                                    );
 		LibraryModel  library  = new LibraryModel (settings, Main.resource.getResourceFolderLocal("library")   );
-//		PlaylistModel playlist = new PlaylistModel(settings                                                    );
+		PlaybackModel playback = new PlaybackModel(settings                                                    );
 		QueueModel    queue    = new QueueModel   (settings                                                    );
 		
 		{ // Start FXML window
@@ -42,7 +40,7 @@ public class App extends Application {
 					return new Builder<BBackgroundCanvas>() {
 						@Override
 						public BBackgroundCanvas build() {
-							return new BBackgroundCanvas(settings, playback);
+							return new BBackgroundCanvas(settings, playback, library);
 						}
 					};
 				default:
@@ -91,11 +89,9 @@ public class App extends Application {
 				}
 			});
 			
+			playback.loadFromSavedState(library);
+			
 			library.update();
-			library.sortBy((BAudio audio1, BAudio audio2) -> audio2.get(settings.AUDIO_PROP_TITLE).compareTo(audio1.get(settings.AUDIO_PROP_TITLE)));
-			playback.loadAudio(library.iterator().next(), 0);
-			playback.play(0);
-			queue.setQueue(library, library.iterator().next());
 			
 			primaryStage.setScene(scene);
 			primaryStage.show();

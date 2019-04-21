@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.bateleur.app.datatype.BAudio;
+import com.bateleur.app.model.LibraryModel;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.SettingsModel;
 
@@ -25,7 +26,7 @@ public class BBackgroundCanvas extends Canvas {
 	private final AnimationTimer imageAnimation;
 	private final LinkedList<BackgroundImage> imageList;
 
-	public BBackgroundCanvas(SettingsModel settings, PlaybackModel playback) {
+	public BBackgroundCanvas(SettingsModel settings, PlaybackModel playback, LibraryModel library) {
 		this.settings = settings;
 		
 		this.artAlpha = new SimpleDoubleProperty(this, "artAlpha");
@@ -83,7 +84,7 @@ public class BBackgroundCanvas extends Canvas {
 		
 		this.imageList = new LinkedList<BackgroundImage>();
 		playback.addSongChangeHandler(() -> {
-			BAudio newLoadedAudio = playback.getLoadedAudio();
+			BAudio newLoadedAudio = library.getByReference(playback.getLoadedAudio());
 	    	Image image         = newLoadedAudio.get(settings.AUDIO_ARTLOADER).getImagePrimary(newLoadedAudio.get(settings.AUDIO_REFERENCE));
 	    	Image image_blurred = newLoadedAudio.get(settings.AUDIO_ARTLOADER).getImageBlurred(newLoadedAudio.get(settings.AUDIO_REFERENCE));
 			imageList.add(new BackgroundImage(image, image_blurred));

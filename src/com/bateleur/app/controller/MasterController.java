@@ -274,8 +274,8 @@ public class MasterController {
 			// Rebuild all of the colors and start the color-fade animation when the song changes
 			playback.addSongChangeHandler(() -> {
 				// Set the color animation endpoints to the computed BG, FG, BO, and LI colors
-				Vector3D cBG_VEC = playback.getLoadedAudio().get(settings.AUDIO_PROP_COLR_BG);
-				Vector3D cFG_VEC = playback.getLoadedAudio().get(settings.AUDIO_PROP_COLR_FG);
+				Vector3D cBG_VEC = library.getByReference(playback.getLoadedAudio()).get(settings.AUDIO_PROP_COLR_BG);
+				Vector3D cFG_VEC = library.getByReference(playback.getLoadedAudio()).get(settings.AUDIO_PROP_COLR_FG);
 				colorPlayback1_BG = new Color(cBG_VEC.x, cBG_VEC.y, cBG_VEC.z, 1.0);
 				colorPlayback1_FG = new Color(cFG_VEC.x, cFG_VEC.y, cFG_VEC.z, 1.0);
 				colorPlayback1_BO = colorPlayback1_BG.interpolate(colorPlayback1_FG, 0.3);

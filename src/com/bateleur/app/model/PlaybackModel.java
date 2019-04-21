@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.bateleur.app.datatype.BAudio;
+import com.bateleur.app.datatype.BReference;
 import com.therealergo.main.Main;
 import com.therealergo.main.resource.ResourceFile;
 
@@ -29,8 +30,6 @@ public class PlaybackModel {
 
 	private MediaPlayer player;
 	private static HashMap<String, String> createdFileMap;
-	private BAudio loadedAudio;
-	private double volume;
 
 	private List<Runnable> onPlayHandlers      ;
 	private List<Runnable> onPauseHandlers     ;
@@ -41,8 +40,6 @@ public class PlaybackModel {
 
 		this.player = null;
 		createdFileMap = new HashMap<>();
-		this.loadedAudio = null;
-		this.volume = 1.0;
 
 		onPlayHandlers       = new ArrayList<Runnable>();
 		onPauseHandlers      = new ArrayList<Runnable>();
@@ -50,11 +47,15 @@ public class PlaybackModel {
 	}
 
 	public boolean isAudioLoaded() {
-		return loadedAudio != null;
+		return settings.get( settings.PLAY_CUR_AUDIO_REF ).equals( settings.NULL_BREFERENCE );
 	}
 
-	public BAudio getLoadedAudio() {
-		return loadedAudio;
+	public BReference getLoadedAudio() {
+		return settings.get( settings.PLAY_CUR_AUDIO_REF );
+	}
+	
+	public void loadFromSavedState(LibraryModel library) {
+		loadAudio(library.getByReference(settings.get( settings.PLAY_CUR_AUDIO_REF )), 0);
 	}
 
 	public void loadAudio(BAudio audio, int fadeOutTimeMS) {
@@ -63,13 +64,15 @@ public class PlaybackModel {
 				onPauseHandlers.get(i).run();
 			}
 			player.dispose();
-			loadedAudio = null;
+			settings.set( settings.PLAY_CUR_AUDIO_REF.to(settings.NULL_BREFERENCE) );
 		}
-
+		
 		if (audio == null) {
 			player = null;
-			loadedAudio = null;
+			settings.set( settings.PLAY_CUR_AUDIO_REF.to(settings.NULL_BREFERENCE) );
 		} else {
+			Main.log.log("Loaded audio: " + audio.get(settings.AUDIO_REFERENCE));
+			
 			ResourceFile playbackFile = audio.get(settings.AUDIO_REFERENCE).getPlaybackFile();
 			String       playbackURI  = playbackFile.getFullURI();
 			String       fileExt      = playbackFile.getExtension();
@@ -108,8 +111,8 @@ public class PlaybackModel {
 						onPauseHandlers.get(i).run();
 					}
 				});
-				player.setVolume(volume);
-				loadedAudio = audio;
+				player.setVolume( settings.get(settings.PLAY_CUR_VOLUME) );
+				settings.set( settings.PLAY_CUR_AUDIO_REF.to(audio.get(settings.AUDIO_REFERENCE)) );
 			}
 		}
 		
@@ -163,11 +166,11 @@ public class PlaybackModel {
 	}
 
 	public double getVolume() {
-		return volume;
+		return settings.get(settings.PLAY_CUR_VOLUME);
 	}
 
 	public void setVolume(double volume) {
-		this.volume = volume;
+		settings.set( settings.PLAY_CUR_VOLUME.to(volume) );
 		if (player != null) {
 			player.setVolume(volume);
 		}

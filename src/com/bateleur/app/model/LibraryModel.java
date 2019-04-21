@@ -180,6 +180,17 @@ public class LibraryModel implements Iterable<BAudio> {
 		}
 	}
 	
+	public BAudio getByReference(BReference reference) {
+		Iterator<BAudio> audioIterator = listLibarary.iterator();
+		while (audioIterator.hasNext()) {
+			BAudio searchAudio = audioIterator.next();
+			if (reference.equals(searchAudio.get(settings.AUDIO_REFERENCE))) {
+				return searchAudio;
+			}
+		}
+		return null;
+	}
+	
 	public void sortBy(Comparator<BAudio> comparator) {
 		listFiltered.sort(comparator);
 	}

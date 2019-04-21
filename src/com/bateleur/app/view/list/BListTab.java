@@ -128,7 +128,7 @@ public class BListTab extends Tab {
 		
 		playback.addSongChangeHandler(() -> {
 			for (int i = 0; i<options.size(); i++) {
-				options.get(i).onSongChange(playback.getLoadedAudio());
+				options.get(i).onSongChange(library.getByReference(playback.getLoadedAudio()));
 			}
 		});
 	}
