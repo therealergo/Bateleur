@@ -64,11 +64,11 @@ public class QueueModelTest {
     public void test_lastAudioQueueEn_skipForwards_firstSong() {
         // Given
         queueModel.setQueueState(true);
-        BAudio startingAudio = queueModel.get();
+        BAudio startingAudio = library.getByReference(queueModel.get());
 
         // When
         queueModel.skipForwards();
-        BAudio nextAudio = queueModel.get();
+        BAudio nextAudio = library.getByReference(queueModel.get());
 
         // Then
         assertNotNull(nextAudio);
@@ -96,13 +96,12 @@ public class QueueModelTest {
     public void test_firstAudioQueueEn_skipBackwards_lastSong() {
         // Given
         queueModel.setQueueState(true);
-        BAudio startingAudio = queueModel.get();
-
+        BAudio startingAudio = library.getByReference(queueModel.get());
+        
         // When
         queueModel.skipBackwards();
-        BAudio prevAudio = queueModel.get();
-
-
+        BAudio prevAudio = library.getByReference(queueModel.get());
+        
         // Then
         assertNotNull(prevAudio);
         assertNotSame(startingAudio, prevAudio);
@@ -114,10 +113,10 @@ public class QueueModelTest {
      */
     @Test
     public void test_firstAudioNoQueue_skipForwards_loadsNextSong() {
-        BAudio startingAudio = queueModel.get();
+        BAudio startingAudio = library.getByReference(queueModel.get());
 
         queueModel.skipForwards();
-        BAudio nextAudio = queueModel.get();
+        BAudio nextAudio = library.getByReference(queueModel.get());
 
         // Then
         assertNotNull(nextAudio);

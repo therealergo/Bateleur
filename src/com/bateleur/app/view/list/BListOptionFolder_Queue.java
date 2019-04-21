@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.bateleur.app.datatype.BAudio;
+import com.bateleur.app.datatype.BReference;
 import com.bateleur.app.model.QueueModel;
 
 public class BListOptionFolder_Queue extends BListOptionFolder {
@@ -24,9 +24,9 @@ public class BListOptionFolder_Queue extends BListOptionFolder {
 		QueueModel queue = bListTab.musicListController.master.queue;
 		
 		List<BListOption> options = new LinkedList<BListOption>();
-		Iterator<BAudio> queueIterator = queue.getQueueIterator();
+		Iterator<BReference> queueIterator = queue.getQueueIterator();
 		while (queueIterator.hasNext()) {
-			options.add(new BListOptionAudio(bListTab, queueIterator.next()));
+			options.add(new BListOptionAudio(bListTab, bListTab.musicListController.master.library.getByReference(queueIterator.next())));
 		};
 		return options;
 	}

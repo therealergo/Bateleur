@@ -1,96 +1,102 @@
 package com.bateleur.app.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import com.bateleur.app.datatype.BAudio;
+import com.bateleur.app.datatype.BReference;
 import com.therealergo.main.NilEvent;
 
 public class QueueModel {
 	private SettingsModel settings;
-	
-    private ArrayList<BAudio> queueSet;
-    
-    private ArrayList<BAudio> queueProcessed;
-    private int queueProcessedIndex;
     
     public final NilEvent queueChangedEvent;
     
     public QueueModel(SettingsModel settings) {
     	this.settings = settings;
     	
-    	this.queueSet = new ArrayList<BAudio>();
-    	
-    	this.queueProcessed = new ArrayList<BAudio>();
-    	this.queueProcessedIndex = -1;
-    	
     	this.queueChangedEvent = new NilEvent();
     }
     
-    private void recreateProcessedQueue(BAudio startingAudio) {
-    	queueProcessed.clear();
-    	queueProcessed.addAll(queueSet);
+    private void recreateProcessedQueue(BReference startingAudio) {
+    	settings.get(settings.QUEUE_PROCES).clear();
+    	settings.get(settings.QUEUE_PROCES).addAll(settings.get(settings.QUEUE_ACTUAL));
     	
     	if (isShuffleEnabled()) {
-    		Collections.shuffle(queueProcessed);
+    		Collections.shuffle(settings.get(settings.QUEUE_PROCES));
     	}
     	
-    	queueProcessedIndex = queueProcessed.indexOf(startingAudio);
+    	//TODO: This is a hack to ensure that the list is saved -- it really needs to be replaced
+    	settings.set( settings.QUEUE_PROCES.to(settings.get(settings.QUEUE_PROCES)) );
+    	
+    	int computedIndex = settings.get(settings.QUEUE_PROCES).indexOf(startingAudio);
+    	settings.set(settings.QUEUE_PROCES_INDEX.to(computedIndex));
     	
     	queueChangedEvent.accept();
     }
     
-    public BAudio get() {
-//    	if (queueProcessed.size() == 0) {
-//    		return null;
-//    	}
-        return queueProcessed.get(queueProcessedIndex);
+    public BReference get() {
+        return settings.get(settings.QUEUE_PROCES).get( settings.get(settings.QUEUE_PROCES_INDEX) );
     }
     
-    public Iterator<BAudio> getQueueIterator() {
-    	return queueProcessed.iterator();
+    public Iterator<BReference> getQueueIterator() {
+    	return settings.get(settings.QUEUE_ACTUAL).iterator();
     }
     
     private void wrapQueueProcessedIndex() {
-//    	if (queueProcessed.size() == 0) {
-//    		queueProcessedIndex = 1;
-//    		return;
-//    	}
-		queueProcessedIndex = ((queueProcessedIndex % queueProcessed.size()) + queueProcessed.size()) % queueProcessed.size();
+    	int currentIndex = settings.get(settings.QUEUE_PROCES_INDEX);
+    	int currentSize  = settings.get(settings.QUEUE_PROCES).size();
+    	
+    	currentIndex = ((currentIndex % currentSize) + currentSize) % currentSize;
+    	
+    	settings.set(settings.QUEUE_PROCES_INDEX.to(currentIndex));
     }
 
     public boolean skipForwards() {
     	if (isQueueEnabled()) {
-    		int queueProcessedIndex_initial = queueProcessedIndex;
-        	queueProcessedIndex++;
+    		int queueProcessedIndex_initial = settings.get(settings.QUEUE_PROCES_INDEX);
+    		settings.set(settings.QUEUE_PROCES_INDEX.to( queueProcessedIndex_initial + 1 ));
         	wrapQueueProcessedIndex();
-        	return isRepeatEnabled() || queueProcessedIndex > queueProcessedIndex_initial;
+        	return isRepeatEnabled() || settings.get(settings.QUEUE_PROCES_INDEX) > queueProcessedIndex_initial;
     	}
     	return isRepeatEnabled();
     }
 
     public boolean skipBackwards() {
     	if (isQueueEnabled()) {
-    		int queueProcessedIndex_initial = queueProcessedIndex;
-    		queueProcessedIndex--;
+    		int queueProcessedIndex_initial = settings.get(settings.QUEUE_PROCES_INDEX);
+    		settings.set(settings.QUEUE_PROCES_INDEX.to( queueProcessedIndex_initial - 1 ));
         	wrapQueueProcessedIndex();
-    		return isRepeatEnabled() || queueProcessedIndex < queueProcessedIndex_initial;
+    		return isRepeatEnabled() || settings.get(settings.QUEUE_PROCES_INDEX) < queueProcessedIndex_initial;
     	}
     	return isRepeatEnabled();
     }
 
-    public void setQueue(LibraryModel libraryModel, BAudio startingAudio) {
-    	queueSet.clear();
-    	libraryModel.forEach( (BAudio audio) -> queueSet.add(audio) );
+    public void setQueue(LibraryModel library, BAudio startingAudio) {
+    	setQueue( library, startingAudio.get(settings.AUDIO_REFERENCE) );
+    }
+
+    public void setQueue(LibraryModel library, BReference startingAudio) {
+    	settings.get( settings.QUEUE_ACTUAL ).clear();
+    	library.forEach( (BAudio audio) -> settings.get(settings.QUEUE_ACTUAL).add(audio.get(settings.AUDIO_REFERENCE)) );
+
+    	//TODO: This is a hack to ensure that the list is saved -- it really needs to be replaced
+    	settings.set( settings.QUEUE_ACTUAL.to(settings.get(settings.QUEUE_ACTUAL)) );
     	
     	recreateProcessedQueue(startingAudio);
     }
-
+    
     public void setQueue(List<BAudio> audioList, BAudio startingAudio) {
-    	queueSet.clear();
-    	audioList.forEach( (BAudio audio) -> queueSet.add(audio) );
+    	setQueue( audioList, startingAudio.get(settings.AUDIO_REFERENCE) );
+    }
+    
+    public void setQueue(List<BAudio> audioList, BReference startingAudio) {
+    	settings.get( settings.QUEUE_ACTUAL ).clear();
+    	audioList.forEach( (BAudio audio) -> settings.get(settings.QUEUE_ACTUAL).add(audio.get(settings.AUDIO_REFERENCE)) );
+
+    	//TODO: This is a hack to ensure that the list is saved -- it really needs to be replaced
+    	settings.set( settings.QUEUE_ACTUAL.to(settings.get(settings.QUEUE_ACTUAL)) );
     	
     	recreateProcessedQueue(startingAudio);
     }

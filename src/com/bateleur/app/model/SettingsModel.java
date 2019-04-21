@@ -35,6 +35,9 @@ public class SettingsModel extends BFile {
     public final BFile.Entry< Boolean                   > QUEUE_SHUFFLE_EN   = new BFile.Entry< Boolean                   >( "__queueShuffleEn"   , false                       );
     public final BFile.Entry< Boolean                   > QUEUE_QUEUE_EN     = new BFile.Entry< Boolean                   >( "__queueQueueEn"     , true                        );
     public final BFile.Entry< Boolean                   > QUEUE_REPEAT_EN    = new BFile.Entry< Boolean                   >( "__queueRepeatEn"    , true                        );
+    public final BFile.Entry< ArrayList<BReference>     > QUEUE_ACTUAL       = new BFile.Entry< ArrayList<BReference>     >( "__queueActual"      , new ArrayList<BReference>() );
+    public final BFile.Entry< ArrayList<BReference>     > QUEUE_PROCES       = new BFile.Entry< ArrayList<BReference>     >( "__queueProces"      , new ArrayList<BReference>() );
+    public final BFile.Entry< Integer                   > QUEUE_PROCES_INDEX = new BFile.Entry< Integer                   >( "__queueProcesIndex" , 0                           );
     
 	public final BFile.Entry< BReference                > AUDIO_REFERENCE    = new BFile.Entry< BReference                >( "__reference"        , NULL_BREFERENCE             );
 	public final BFile.Entry< BAudio_ArtLoader          > AUDIO_ARTLOADER    = new BFile.Entry< BAudio_ArtLoader          >( "__artloader"        , new BAudio_ArtLoader()      );
@@ -50,7 +53,7 @@ public class SettingsModel extends BFile {
     
     public final BFile.Entry< BReference                > PLAY_CUR_AUDIO_REF = new BFile.Entry< BReference                >( "__playCurrentSong"  , NULL_BREFERENCE             );
     public final BFile.Entry< Double                    > PLAY_CUR_VOLUME    = new BFile.Entry< Double                    >( "__playCurVolume"    , 1.0                         );
-	
+    
     public final BFile.Entry< Double                    > UI_MOTION_BLUR_MUL = new BFile.Entry< Double                    >( "__uiMotionBlurMul"  , 2.0                         );
     public final BFile.Entry< Double                    > UI_ANIM_TIME_MUL   = new BFile.Entry< Double                    >( "__uiAnimTimeMul"    , 5.0                         );
     public final BFile.Entry< Double                    > UI_ART_SCALING     = new BFile.Entry< Double                    >( "__uiArtScaling"     , 0.9                         );

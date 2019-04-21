@@ -24,7 +24,7 @@ public class BListOptionAudio extends BListOption {
 		
 		this.audio = audio;
 	}
-	
+
 	@Override public Node buildForeground() {
 		Button foreground = new Button();
 		foreground.setMinHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));

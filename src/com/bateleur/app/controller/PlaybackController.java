@@ -164,7 +164,10 @@ public class PlaybackController implements IntellitypeListener {
 							TEMP_OSS = false;
 							if (master.playback.getPlaybackTimeMS() >= master.playback.getPlaybackLengthMS()) {
 								boolean shouldAutoPlay = master.queue.skipForwards();
-								master.playback.loadAudio(master.queue.get(), master.settings.get(master.settings.FADE_TIME_USER));
+								master.playback.loadAudio(
+									master.library.getByReference(master.queue.get()), 
+									master.settings.get(master.settings.FADE_TIME_USER)
+								);
 								if (shouldAutoPlay) {
 									master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
 								}
@@ -303,7 +306,10 @@ public class PlaybackController implements IntellitypeListener {
 	 */
 	@FXML public void onSkipForwardPress() {
 		master.queue.skipForwards();
-		master.playback.loadAudio(master.queue.get(), master.settings.get(master.settings.FADE_TIME_USER));
+		master.playback.loadAudio(
+			master.library.getByReference(master.queue.get()), 
+			master.settings.get(master.settings.FADE_TIME_USER)
+		);
 		master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
 	}
 
@@ -312,7 +318,10 @@ public class PlaybackController implements IntellitypeListener {
 	 */
 	@FXML public void onSkipBackwardPress() {
 		master.queue.skipBackwards();
-		master.playback.loadAudio(master.queue.get(), master.settings.get(master.settings.FADE_TIME_USER));
+		master.playback.loadAudio(
+			master.library.getByReference(master.queue.get()), 
+			master.settings.get(master.settings.FADE_TIME_USER)
+		);
 		master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
 	}
 	
