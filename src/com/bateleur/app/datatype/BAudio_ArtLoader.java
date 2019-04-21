@@ -18,7 +18,7 @@ public class BAudio_ArtLoader implements Serializable {
 	 * This behavior will generally be overridden by subclasses that provide images using their own methods.
 	 * @return This BArtLoader's primary Image.
 	 */
-	public Image getImagePrimary() {
+	public Image getImagePrimary(BReference parentReference) {
 		return new Image(Main.resource.getResourceFileClass("textures>none_TH.png", App.class).getInputStream());
 	}
 	
@@ -30,7 +30,7 @@ public class BAudio_ArtLoader implements Serializable {
 	 * This behavior will generally be overridden by subclasses that provide images using their own methods.
 	 * @return This BArtLoader's thumbnail Image.
 	 */
-	public Image getImageThumbnail() {
+	public Image getImageThumbnail(BReference parentReference) {
 		return new Image(Main.resource.getResourceFileClass("textures>none_TH.png", App.class).getInputStream());
 	}
 	
@@ -43,7 +43,7 @@ public class BAudio_ArtLoader implements Serializable {
 	 * This behavior will generally be overridden by subclasses that provide images using their own methods.
 	 * @return This BArtLoader's thumbnail Image.
 	 */
-	public Image getImageBlurred() {
+	public Image getImageBlurred(BReference parentReference) {
 		return new Image(Main.resource.getResourceFileClass("textures>none_BL.png", App.class).getInputStream());
 	}
 }

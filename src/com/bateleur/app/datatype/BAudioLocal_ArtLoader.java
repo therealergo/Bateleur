@@ -10,15 +10,11 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 
-import com.therealergo.main.resource.ResourceFile;
-
 import javafx.scene.image.Image;
 
 public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 	private static final long serialVersionUID = -4271906009974761079L;
 	
-	/** ResourceFile pointing to the audio file that contains the image data that this BArtLoaderLocal represents. */
-	private final ResourceFile audioFile;
 	/** This BArtLoaderLocal's thumbnail image, encoded into a format meant for on-disk storage. */
 	private final byte[] image_th_encoded_bytes;
 	/** This BArtLoaderLocal's blurred image, encoded into a format meant for on-disk storage. */
@@ -55,10 +51,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 	 * @param image_th_encoded_bytes The thumbnail image of audio file, stored in a byte array as a disk-writable encoded format (e.g. PNG or JPEG).
 	 * @param image_bl_encoded_bytes The blurred image of audio file, stored in a byte array as a disk-writable encoded format (e.g. PNG or JPEG).
 	 */
-	public BAudioLocal_ArtLoader(ResourceFile audioFile, byte[] image_th_encoded_bytes, byte[] image_bl_encoded_bytes) {
-		if (audioFile == null) {
-			throw new NullPointerException("audioFile cannot be null!");
-		}
+	public BAudioLocal_ArtLoader(byte[] image_th_encoded_bytes, byte[] image_bl_encoded_bytes) {
 		if (image_th_encoded_bytes == null) {
 			throw new NullPointerException("image_th_encoded_bytes cannot be null!");
 		}
@@ -66,7 +59,6 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 			throw new NullPointerException("image_bl_encoded_bytes cannot be null!");
 		}
 		
-		this.audioFile = audioFile;
 		this.image_th_encoded_bytes = image_th_encoded_bytes;
 		this.image_bl_encoded_bytes = image_bl_encoded_bytes;
 		
@@ -75,7 +67,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		this.image_bl = null;
 	}
 	
-	@Override public Image getImagePrimary() {
+	@Override public Image getImagePrimary(BReference parentReference) {
 		// Read the image from the cache if the cache has been created
 		Image retVal = image_pr == null ? null : image_pr.get();
 		
@@ -84,7 +76,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 			try {
 				retVal = new Image(
 					new ByteArrayInputStream(
-						AudioFileIO.read(audioFile.toFile()).getTag().getFirstArtwork().getBinaryData()
+						AudioFileIO.read(parentReference.getPlaybackFile().toFile()).getTag().getFirstArtwork().getBinaryData()
 					)
 				);
 			} catch (InvalidAudioFrameException | CannotReadException | IOException | TagException | ReadOnlyFileException e) {
@@ -93,7 +85,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		
 		// If the image load failed for any reason, use the default 'no art found' image
 		if (retVal == null || retVal.isError()) {
-			retVal = super.getImagePrimary();
+			retVal = super.getImagePrimary(parentReference);
 		}
 		
 		// Update the cache to refer to the new image
@@ -104,7 +96,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		return retVal;
 	}
 	
-	@Override public Image getImageThumbnail() {
+	@Override public Image getImageThumbnail(BReference parentReference) {
 		// Read the image from the cache if the cache has been created
 		Image retVal = image_th == null ? null : image_th.get();
 		
@@ -115,7 +107,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		
 		// If the image load failed for any reason, use the default 'no art found' image
 		if (retVal.isError()) {
-			retVal = super.getImageThumbnail();
+			retVal = super.getImageThumbnail(parentReference);
 		}
 		
 		// Update the cache to refer to the new image
@@ -126,7 +118,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		return retVal;
 	}
 	
-	@Override public Image getImageBlurred() {
+	@Override public Image getImageBlurred(BReference parentReference) {
 		// Read the image from the cache if the cache has been created
 		Image retVal = image_bl == null ? null : image_bl.get();
 		
@@ -137,7 +129,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		
 		// If the image load failed for any reason, use the default 'no art found' image
 		if (retVal.isError()) {
-			retVal = super.getImageBlurred();
+			retVal = super.getImageBlurred(parentReference);
 		}
 		
 		// Update the cache to refer to the new image
