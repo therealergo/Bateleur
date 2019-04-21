@@ -1,6 +1,7 @@
 package com.bateleur.app.view.list;
 
 import com.bateleur.app.datatype.BAudio;
+import com.bateleur.app.datatype.BReference;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -42,7 +43,7 @@ public class BListOptionAudio extends BListOption {
 		isPlayingLabel = new Label();
 		isPlayingLabel.getStyleClass().add("listOptionLabel");
 		isPlayingLabel.prefHeightProperty().bind(foreground.heightProperty());
-		isPlayingLabel.setText(audio.equals(bListTab.musicListController.master.playback.getLoadedAudio()) ? ">>" : "");
+		onSongChange(bListTab.musicListController.master.library.getByReference(bListTab.musicListController.master.playback.getLoadedAudio()));
 		innerGrid.add(isPlayingLabel, 0, 0);
 		
 		Label innerLabel;
@@ -87,6 +88,8 @@ public class BListOptionAudio extends BListOption {
 	}
 	
 	@Override public void onSongChange(BAudio loadedAudio) {
-		isPlayingLabel.setText(audio.equals(loadedAudio) ? ">>" : "");
+		BReference referenceThis = audio      .get(bListTab.musicListController.master.settings.AUDIO_REFERENCE);
+		BReference referenceLoad = loadedAudio.get(bListTab.musicListController.master.settings.AUDIO_REFERENCE);
+		isPlayingLabel.setText(referenceThis.equals(referenceLoad) ? ">>" : "");
 	}
 }
