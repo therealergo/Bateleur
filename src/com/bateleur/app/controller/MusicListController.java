@@ -3,19 +3,21 @@ package com.bateleur.app.controller;
 import java.util.Set;
 
 import com.bateleur.app.datatype.BAudio;
+import com.bateleur.app.view.list.BListOptionFolder_ByPath;
 import com.bateleur.app.view.list.BListOptionFolder_ByType.BListOptionFolder_ByAlbum;
 import com.bateleur.app.view.list.BListOptionFolder_ByType.BListOptionFolder_ByArtist;
 import com.bateleur.app.view.list.BListOptionFolder_Queue;
 import com.bateleur.app.view.list.BListOptionFolder_Tracks;
-import com.bateleur.app.view.list.BListOptionFolder_ByPath;
 import com.bateleur.app.view.list.BListTab;
 
 import javafx.animation.KeyValue;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -26,6 +28,7 @@ public class MusicListController {
 	/** FXML-injected component references. */
 	@FXML private TabPane listTabPane;
 	@FXML private AnchorPane musicListPane;
+	@FXML private Button goUpButton;
 	
 	/** Reference to this MusicListController's MasterController. */
 	public MasterController master;
@@ -126,6 +129,21 @@ public class MusicListController {
 					});
 				}
 			}
+		});
+		
+		// Colorize 'goUpButton' based on the FG and BO color
+		goUpButton.setEffect(master.playbackColorAnimation.lightingBO);
+		goUpButton.setOnMouseEntered((MouseEvent event) -> {
+			goUpButton.setEffect(master.playbackColorAnimation.lightingFG);
+		});
+		goUpButton.setOnMouseExited((MouseEvent event) -> {
+			goUpButton.setEffect(master.playbackColorAnimation.lightingBO);
+		});
+		
+		// Setup the actual action of 'goUpButton'
+		goUpButton.setOnAction((ActionEvent event) -> {
+			// Tell the currently-selected tab to go to up a directory to its parent folder
+			((BListTab)listTabPane.getSelectionModel().getSelectedItem()).selectParent();
 		});
 	}
 	

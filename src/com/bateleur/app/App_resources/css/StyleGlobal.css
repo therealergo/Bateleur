@@ -24,6 +24,11 @@
 	-fx-background-color: transparent;
 }
 
+/* Add a 25px inset on the left side of the tab header to make room for the 'go up a folder' button. */
+.tab-header-area {
+	-fx-padding: 5px 0px 5px 25px;
+}
+
 /* Set the entire tab-header background to the BG color. */
 .tab-pane *.tab-header-background {
 	-fx-background-color: white;
