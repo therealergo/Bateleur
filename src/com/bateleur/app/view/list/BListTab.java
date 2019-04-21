@@ -29,7 +29,8 @@ public class BListTab extends Tab {
 	private LibraryModel library;
 	private PlaybackModel playback;
 	private SettingsModel settings;
-	
+
+	private BListOptionFolder currentFolder;
 	private BListOptionFolder parentFolder;
 
 	public BListTab(MusicListController musicListController, LibraryModel library, PlaybackModel playback, SettingsModel settings, Class<? extends BListOptionFolder> baseFolderClass) {
@@ -79,16 +80,21 @@ public class BListTab extends Tab {
 		innerGridForeground.prefWidthProperty().bind(innerScrollForeground.widthProperty());
 		innerScrollForeground.setContent(innerGridForeground);
 		
-		BListOptionFolder baseFolder;
 		try {
-			baseFolder = baseFolderClass.getConstructor(BListTab.class, BListOptionFolder.class).newInstance(this, null);
+			currentFolder = baseFolderClass.getConstructor(BListTab.class, BListOptionFolder.class).newInstance(this, null);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			throw new MainException(BListTab.class, "Cannot instantiate base folder class: " + baseFolderClass + "!", e);
 		}
-		setText(baseFolder.getText());
-		rebuildList(baseFolder);
+		setText(currentFolder.getText());
+		rebuildList(currentFolder);
 		library.updateFinishEvent.addListener(() -> {
-			rebuildList(baseFolder);
+			rebuildList(currentFolder);
+		});
+		
+		playback.addSongChangeHandler(() -> {
+			for (int i = 0; i<options.size(); i++) {
+				options.get(i).onSongChange(library.getByReference(playback.getLoadedAudio()));
+			}
 		});
 	}
 
@@ -111,6 +117,7 @@ public class BListTab extends Tab {
 	}
 
 	public void rebuildList(BListOptionFolder folder) {
+		currentFolder = folder;
 		parentFolder = folder.parentFolder;
 		
 		options.clear();
@@ -125,12 +132,6 @@ public class BListTab extends Tab {
 		for (int i = 0; i<options.size(); i++) {
 			innerGridForeground.add(options.get(i).buildForeground(), 0, i);
 		}
-		
-		playback.addSongChangeHandler(() -> {
-			for (int i = 0; i<options.size(); i++) {
-				options.get(i).onSongChange(library.getByReference(playback.getLoadedAudio()));
-			}
-		});
 	}
 	
 	public void selectParent() {
