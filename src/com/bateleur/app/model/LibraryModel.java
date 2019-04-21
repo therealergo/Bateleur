@@ -8,12 +8,20 @@ import java.util.function.Predicate;
 
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioLocal;
+import com.bateleur.app.datatype.BReference;
 import com.therealergo.main.Main;
+import com.therealergo.main.NilEvent;
 import com.therealergo.main.resource.ResourceFile;
 import com.therealergo.main.resource.ResourceFolder;
 
+import javafx.application.Platform;
+
 public class LibraryModel implements Iterable<BAudio> {
 	private SettingsModel settings;
+	
+	private boolean isUpdating;
+	public final NilEvent updateStartEvent;
+	public final NilEvent updateFinishEvent;
 	
 	private List<BAudio> listLibarary;
 	private List<BAudio> listFiltered;
@@ -21,6 +29,10 @@ public class LibraryModel implements Iterable<BAudio> {
 	
 	public LibraryModel(SettingsModel settings, ResourceFolder data) {
 		this.settings = settings;
+		
+		this.isUpdating = false;
+		this.updateStartEvent = new NilEvent();
+		this.updateFinishEvent = new NilEvent();
 		
 		this.listLibarary = new ArrayList<BAudio>();
 		this.listFiltered = new ArrayList<BAudio>();
@@ -41,40 +53,130 @@ public class LibraryModel implements Iterable<BAudio> {
 		reset();
 	}
 	
-	private void updateFromFolder(ResourceFolder folder) throws Exception {
+	public boolean isUpdating() {
+		return isUpdating;
+	}
+	
+	private void getFileReferencesInFolder(ResourceFolder folder, List<BReference> existingReferenceList) {
+		// Create a new BReference pointing to each file in this folder with an extension on the LIBRARY_OKAY_TYPES list
 		ResourceFile[] audioFileList = folder.listFileChildren();
-		
-		for (int i = 0; i<audioFileList.length; i++) {
-			if (settings.get(settings.LIBRARY_OKAY_TYPES).contains(audioFileList[i].getExtension())) {
-				ResourceFile searchFile = audioFileList[i];
-				
-				reset();
-				filterBy((BAudio audio) -> audio.get(settings.PLAYBACK_FILE).equals(searchFile));
-				
-				while (listFiltered.size() > 1) {
-					listLibarary.remove(listFiltered.remove(0).delete());
-				}
-				
-				if (listFiltered.size() < 1) {
-					long nameVal = settings.get(settings.LIBRARY_NEXT_VAL);
-					listLibarary.add(new BAudioLocal(settings, data.getChildFile(nameVal + ".ser"), searchFile));
-					settings.set(settings.LIBRARY_NEXT_VAL.to(nameVal + 1));
-				}
+		for (ResourceFile searchFile : audioFileList) {
+			if (settings.get(settings.LIBRARY_OKAY_TYPES).contains(searchFile.getExtension())) {
+				BReference existingReference = new BReference(searchFile);
+				existingReferenceList.add(existingReference);
+				Main.log.log("Found existing BAudio to add to library: " + existingReference);
 			}
 		}
 		
-		reset();
-		
+		// Recursively scan to each of this folder's children
 		ResourceFolder[] audioFolderList = folder.listFolderChildren();
-		for (int i = 0; i<audioFolderList.length; i++) {
-			updateFromFolder(audioFolderList[i]);
+		for (ResourceFolder searchFolder : audioFolderList) {
+			getFileReferencesInFolder(searchFolder, existingReferenceList);
 		}
 	}
 	
 	public void update() throws Exception {
-		List<ResourceFolder> folders = settings.get(settings.LIBRARY_PATH);
-		for (ResourceFolder folder : folders) {
-			updateFromFolder(folder);
+		// Ensure that only one update can occur at a time
+		if (!isUpdating) {
+			isUpdating = true;
+			
+			// Notify that we have started updating
+			updateStartEvent.accept();
+			
+			// Make a copy of the old library list to work on
+			List<BAudio> currentBAudioList = new ArrayList<BAudio>();
+			currentBAudioList.addAll(listLibarary);
+			
+			// Spawn a thread to update the library in the background
+			new Thread("Library Update Thread") {
+				public void run() {
+					
+					// Recursively scan all library paths, constructing a BReference for each existing audio file found
+					List<BReference> existingReferenceList = new ArrayList<BReference>();
+					List<ResourceFolder> folders = settings.get(settings.LIBRARY_PATH);
+					for (ResourceFolder folder : folders) {
+						getFileReferencesInFolder(folder, existingReferenceList);
+					}
+					// Canonically, every entry in this list is an audio file that the user WANTS
+					// We now need to reconcile this new reference list with our old library list
+					
+					// Create an array to hold the new library list
+					List<BAudio> finalBAudioList = new ArrayList<BAudio>();
+					Iterator<BReference> referenceIterator;
+					Iterator<BAudio> audioIterator;
+					
+					// Move every BAudio for which an exact match was found from the old library list to the new library list
+					referenceIterator = existingReferenceList.iterator();
+					while (referenceIterator.hasNext()) {
+						BReference testReference = referenceIterator.next();
+						audioIterator = currentBAudioList.iterator();
+						while (audioIterator.hasNext()) {
+							BAudio testAudio = audioIterator.next();
+							if (testAudio.get(settings.AUDIO_REFERENCE).matchesExact(testReference)) {
+								Main.log.log("Exact-matched BAudio in library: " + testReference);
+								audioIterator.remove();
+								referenceIterator.remove();
+								finalBAudioList.add(testAudio);
+								break;
+							}
+						}
+					}
+					
+					// Move every BAudio for which a fuzzy match was found from the old library list to the new library list
+					referenceIterator = existingReferenceList.iterator();
+					while (referenceIterator.hasNext()) {
+						BReference testReference = referenceIterator.next();
+						audioIterator = currentBAudioList.iterator();
+						while (audioIterator.hasNext()) {
+							BAudio testAudio = audioIterator.next();
+							if (testAudio.get(settings.AUDIO_REFERENCE).matchesFuzzy(testReference)) {
+								Main.log.log("Fuzzy-matched BAudio in library: " + testReference);
+								audioIterator.remove();
+								referenceIterator.remove();
+								testAudio.set(settings.AUDIO_REFERENCE.to(testReference));
+								finalBAudioList.add(testAudio);
+								break;
+							}
+						}
+					}
+					
+					// Add new BAudio instances for every entry in the new reference list not matched with a BAudio instance from the old library list
+					referenceIterator = existingReferenceList.iterator();
+					while (referenceIterator.hasNext()) {
+						BReference newReference = referenceIterator.next();
+						Main.log.log("Adding new BAudio to library: " + newReference);
+						try {
+							long nameVal = settings.get(settings.LIBRARY_NEXT_VAL);
+							finalBAudioList.add(new BAudioLocal(settings, data.getChildFile(nameVal + ".ser"), newReference));
+							settings.set(settings.LIBRARY_NEXT_VAL.to(nameVal + 1));
+						} catch (Exception e) {
+							Main.log.logErr(e);
+						}
+					}
+					
+					// Join back up with the JavaFX thread to actually set this LibraryModel's internal list to the newly-generated list
+					Platform.runLater(() -> {
+						// Delete any BAudio instances in the old library list that were not matched with entries in the new reference list
+						Iterator<BAudio> oldAudioIterator = currentBAudioList.iterator();
+						while (oldAudioIterator.hasNext()) {
+							BAudio oldAudio = oldAudioIterator.next();
+							Main.log.log("Removing old BAudio from library: " + oldAudio.get(settings.AUDIO_REFERENCE));
+							oldAudio.delete();
+						}
+						
+						// Fill the internal list with entries from the newly-generated list
+						listLibarary.clear();
+						listLibarary.addAll(finalBAudioList);
+						Main.log.log("Library update complete!");
+						
+						// Notify that we have finished updating
+						updateFinishEvent.accept();
+
+						// Ensure that only one update can occur at a time
+						isUpdating = false;
+					});
+				}
+			}.start();
 		}
 	}
 	

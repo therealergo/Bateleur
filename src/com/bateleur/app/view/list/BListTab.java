@@ -87,6 +87,9 @@ public class BListTab extends Tab {
 		}
 		setText(baseFolder.getText());
 		rebuildList(baseFolder);
+		library.updateFinishEvent.addListener(() -> {
+			rebuildList(baseFolder);
+		});
 	}
 
 	public void onOptionSelected(BListOptionAudio bListOption) {
