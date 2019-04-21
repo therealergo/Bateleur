@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import com.bateleur.app.App;
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioLocal;
+import com.bateleur.app.datatype.BReference;
 import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.Main;
@@ -46,7 +47,7 @@ public class PlaybackModelTest {
         settings = new SettingsModel(Main.resource.getResourceFileLocal("settings.ser"));
         testAudio = new BAudioLocal(settings,
                                    Main.resource.getResourceFileLocal("test_out>PlaybackModelTest>test_meta.ser"),
-                                   Main.resource.getResourceFileClass("test_in>test.mp3", App.class));
+                                   new BReference(Main.resource.getResourceFileClass("test_in>test.mp3", App.class)));
     }
 
     /**
@@ -81,7 +82,7 @@ public class PlaybackModelTest {
         // Given
         BAudio originalAudio = new BAudioLocal(settings,
                                                Main.resource.getResourceFileLocal("test_out>PlaybackModelTest>test_meta.ser"),
-                                               Main.resource.getResourceFileClass("test_in>test.mp3", App.class));
+                                               new BReference(Main.resource.getResourceFileClass("test_in>test.mp3", App.class)));
 
         assert !(testAudio.equals(originalAudio));    // validates the test environment was created correctly, not unit
 

@@ -3,6 +3,7 @@ package com.bateleur.test.model;
 import com.bateleur.app.App;
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioLocal;
+import com.bateleur.app.datatype.BReference;
 import com.bateleur.app.model.LibraryModel;
 import com.bateleur.app.model.QueueModel;
 import com.bateleur.app.model.SettingsModel;
@@ -53,7 +54,7 @@ public class QueueModelTest {
 
         testAudio = new BAudioLocal(settings,
                                     Main.resource.getResourceFileLocal("test_out>QueueModelTest>test_meta.ser"),
-                                    Main.resource.getResourceFileClass("test_in>QueueModelTest>library>test.mp3", App.class));
+                                    new BReference(Main.resource.getResourceFileClass("test_in>QueueModelTest>library>test.mp3", App.class)));
         queueModel.setQueue(library, testAudio);
     }
 

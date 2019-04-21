@@ -25,17 +25,17 @@ public class BAudioLocal extends BAudio {
 		super(file);
 	}
 	
-	public BAudioLocal(SettingsModel settings, ResourceFile file, ResourceFile audioFile) throws Exception {
+	public BAudioLocal(SettingsModel settings, ResourceFile file, BReference reference) throws Exception {
 		super(file);
-		loadMetadataFromURI(settings, audioFile);
+		loadMetadataFromURI(settings, reference);
 	}
 	
-	private void loadMetadataFromURI(SettingsModel settings, ResourceFile audioFile) throws Exception {
-		// Locally store the path to the audio file
-		set(settings.PLAYBACK_FILE.to(audioFile));
+	private void loadMetadataFromURI(SettingsModel settings, BReference reference) throws Exception {
+		// Locally store the reference pointing to the audio file
+		set(settings.AUDIO_REFERENCE.to(reference));
 		
 		// Read all metadata from the audio file
-		AudioFile f = AudioFileIO.read(audioFile.toFile());
+		AudioFile f = AudioFileIO.read(reference.getPlaybackFile().toFile());
 		Tag tag = f.getTag();
 		
 		// Read and locally store all of the audio file's metadata tags
@@ -45,7 +45,7 @@ public class BAudioLocal extends BAudio {
 		if (tag.hasField(FieldKey.TRACK )) { set(settings.AUDIO_PROP_TRACKN.to(tag.getFirst(FieldKey.TRACK ))); }
 
 		// Set title to filename if no title is found
-		if (get(settings.AUDIO_PROP_TITLE).equals(settings.AUDIO_PROP_TITLE.val)) { set(settings.AUDIO_PROP_TITLE.to(audioFile.getShortName())); }
+		if (get(settings.AUDIO_PROP_TITLE).equals(settings.AUDIO_PROP_TITLE.val)) { set(settings.AUDIO_PROP_TITLE.to(reference.getPlaybackFile().getShortName())); }
 		
 		// Read and set all data pertaining to the audio file's art
 		Artwork art = tag.getFirstArtwork();
@@ -63,7 +63,7 @@ public class BAudioLocal extends BAudio {
 			// Create a filter to blur the resulting thumbnail image
 			// This filter performs a 2-pass separated 7x7 Gaussian blur
 			float[] gaussianKernel = new float[]{0.034793f, 0.102006f, 0.216137f, 0.294128f, 0.216137f, 0.102006f, 0.034793f};
-			int numBlurPasses = settings.get(settings.AUDIO_ART_BLUR_NUM);
+			int numBlurPasses = settings.get(settings.ART_BLUR_PASSES);
 			Kernel kernel_0 = new Kernel(gaussianKernel.length, 1, gaussianKernel);
 			BufferedImageOp op_0 = new ConvolveWithEdgeOp(kernel_0, ConvolveWithEdgeOp.EDGE_REFLECT, null);
 			Kernel kernel_1 = new Kernel(1, gaussianKernel.length, gaussianKernel);
@@ -78,20 +78,20 @@ public class BAudioLocal extends BAudio {
 			
 			// Encode the thumbnail image with AUDIO_PROP_ART_ENC encoding into a byte array
 			ByteArrayOutputStream image_th_baos = new ByteArrayOutputStream();
-			ImageIO.write(image_th_bi, settings.get(settings.AUDIO_PROP_ART_ENC), image_th_baos);
+			ImageIO.write(image_th_bi, settings.get(settings.ART_IMG_ENCODING), image_th_baos);
 			image_th_baos.flush();
 			byte[] image_th_encoded_bytes = image_th_baos.toByteArray();
 			image_th_baos.close();
 			
 			// Encode the blurred image with AUDIO_PROP_ART_ENC encoding into a byte array
 			ByteArrayOutputStream image_bl_baos = new ByteArrayOutputStream();
-			ImageIO.write(image_bl_bi, settings.get(settings.AUDIO_PROP_ART_ENC), image_bl_baos);
+			ImageIO.write(image_bl_bi, settings.get(settings.ART_IMG_ENCODING), image_bl_baos);
 			image_bl_baos.flush();
 			byte[] image_bl_encoded_bytes = image_bl_baos.toByteArray();
 			image_bl_baos.close();
 			
 			// Create the BArtLoaderLocal instance which will locally store all of the image data
-			set(settings.AUDIO_PROP_ART.to(new BAudioLocal_ArtLoader(audioFile, image_th_encoded_bytes, image_bl_encoded_bytes)));
+			set(settings.AUDIO_ARTLOADER.to(new BAudioLocal_ArtLoader(image_th_encoded_bytes, image_bl_encoded_bytes)));
 			
 			// Compute the foreground and background colors of the album art
 			{

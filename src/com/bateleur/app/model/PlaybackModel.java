@@ -70,7 +70,7 @@ public class PlaybackModel {
 			player = null;
 			loadedAudio = null;
 		} else {
-			ResourceFile playbackFile = audio.get(settings.PLAYBACK_FILE);
+			ResourceFile playbackFile = audio.get(settings.AUDIO_REFERENCE).getPlaybackFile();
 			String       playbackURI  = playbackFile.getFullURI();
 			String       fileExt      = playbackFile.getExtension();
 			Media        loadedMedia  = null;
@@ -204,7 +204,7 @@ public class PlaybackModel {
 		private static DataOutputStream out;
 
 		static Media decode(SettingsModel settings, BAudio audio) throws IOException, URISyntaxException {
-			ResourceFile playbackFile = audio.get(settings.PLAYBACK_FILE);
+			ResourceFile playbackFile = audio.get(settings.AUDIO_REFERENCE).getPlaybackFile();
 			URI          requestedURI = playbackFile.toURI ();
 			File         inFile       = playbackFile.toFile();
 			//TODO: Add the hash of the original FLAC file here, so that if the original file changes we don't re-use the old converted file

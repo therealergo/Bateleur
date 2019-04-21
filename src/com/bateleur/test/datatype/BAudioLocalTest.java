@@ -2,7 +2,6 @@ package com.bateleur.test.datatype;
 
 import static junit.framework.TestCase.assertEquals;
 
-import com.therealergo.main.MainException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -11,8 +10,10 @@ import org.junit.runner.RunWith;
 import com.bateleur.app.App;
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioLocal;
+import com.bateleur.app.datatype.BReference;
 import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.Main;
+import com.therealergo.main.MainException;
 
 import de.saxsys.javafx.test.JfxRunner;
 
@@ -46,7 +47,7 @@ public class BAudioLocalTest {
         // Create audio file to test with
         testAudio = new BAudioLocal(settings,
                                     Main.resource.getResourceFileLocal("test_out>BAudioLocalTest>test_meta.ser"),
-                                    Main.resource.getResourceFileClass("test_in>test.mp3", App.class));
+                                    new BReference(Main.resource.getResourceFileClass("test_in>test.mp3", App.class)));
     }
 
     /**
