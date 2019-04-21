@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 import com.bateleur.app.App;
+import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.view.BBackgroundCanvas;
 import com.bateleur.app.view.BSliderCanvas;
 import com.melloware.jintellitype.IntellitypeListener;
@@ -130,17 +131,18 @@ public class PlaybackController implements IntellitypeListener {
 		// Setup a callback to change the displayed audio info. text and image when the playing audio file changes
 		master.playback.addSongChangeHandler(() -> {
 			String text;
+			BAudio newLoadedAudio = master.playback.getLoadedAudio();
 			
-			text = master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ARTIST);
+			text = newLoadedAudio.get(master.settings.AUDIO_PROP_ARTIST);
 			textTop.setText(text.equals(master.settings.AUDIO_PROP_ARTIST.val) ? "" : text);
 			
-			text = master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ALBUM);
+			text = newLoadedAudio.get(master.settings.AUDIO_PROP_ALBUM);
 			textMid.setText(text.equals(master.settings.AUDIO_PROP_ALBUM.val) ? "" : text);
 			
-			text = master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_TITLE);
+			text = newLoadedAudio.get(master.settings.AUDIO_PROP_TITLE);
 			textBot.setText(text.equals(master.settings.AUDIO_PROP_TITLE.val) ? "" : text);
 			
-			Image im = master.playback.getLoadedAudio().get(master.settings.AUDIO_PROP_ART).getImageThumbnail();
+			Image im = newLoadedAudio.get(master.settings.AUDIO_ARTLOADER).getImageThumbnail(newLoadedAudio.get(master.settings.AUDIO_REFERENCE));
 			playbackImageContainer.setMinWidth(im.getWidth() / im.getHeight() * 107.0);
 			playbackImage.setImage(im);
 		});
