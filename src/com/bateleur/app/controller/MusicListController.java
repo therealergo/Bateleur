@@ -15,7 +15,10 @@ import com.bateleur.app.view.list.BListOptionFolder_Tracks;
 import com.bateleur.app.view.list.BListTab;
 import com.therealergo.main.NilEvent;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -31,6 +34,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.Duration;
 
 public class MusicListController {
 	/** FXML-injected component references. */
@@ -41,6 +45,9 @@ public class MusicListController {
 	@FXML private Button updateButton;
 	@FXML private Button searchButton;
 	@FXML private TextField searchBar;
+	
+	/** Animation played on the update button when the library update is currently running. */
+	private Timeline updateButtonAnimation;
 	
 	/** Reference to this MusicListController's MasterController. */
 	public MasterController master;
@@ -174,13 +181,33 @@ public class MusicListController {
 		settingsButton.setOnAction((ActionEvent event) -> {
 		});
 		
+		// Create the animation used to indicate that the library is currently updating
+		updateButtonAnimation = new Timeline(
+			new KeyFrame(Duration.seconds(0.0), new KeyValue(updateButton.rotateProperty(),   0.0, Interpolator.LINEAR)),
+			new KeyFrame(Duration.seconds(1.0), new KeyValue(updateButton.rotateProperty(), 360.0, Interpolator.LINEAR))
+		);
+		updateButtonAnimation.setCycleCount(Timeline.INDEFINITE);
+		
 		// Colorize 'updateButton' based on the FG and BO color
+		// It is colored FG when the update is running or when hovered over, and BO otherwise
+		// This also starts/stops the 'updateButtonAnimation' when updating starts/stops
 		updateButton.setEffect(master.playbackColorAnimation.lightingBO);
 		updateButton.setOnMouseEntered((MouseEvent event) -> {
 			updateButton.setEffect(master.playbackColorAnimation.lightingFG);
 		});
 		updateButton.setOnMouseExited((MouseEvent event) -> {
+			if (!master.library.isUpdating()) {
+				updateButton.setEffect(master.playbackColorAnimation.lightingBO);
+			}
+		});
+		master.library.updateStartEvent.addListener(() -> {
+			updateButton.setEffect(master.playbackColorAnimation.lightingFG);
+			updateButtonAnimation.play();
+		});
+		master.library.updateFinishEvent.addListener(() -> {
 			updateButton.setEffect(master.playbackColorAnimation.lightingBO);
+			updateButtonAnimation.jumpTo(Duration.ZERO);
+			updateButtonAnimation.stop();
 		});
 		
 		// Setup the actual action of 'updateButton'
