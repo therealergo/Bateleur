@@ -280,8 +280,7 @@ public class MusicListController {
 			if (option instanceof BListOptionAudio) {
 				return ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_TITLE ).toLowerCase().contains(searchBar.getText().toLowerCase()) || 
 				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_ALBUM ).toLowerCase().contains(searchBar.getText().toLowerCase()) || 
-				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_ARTIST).toLowerCase().contains(searchBar.getText().toLowerCase()) || 
-				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_TRACKN).toLowerCase().contains(searchBar.getText().toLowerCase());
+				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_ARTIST).toLowerCase().contains(searchBar.getText().toLowerCase());
 			} else if (option instanceof BListOptionFolder) {
 				return ((BListOptionFolder) option).getText().toLowerCase().contains(searchBar.getText().toLowerCase());
 			} else {
