@@ -47,7 +47,7 @@ public class PlaybackModel {
 	}
 
 	public boolean isAudioLoaded() {
-		return settings.get( settings.PLAY_CUR_AUDIO_REF ).equals( settings.NULL_BREFERENCE );
+		return settings.get( settings.PLAY_CUR_AUDIO_REF ).equals( BReference.NO_MEDIA_REF );
 	}
 
 	public BReference getLoadedAudio() {
@@ -64,12 +64,12 @@ public class PlaybackModel {
 				onPauseHandlers.get(i).run();
 			}
 			player.dispose();
-			settings.set( settings.PLAY_CUR_AUDIO_REF.to(settings.NULL_BREFERENCE) );
+			settings.set( settings.PLAY_CUR_AUDIO_REF.to(BReference.NO_MEDIA_REF) );
 		}
 		
 		if (audio == null) {
 			player = null;
-			settings.set( settings.PLAY_CUR_AUDIO_REF.to(settings.NULL_BREFERENCE) );
+			settings.set( settings.PLAY_CUR_AUDIO_REF.to(BReference.NO_MEDIA_REF) );
 		} else {
 			Main.log.log("Loaded audio: " + audio.get(settings.AUDIO_REFERENCE));
 			

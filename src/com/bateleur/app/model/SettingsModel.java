@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.bateleur.app.App;
 import com.bateleur.app.datatype.BAudio_ArtLoader;
 import com.bateleur.app.datatype.BFile;
 import com.bateleur.app.datatype.BReference;
@@ -14,6 +13,19 @@ import com.therealergo.main.resource.ResourceFile;
 import com.therealergo.main.resource.ResourceFolder;
 
 public class SettingsModel extends BFile {
+	private final ArrayList<ResourceFolder> LIBRARY_PATH_INIT = new ArrayList<ResourceFolder>(Arrays.asList(
+		Main.resource.getResourceFolderGlobal("C:>TempMusicLibrary") //TODO: Populate this with normal Windows music directories when we're confident about our stability.
+	));
+	private final ArrayList<String> LIBRARY_OKAY_TYPES_INIT = new ArrayList<String>(Arrays.asList(
+		"aiff", "wav", "flac", "mp3"
+	));
+	private final ArrayList<BReference> QUEUE_ACTUAL_INIT = new ArrayList<BReference>(Arrays.asList(
+		BReference.NO_MEDIA_REF
+	));
+	private final ArrayList<BReference> QUEUE_PROCES_INIT = new ArrayList<BReference>(Arrays.asList(
+		BReference.NO_MEDIA_REF
+	));
+	
 	public final BFile.Entry< Integer                   > TEST_VAL           = new BFile.Entry< Integer                   >( "__testVal"          , -1                          );
 	
 	public final BFile.Entry< ArrayList<String>         > PLAYLIST_NAME_LIST = new BFile.Entry< ArrayList<String>         >( "__playlistNameList" , new ArrayList<String>()     );
@@ -21,13 +33,6 @@ public class SettingsModel extends BFile {
 	public final BFile.Entry< Integer                   > FADE_TIME_USER     = new BFile.Entry< Integer                   >( "__fadeTimeUser"     , 0                           );
 	public final BFile.Entry< Integer                   > FADE_TIME_AUTO     = new BFile.Entry< Integer                   >( "__fadeTimeAuto"     , 0                           );
 	
-	public final BReference NULL_BREFERENCE = new BReference(Main.resource.getResourceFileClass("null>nullAudio.mp3", App.class));
-	private final ArrayList<ResourceFolder> LIBRARY_PATH_INIT = new ArrayList<ResourceFolder>(Arrays.asList(
-		Main.resource.getResourceFolderGlobal("C:>TempMusicLibrary") //TODO: Populate this with normal Windows music directories when we're confident about our stability.
-	));
-	private final ArrayList<String> LIBRARY_OKAY_TYPES_INIT = new ArrayList<String>(Arrays.asList(
-		"aiff", "wav", "flac", "mp3"
-	));
 	public final BFile.Entry< ArrayList<ResourceFolder> > LIBRARY_PATH       = new BFile.Entry< ArrayList<ResourceFolder> >( "__libraryPath"      , LIBRARY_PATH_INIT           );
     public final BFile.Entry< Long                      > LIBRARY_NEXT_VAL   = new BFile.Entry< Long                      >( "__librayNextVal"    , 0L                          );
     public final BFile.Entry< ArrayList<String>         > LIBRARY_OKAY_TYPES = new BFile.Entry< ArrayList<String>         >( "__playlistNameList" , LIBRARY_OKAY_TYPES_INIT     );
@@ -35,11 +40,11 @@ public class SettingsModel extends BFile {
     public final BFile.Entry< Boolean                   > QUEUE_SHUFFLE_EN   = new BFile.Entry< Boolean                   >( "__queueShuffleEn"   , false                       );
     public final BFile.Entry< Boolean                   > QUEUE_QUEUE_EN     = new BFile.Entry< Boolean                   >( "__queueQueueEn"     , true                        );
     public final BFile.Entry< Boolean                   > QUEUE_REPEAT_EN    = new BFile.Entry< Boolean                   >( "__queueRepeatEn"    , true                        );
-    public final BFile.Entry< ArrayList<BReference>     > QUEUE_ACTUAL       = new BFile.Entry< ArrayList<BReference>     >( "__queueActual"      , new ArrayList<BReference>() );
-    public final BFile.Entry< ArrayList<BReference>     > QUEUE_PROCES       = new BFile.Entry< ArrayList<BReference>     >( "__queueProces"      , new ArrayList<BReference>() );
+    public final BFile.Entry< ArrayList<BReference>     > QUEUE_ACTUAL       = new BFile.Entry< ArrayList<BReference>     >( "__queueActual"      , QUEUE_ACTUAL_INIT           );
+    public final BFile.Entry< ArrayList<BReference>     > QUEUE_PROCES       = new BFile.Entry< ArrayList<BReference>     >( "__queueProces"      , QUEUE_PROCES_INIT           );
     public final BFile.Entry< Integer                   > QUEUE_PROCES_INDEX = new BFile.Entry< Integer                   >( "__queueProcesIndex" , 0                           );
     
-	public final BFile.Entry< BReference                > AUDIO_REFERENCE    = new BFile.Entry< BReference                >( "__reference"        , NULL_BREFERENCE             );
+	public final BFile.Entry< BReference                > AUDIO_REFERENCE    = new BFile.Entry< BReference                >( "__reference"        , BReference.NO_MEDIA_REF     );
 	public final BFile.Entry< BAudio_ArtLoader          > AUDIO_ARTLOADER    = new BFile.Entry< BAudio_ArtLoader          >( "__artloader"        , new BAudio_ArtLoader()      );
     public final BFile.Entry< String                    > AUDIO_PROP_TITLE   = new BFile.Entry< String                    >( "__title"            , "<<no title>>"              );
     public final BFile.Entry< String                    > AUDIO_PROP_ARTIST  = new BFile.Entry< String                    >( "__artist"           , "<<no artist>>"             );
@@ -51,7 +56,7 @@ public class SettingsModel extends BFile {
     public final BFile.Entry< Integer                   > ART_BLUR_PASSES    = new BFile.Entry< Integer                   >( "__artBlurPasses"    , 2                           );
     public final BFile.Entry< String                    > ART_IMG_ENCODING   = new BFile.Entry< String                    >( "__artImgEncoding"   , "png"                       );
     
-    public final BFile.Entry< BReference                > PLAY_CUR_AUDIO_REF = new BFile.Entry< BReference                >( "__playCurrentSong"  , NULL_BREFERENCE             );
+    public final BFile.Entry< BReference                > PLAY_CUR_AUDIO_REF = new BFile.Entry< BReference                >( "__playCurrentSong"  , BReference.NO_MEDIA_REF     );
     public final BFile.Entry< Double                    > PLAY_CUR_VOLUME    = new BFile.Entry< Double                    >( "__playCurVolume"    , 1.0                         );
     
     public final BFile.Entry< Double                    > UI_MOTION_BLUR_MUL = new BFile.Entry< Double                    >( "__uiMotionBlurMul"  , 2.0                         );

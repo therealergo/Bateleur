@@ -1,15 +1,19 @@
 package com.bateleur.app.model;
 
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.bateleur.app.App;
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BAudioLocal;
 import com.bateleur.app.datatype.BReference;
 import com.therealergo.main.Main;
+import com.therealergo.main.MainException;
 import com.therealergo.main.NilEvent;
 import com.therealergo.main.resource.ResourceFile;
 import com.therealergo.main.resource.ResourceFolder;
@@ -17,7 +21,9 @@ import com.therealergo.main.resource.ResourceFolder;
 import javafx.application.Platform;
 
 public class LibraryModel implements Iterable<BAudio> {
-	private SettingsModel settings;
+	private final SettingsModel settings;
+	
+	private BAudio NO_MEDIA_BAUDIO;
 	
 	private boolean isUpdating;
 	public final NilEvent updateStartEvent;
@@ -27,8 +33,10 @@ public class LibraryModel implements Iterable<BAudio> {
 	private List<BAudio> listFiltered;
 	private ResourceFolder data;
 	
-	public LibraryModel(SettingsModel settings, ResourceFolder data) {
+	public LibraryModel(SettingsModel settings, ResourceFolder data) throws Exception {
 		this.settings = settings;
+		
+		this.NO_MEDIA_BAUDIO = null;
 		
 		this.isUpdating = false;
 		this.updateStartEvent = new NilEvent();
@@ -181,6 +189,32 @@ public class LibraryModel implements Iterable<BAudio> {
 	}
 	
 	public BAudio getByReference(BReference reference) {
+		if (reference.equals(BReference.NO_MEDIA_REF)) {
+			if (NO_MEDIA_BAUDIO == null) {
+				try {
+					ResourceFile noMediaPlaybackFile = BReference.NO_MEDIA_REF.getPlaybackFile();
+					ResourceFile noMediaSerialFile   = Main.resource.getResourceFileLocal("nomedia.ser");
+					
+					noMediaPlaybackFile.create();
+					noMediaSerialFile  .create();
+					
+					noMediaPlaybackFile.toFile().deleteOnExit();
+					noMediaSerialFile  .toFile().deleteOnExit();
+					
+					Files.copy(
+						Main.resource.getResourceFileClass("audio>nomedia.mp3", App.class).toPath(), 
+						noMediaPlaybackFile.toPath(), 
+						StandardCopyOption.REPLACE_EXISTING
+					);
+					
+					NO_MEDIA_BAUDIO = new BAudioLocal(settings, noMediaSerialFile, BReference.NO_MEDIA_REF);
+				} catch (Exception e) {
+					throw new MainException(LibraryModel.class, "Unable to instantiate no media BAudio!", e);
+				}
+			}
+			return NO_MEDIA_BAUDIO;
+		}
+		
 		Iterator<BAudio> audioIterator = listLibarary.iterator();
 		while (audioIterator.hasNext()) {
 			BAudio searchAudio = audioIterator.next();

@@ -8,18 +8,21 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import com.therealergo.main.Main;
 import com.therealergo.main.MainException;
 import com.therealergo.main.resource.ResourceFile;
 
-public class BReference implements Serializable {
+public final class BReference implements Serializable {
 	private static final long serialVersionUID = -6296710954635051390L;
+	
+	public static final BReference NO_MEDIA_REF = new BReference(Main.resource.getResourceFileLocal("nomedia.mp3"));
 	
 	private final ResourceFile audioFile;
 	private final byte[] audioFileHash;
 	
 	public BReference(ResourceFile audioFile) {
 		if (audioFile == null) {
-			throw new MainException(BReference.class, "BReference audioFile cannot be null!");
+			throw new MainException(BReference.class, "BReference audio file cannot be null!");
 		}
 		
 		this.audioFile = audioFile;
