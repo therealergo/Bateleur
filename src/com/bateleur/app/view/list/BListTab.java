@@ -12,6 +12,8 @@ import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.MainException;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Tab;
@@ -29,6 +31,8 @@ public class BListTab extends Tab {
 	private LibraryModel library;
 	private PlaybackModel playback;
 	private SettingsModel settings;
+
+	public final BooleanProperty isFiltered;
 
 	private BListOptionFolder currentFolder;
 	private BListOptionFolder parentFolder;
@@ -80,6 +84,8 @@ public class BListTab extends Tab {
 		innerGridForeground.prefWidthProperty().bind(innerScrollForeground.widthProperty());
 		innerScrollForeground.setContent(innerGridForeground);
 		
+		this.isFiltered = new SimpleBooleanProperty();
+		
 		try {
 			currentFolder = baseFolderClass.getConstructor(BListTab.class, BListOptionFolder.class).newInstance(this, null);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
@@ -91,8 +97,12 @@ public class BListTab extends Tab {
 			rebuildList(currentFolder);
 		});
 		musicListController.searchChangeEvent.addListener(() -> {
-			rebuildList(currentFolder);
+			if (isSelected() || isFiltered.get()) {
+				isFiltered.set(isSelected());
+				rebuildList(currentFolder);
+			}
 		});
+		this.parentFolder = null;
 		
 		playback.addSongChangeHandler(() -> {
 			for (int i = 0; i<options.size(); i++) {
@@ -120,16 +130,16 @@ public class BListTab extends Tab {
 	}
 
 	public void rebuildList(BListOptionFolder folder) {
-		if (! folder.equals(currentFolder)) {
-			musicListController.clearSearchText();
-		}
+		isFiltered.set(isFiltered.get() && folder.equals(currentFolder));
 		
 		currentFolder = folder;
 		parentFolder = folder.parentFolder;
 		
 		options.clear();
 		options.addAll(folder.listOptions());
-		options.removeIf(musicListController.getSearchBarFilter().negate());
+		if (isFiltered.get()) {
+			options.removeIf(musicListController.getSearchBarFilter().negate());
+		}
 		
 		innerGridBackground.getChildren().clear();
 		for (int i = 0; i<options.size(); i++) {

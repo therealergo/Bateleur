@@ -24,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -188,31 +189,39 @@ public class MusicListController {
 		});
 		
 		// Colorize 'searchButton' and 'searchBar' together based on the FG and BO color
+		// They are colored FG when filtering the current tab OR hovered, and BO otherwise
 		{
+			// Start out at BO color
 			searchButton.setEffect(master.playbackColorAnimation.lightingBO);
 			searchBar   .setEffect(master.playbackColorAnimation.lightingBO);
+			
+			// When mouse enters, always go to FG color
 			searchButton.setOnMouseEntered((MouseEvent event) -> {
 				searchButton.setEffect(master.playbackColorAnimation.lightingFG);
 				searchBar   .setEffect(master.playbackColorAnimation.lightingFG);
 			});
-			searchButton.setOnMouseExited((MouseEvent event) -> {
-				if (!searchBar.isFocused()) {
-					searchButton.setEffect(master.playbackColorAnimation.lightingBO);
-					searchBar   .setEffect(master.playbackColorAnimation.lightingBO);
-				}
-			});
-			searchButton.setOnMouseEntered((MouseEvent event) -> {
+			searchBar.setOnMouseEntered((MouseEvent event) -> {
 				searchButton.setEffect(master.playbackColorAnimation.lightingFG);
 				searchBar   .setEffect(master.playbackColorAnimation.lightingFG);
 			});
+			
+			// When mouse exits, only go to BO color if the current tab is not filtered
 			searchButton.setOnMouseExited((MouseEvent event) -> {
-				if (!searchBar.isFocused()) {
+				if (!((BListTab)listTabPane.getSelectionModel().getSelectedItem()).isFiltered.get()) {
 					searchButton.setEffect(master.playbackColorAnimation.lightingBO);
 					searchBar   .setEffect(master.playbackColorAnimation.lightingBO);
 				}
 			});
-			searchBar.focusedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
-				if (new_val) {
+			searchBar.setOnMouseExited((MouseEvent event) -> {
+				if (!((BListTab)listTabPane.getSelectionModel().getSelectedItem()).isFiltered.get()) {
+					searchButton.setEffect(master.playbackColorAnimation.lightingBO);
+					searchBar   .setEffect(master.playbackColorAnimation.lightingBO);
+				}
+			});
+			
+			// When tab is switched, if the new tab is filtered go to BO color, otherwise go to FG color
+			listTabPane.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> ov, Tab old_val, Tab new_val) -> {
+				if (((BListTab)new_val).isFiltered.get()) {
 					searchButton.setEffect(master.playbackColorAnimation.lightingFG);
 					searchBar   .setEffect(master.playbackColorAnimation.lightingFG);
 				} else {
@@ -220,19 +229,34 @@ public class MusicListController {
 					searchBar   .setEffect(master.playbackColorAnimation.lightingBO);
 				}
 			});
+			
+			// When a selected tab is unfiltered (e.g. when a folder is selected), go to BO color
+			for (Tab tab : listTabPane.getTabs()) {
+				((BListTab)tab).isFiltered.addListener((ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
+					if (tab.isSelected() && (!new_val)) {
+						searchButton.setEffect(master.playbackColorAnimation.lightingBO);
+						searchBar   .setEffect(master.playbackColorAnimation.lightingBO);
+					}
+				});
+			}
 		}
 		
 		// Setup the actual action of 'searchButton'
 		searchButton.setOnAction((ActionEvent event) -> {
-			clearSearchText();
+			searchBar.setText("");
 			searchBar.requestFocus();
 		});
 		
-		// Rebuild the lists when the search text changes
+		// Trigger 'searchChangeEvent' whenever the search filter is enabled or changed
 		searchBar.textProperty().addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
 			Platform.runLater(() -> {
 				searchChangeEvent.accept();
 			});
+		});
+		searchBar.focusedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
+			if (new_val) {
+				searchChangeEvent.accept();
+			}
 		});
 	}
 	
@@ -246,10 +270,6 @@ public class MusicListController {
 		master.queue.setQueue(master.library, audio);
 		master.playback.loadAudio(audio, master.settings.get(master.settings.FADE_TIME_USER));
 		master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
-	}
-	
-	public void clearSearchText() {
-		searchBar.setText("");
 	}
 	
 	/**
