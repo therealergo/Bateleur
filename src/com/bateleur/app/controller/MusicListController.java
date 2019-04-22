@@ -55,7 +55,7 @@ public class MusicListController {
 	/** Boolean used to ensure that the listTabPane is only initialized once. */
 	private boolean listTabPaneHasSetup;
 	
-	/** */
+	/** Event that fires every time the search settings change. */
 	public final NilEvent searchChangeEvent = new NilEvent();
 	
 	/**
@@ -300,7 +300,10 @@ public class MusicListController {
 	}
 	
 	/**
-	 * 
+	 * Gets a filter to be used to filter list options by the current search state.
+	 * @return A Predicate that filters a list of BListOptions based on the current search options.
+	 *         This Predicate returns true if the given BListOption should be shown after the search, 
+	 *         and returns false if the given BListOption should be hidden by the search.
 	 */
 	public Predicate<BListOption> getSearchBarFilter() {
 		return (BListOption option) -> {
