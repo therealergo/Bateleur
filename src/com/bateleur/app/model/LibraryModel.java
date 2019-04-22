@@ -83,7 +83,7 @@ public class LibraryModel implements Iterable<BAudio> {
 		}
 	}
 	
-	public void update() throws Exception {
+	public void update() {
 		// Ensure that only one update can occur at a time
 		if (!isUpdating) {
 			isUpdating = true;

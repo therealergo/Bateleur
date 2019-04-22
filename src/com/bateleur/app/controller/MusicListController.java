@@ -19,6 +19,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -29,6 +30,10 @@ public class MusicListController {
 	@FXML private TabPane listTabPane;
 	@FXML private AnchorPane musicListPane;
 	@FXML private Button goUpButton;
+	@FXML private Button settingsButton;
+	@FXML private Button updateButton;
+	@FXML private Button searchButton;
+	@FXML private TextField searchBar;
 	
 	/** Reference to this MusicListController's MasterController. */
 	public MasterController master;
@@ -144,6 +149,73 @@ public class MusicListController {
 		goUpButton.setOnAction((ActionEvent event) -> {
 			// Tell the currently-selected tab to go to up a directory to its parent folder
 			((BListTab)listTabPane.getSelectionModel().getSelectedItem()).selectParent();
+		});
+		
+		// Colorize 'settingsButton' based on the FG and BO color
+		settingsButton.setEffect(master.playbackColorAnimation.lightingBO);
+		settingsButton.setOnMouseEntered((MouseEvent event) -> {
+			settingsButton.setEffect(master.playbackColorAnimation.lightingFG);
+		});
+		settingsButton.setOnMouseExited((MouseEvent event) -> {
+			settingsButton.setEffect(master.playbackColorAnimation.lightingBO);
+		});
+		
+		// Setup the actual action of 'settingsButton'
+		settingsButton.setOnAction((ActionEvent event) -> {
+		});
+		
+		// Colorize 'updateButton' based on the FG and BO color
+		updateButton.setEffect(master.playbackColorAnimation.lightingBO);
+		updateButton.setOnMouseEntered((MouseEvent event) -> {
+			updateButton.setEffect(master.playbackColorAnimation.lightingFG);
+		});
+		updateButton.setOnMouseExited((MouseEvent event) -> {
+			updateButton.setEffect(master.playbackColorAnimation.lightingBO);
+		});
+		
+		// Setup the actual action of 'updateButton'
+		updateButton.setOnAction((ActionEvent event) -> {
+			master.library.update();
+		});
+		
+		// Colorize 'searchButton' and 'searchBar' together based on the FG and BO color
+		{
+			searchButton.setEffect(master.playbackColorAnimation.lightingBO);
+			searchBar   .setEffect(master.playbackColorAnimation.lightingBO);
+			searchButton.setOnMouseEntered((MouseEvent event) -> {
+				searchButton.setEffect(master.playbackColorAnimation.lightingFG);
+				searchBar   .setEffect(master.playbackColorAnimation.lightingFG);
+			});
+			searchButton.setOnMouseExited((MouseEvent event) -> {
+				if (!searchBar.isFocused()) {
+					searchButton.setEffect(master.playbackColorAnimation.lightingBO);
+					searchBar   .setEffect(master.playbackColorAnimation.lightingBO);
+				}
+			});
+			searchButton.setOnMouseEntered((MouseEvent event) -> {
+				searchButton.setEffect(master.playbackColorAnimation.lightingFG);
+				searchBar   .setEffect(master.playbackColorAnimation.lightingFG);
+			});
+			searchButton.setOnMouseExited((MouseEvent event) -> {
+				if (!searchBar.isFocused()) {
+					searchButton.setEffect(master.playbackColorAnimation.lightingBO);
+					searchBar   .setEffect(master.playbackColorAnimation.lightingBO);
+				}
+			});
+			searchBar.focusedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
+				if (new_val) {
+					searchButton.setEffect(master.playbackColorAnimation.lightingFG);
+					searchBar   .setEffect(master.playbackColorAnimation.lightingFG);
+				} else {
+					searchButton.setEffect(master.playbackColorAnimation.lightingBO);
+					searchBar   .setEffect(master.playbackColorAnimation.lightingBO);
+				}
+			});
+		}
+		
+		// Setup the actual action of 'searchButton'
+		searchButton.setOnAction((ActionEvent event) -> {
+			searchBar.requestFocus();
 		});
 	}
 	
