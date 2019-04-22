@@ -61,7 +61,7 @@
                   <Insets />
                </opaqueInsets>
             </Button>
-            <TextField fx:id="searchBar" minHeight="0.0" prefWidth="365.0" style="-fx-background-color: transparent; -fx-border-width: 0 0 2px 0; -fx-border-color: white; -fx-text-inner-color: white;" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="0.0" />
+            <TextField fx:id="searchBar" minHeight="0.0" prefWidth="369.0" style="-fx-background-color: transparent; -fx-border-width: 0 0 2px 0; -fx-border-color: white; -fx-text-inner-color: white;" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="0.0" />
          </children>
       </AnchorPane>
 	</children>
