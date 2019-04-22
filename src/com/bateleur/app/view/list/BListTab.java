@@ -90,6 +90,9 @@ public class BListTab extends Tab {
 		library.updateFinishEvent.addListener(() -> {
 			rebuildList(currentFolder);
 		});
+		musicListController.searchChangeEvent.addListener(() -> {
+			rebuildList(currentFolder);
+		});
 		
 		playback.addSongChangeHandler(() -> {
 			for (int i = 0; i<options.size(); i++) {
@@ -117,11 +120,16 @@ public class BListTab extends Tab {
 	}
 
 	public void rebuildList(BListOptionFolder folder) {
+		if (! folder.equals(currentFolder)) {
+			musicListController.clearSearchText();
+		}
+		
 		currentFolder = folder;
 		parentFolder = folder.parentFolder;
 		
 		options.clear();
 		options.addAll(folder.listOptions());
+		options.removeIf(musicListController.getSearchBarFilter().negate());
 		
 		innerGridBackground.getChildren().clear();
 		for (int i = 0; i<options.size(); i++) {

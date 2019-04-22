@@ -1,16 +1,22 @@
 package com.bateleur.app.controller;
 
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.bateleur.app.datatype.BAudio;
+import com.bateleur.app.view.list.BListOption;
+import com.bateleur.app.view.list.BListOptionAudio;
+import com.bateleur.app.view.list.BListOptionFolder;
 import com.bateleur.app.view.list.BListOptionFolder_ByPath;
 import com.bateleur.app.view.list.BListOptionFolder_ByType.BListOptionFolder_ByAlbum;
 import com.bateleur.app.view.list.BListOptionFolder_ByType.BListOptionFolder_ByArtist;
 import com.bateleur.app.view.list.BListOptionFolder_Queue;
 import com.bateleur.app.view.list.BListOptionFolder_Tracks;
 import com.bateleur.app.view.list.BListTab;
+import com.therealergo.main.NilEvent;
 
 import javafx.animation.KeyValue;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -40,6 +46,9 @@ public class MusicListController {
 	
 	/** Boolean used to ensure that the listTabPane is only initialized once. */
 	private boolean listTabPaneHasSetup;
+	
+	/** */
+	public final NilEvent searchChangeEvent = new NilEvent();
 	
 	/**
 	 * Perform any initialization required by this MusicListController.
@@ -215,7 +224,15 @@ public class MusicListController {
 		
 		// Setup the actual action of 'searchButton'
 		searchButton.setOnAction((ActionEvent event) -> {
+			clearSearchText();
 			searchBar.requestFocus();
+		});
+		
+		// Rebuild the lists when the search text changes
+		searchBar.textProperty().addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
+			Platform.runLater(() -> {
+				searchChangeEvent.accept();
+			});
 		});
 	}
 	
@@ -229,5 +246,27 @@ public class MusicListController {
 		master.queue.setQueue(master.library, audio);
 		master.playback.loadAudio(audio, master.settings.get(master.settings.FADE_TIME_USER));
 		master.playback.play(master.settings.get(master.settings.FADE_TIME_USER));
+	}
+	
+	public void clearSearchText() {
+		searchBar.setText("");
+	}
+	
+	/**
+	 * 
+	 */
+	public Predicate<BListOption> getSearchBarFilter() {
+		return (BListOption option) -> {
+			if (option instanceof BListOptionAudio) {
+				return ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_TITLE ).toLowerCase().contains(searchBar.getText().toLowerCase()) || 
+				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_ALBUM ).toLowerCase().contains(searchBar.getText().toLowerCase()) || 
+				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_ARTIST).toLowerCase().contains(searchBar.getText().toLowerCase()) || 
+				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_TRACKN).toLowerCase().contains(searchBar.getText().toLowerCase());
+			} else if (option instanceof BListOptionFolder) {
+				return ((BListOptionFolder) option).getText().toLowerCase().contains(searchBar.getText().toLowerCase());
+			} else {
+				return true;
+			}
+		};
 	}
 }
