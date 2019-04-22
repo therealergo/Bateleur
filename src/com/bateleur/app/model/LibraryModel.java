@@ -23,7 +23,7 @@ import javafx.application.Platform;
 public class LibraryModel implements Iterable<BAudio> {
 	private final SettingsModel settings;
 	
-	private BAudio NO_MEDIA_BAUDIO;
+	private BAudio NO_MEDIA_AUDIO;
 	
 	private boolean isUpdating;
 	public final NilEvent updateStartEvent;
@@ -36,7 +36,7 @@ public class LibraryModel implements Iterable<BAudio> {
 	public LibraryModel(SettingsModel settings, ResourceFolder data) throws Exception {
 		this.settings = settings;
 		
-		this.NO_MEDIA_BAUDIO = null;
+		this.NO_MEDIA_AUDIO = null;
 		
 		this.isUpdating = false;
 		this.updateStartEvent = new NilEvent();
@@ -190,7 +190,7 @@ public class LibraryModel implements Iterable<BAudio> {
 	
 	public BAudio getByReference(BReference reference) {
 		if (reference.equals(BReference.NO_MEDIA_REF)) {
-			if (NO_MEDIA_BAUDIO == null) {
+			if (NO_MEDIA_AUDIO == null) {
 				try {
 					ResourceFile noMediaPlaybackFile = BReference.NO_MEDIA_REF.getPlaybackFile();
 					ResourceFile noMediaSerialFile   = Main.resource.getResourceFileLocal("nomedia.ser");
@@ -207,12 +207,12 @@ public class LibraryModel implements Iterable<BAudio> {
 						StandardCopyOption.REPLACE_EXISTING
 					);
 					
-					NO_MEDIA_BAUDIO = new BAudioLocal(settings, noMediaSerialFile, BReference.NO_MEDIA_REF);
+					NO_MEDIA_AUDIO = new BAudioLocal(settings, noMediaSerialFile, BReference.NO_MEDIA_REF);
 				} catch (Exception e) {
 					throw new MainException(LibraryModel.class, "Unable to instantiate no media BAudio!", e);
 				}
 			}
-			return NO_MEDIA_BAUDIO;
+			return NO_MEDIA_AUDIO;
 		}
 		
 		Iterator<BAudio> audioIterator = listLibarary.iterator();
