@@ -12,12 +12,17 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
-public class BListOptionSetting extends BListOption {
+public abstract class BListOptionSetting extends BListOption {
 	public BListOptionSetting(BListTab bListTab) {
 		super(bListTab);
 	}
+	
+	public abstract String getName();
+	
+	public abstract Region buildControl();
 	
 	@Override public Node buildForeground() {
 		Button foreground = new Button();
@@ -35,39 +40,23 @@ public class BListOptionSetting extends BListOption {
 		innerGrid.prefHeightProperty().bind(foreground.heightProperty());
 		foreground.setGraphic(innerGrid);
 		
-		Label innerLabel;
-		
-		innerLabel = new Label();
+		Label innerLabel = new Label();
 		innerLabel.getStyleClass().add("listOptionLabel");
-		innerLabel.setText("TEST_SETTING0");
+		innerLabel.setText(getName());
 		if (innerLabel.getText().equals(bListTab.musicListController.master.settings.AUDIO_PROP_TITLE.val)) {
 			innerLabel.setOpacity(0.3);
 		}
 		innerLabel.prefHeightProperty().bind(foreground.heightProperty());
 		innerGrid.add(innerLabel, 1, 0);
 		
-		innerLabel = new Label();
-		innerLabel.getStyleClass().add("listOptionLabel");
-		innerLabel.setText("TEST_SETTING1");
-		if (innerLabel.getText().equals(bListTab.musicListController.master.settings.AUDIO_PROP_ALBUM.val)) {
-			innerLabel.setOpacity(0.3);
-		}
-		innerLabel.prefHeightProperty().bind(foreground.heightProperty());
-		innerGrid.add(innerLabel, 2, 0);
-		
-		innerLabel = new Label();
-		innerLabel.getStyleClass().add("listOptionLabel");
-		innerLabel.setText("TEST_SETTING2");
-		if (innerLabel.getText().equals(bListTab.musicListController.master.settings.AUDIO_PROP_ARTIST.val)) {
-			innerLabel.setOpacity(0.3);
-		}
-		innerLabel.prefHeightProperty().bind(foreground.heightProperty());
-		innerGrid.add(innerLabel, 3, 0);
+		Region innerControl = buildControl();
+		innerControl.prefHeightProperty().bind(foreground.heightProperty());
+		innerGrid.add(innerControl, 2, 0);
 		
 		innerGrid.getColumnConstraints().add(new ColumnConstraints(30             ));
 		innerGrid.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
 		innerGrid.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
-		innerGrid.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
+		innerGrid.getColumnConstraints().add(new ColumnConstraints(30             ));
 		
 		return foreground;
 	}
