@@ -168,6 +168,14 @@ public class LibraryModel implements Iterable<BAudio> {
 						}
 					}
 					
+					// Create new libraryReferenceMap hash from list
+					HashMap<BReference, BAudio> finalReferenceMap = new HashMap<BReference, BAudio>();
+					Iterator<BAudio> newAudioIterator = listLibarary.iterator();
+					while (newAudioIterator.hasNext()) {
+						BAudio addedAudio = newAudioIterator.next();
+						finalReferenceMap.put(addedAudio.get(settings.AUDIO_REFERENCE), addedAudio);
+					}
+					
 					// Join back up with the JavaFX thread to actually set this LibraryModel's internal list to the newly-generated list
 					Platform.runLater(() -> {
 						// Delete any BAudio instances in the old library list that were not matched with entries in the new reference list
@@ -178,17 +186,9 @@ public class LibraryModel implements Iterable<BAudio> {
 							oldAudio.delete();
 						}
 						
-						// Fill the internal list with entries from the newly-generated list
-						listLibarary.clear();
-						listLibarary.addAll(finalBAudioList);
-						
-						// Update libraryReferenceMap hash from list
-						libraryReferenceMap.clear();
-						Iterator<BAudio> newAudioIterator = listLibarary.iterator();
-						while (newAudioIterator.hasNext()) {
-							BAudio addedAudio = newAudioIterator.next();
-							libraryReferenceMap.put(addedAudio.get(settings.AUDIO_REFERENCE), addedAudio);
-						}
+						// Update the internal list and hash to match the newly-generated list and hash
+						listLibarary = finalBAudioList;
+						libraryReferenceMap = finalReferenceMap;
 						
 						// Notify that we have finished updating
 						updateFinishEvent.accept();
