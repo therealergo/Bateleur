@@ -104,7 +104,7 @@ public class BListTab extends Tab {
 		});
 		this.parentFolder = null;
 		
-		playback.addSongChangeHandler(() -> {
+		playback.onSongChangeEvent.addListener(() -> {
 			for (int i = 0; i<options.size(); i++) {
 				options.get(i).onSongChange(library.getByReference(playback.getLoadedAudio()));
 			}

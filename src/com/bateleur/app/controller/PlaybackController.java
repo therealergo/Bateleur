@@ -86,11 +86,11 @@ public class PlaybackController implements IntellitypeListener {
 		playbackBarBG.setEffect(master.playbackColorAnimation.lightingBG);
 		
 		// Setup the play/pause button
-		master.playback.addPlayHandler(() -> {
+		master.playback.onPlayEvent.addListener(() -> {
 			playPauseButtonImage_O.setOpacity(0.0);
 			playPauseButtonImage_I.setOpacity(1.0);
 		});
-		master.playback.addPauseHandler(() -> {
+		master.playback.onPauseEvent.addListener(() -> {
 			playPauseButtonImage_O.setOpacity(1.0);
 			playPauseButtonImage_I.setOpacity(0.0);
 		});
@@ -129,7 +129,7 @@ public class PlaybackController implements IntellitypeListener {
 		});
 		
 		// Setup a callback to change the displayed audio info. text and image when the playing audio file changes
-		master.playback.addSongChangeHandler(() -> {
+		master.playback.onSongChangeEvent.addListener(() -> {
 			String text;
 			BAudio newLoadedAudio = master.library.getByReference(master.playback.getLoadedAudio());
 			

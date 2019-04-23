@@ -58,6 +58,7 @@ public class SettingsModel extends BFile {
     
     public final BFile.Entry< BReference                > PLAY_CUR_AUDIO_REF = new BFile.Entry< BReference                >( "__playCurrentSong"  , BReference.NO_MEDIA_REF     );
     public final BFile.Entry< Double                    > PLAY_CUR_VOLUME    = new BFile.Entry< Double                    >( "__playCurVolume"    , 1.0                         );
+    public final BFile.Entry< Boolean                   > PLAY_IS_PLAYING    = new BFile.Entry< Boolean                   >( "__playIsPlaying"    , false                       );
     
     public final BFile.Entry< Double                    > UI_MOTION_BLUR_MUL = new BFile.Entry< Double                    >( "__uiMotionBlurMul"  , 2.0                         );
     public final BFile.Entry< Double                    > UI_ANIM_TIME_MUL   = new BFile.Entry< Double                    >( "__uiAnimTimeMul"    , 5.0                         );

@@ -83,7 +83,7 @@ public class BBackgroundCanvas extends Canvas {
 		};
 		
 		this.imageList = new LinkedList<BackgroundImage>();
-		playback.addSongChangeHandler(() -> {
+		playback.onSongChangeEvent.addListener(() -> {
 			BAudio newLoadedAudio = library.getByReference(playback.getLoadedAudio());
 	    	Image image         = newLoadedAudio.get(settings.AUDIO_ARTLOADER).getImagePrimary(newLoadedAudio.get(settings.AUDIO_REFERENCE));
 	    	Image image_blurred = newLoadedAudio.get(settings.AUDIO_ARTLOADER).getImageBlurred(newLoadedAudio.get(settings.AUDIO_REFERENCE));

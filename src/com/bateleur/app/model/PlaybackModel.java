@@ -7,14 +7,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BReference;
 import com.therealergo.main.Main;
+import com.therealergo.main.NilEvent;
 import com.therealergo.main.resource.ResourceFile;
 
 import io.nayuki.flac.common.StreamInfo;
@@ -31,9 +30,9 @@ public class PlaybackModel {
 	private MediaPlayer player;
 	private static HashMap<String, String> createdFileMap;
 
-	private List<Runnable> onPlayHandlers      ;
-	private List<Runnable> onPauseHandlers     ;
-	private List<Runnable> onSongChangeHandlers;
+	public final NilEvent onPlayEvent      ;
+	public final NilEvent onPauseEvent     ;
+	public final NilEvent onSongChangeEvent;
 
 	public PlaybackModel(SettingsModel settings) {
 		this.settings = settings;
@@ -41,9 +40,9 @@ public class PlaybackModel {
 		this.player = null;
 		createdFileMap = new HashMap<>();
 
-		onPlayHandlers       = new ArrayList<Runnable>();
-		onPauseHandlers      = new ArrayList<Runnable>();
-		onSongChangeHandlers = new ArrayList<Runnable>();
+		onPlayEvent       = new NilEvent();
+		onPauseEvent      = new NilEvent();
+		onSongChangeEvent = new NilEvent();
 	}
 
 	public boolean isAudioLoaded() {
@@ -56,16 +55,21 @@ public class PlaybackModel {
 	
 	public void loadFromSavedState(LibraryModel library) {
 		loadAudio(library.getByReference(settings.get( settings.PLAY_CUR_AUDIO_REF )), 0);
+		if (settings.get(settings.PLAY_IS_PLAYING)) {
+			play(0);
+		} else {
+			pause(0);
+		}
 	}
 
 	public void loadAudio(BAudio audio, int fadeOutTimeMS) {
 		if (player != null) {
-			for (int i = 0; i<onPauseHandlers.size(); i++) {
-				onPauseHandlers.get(i).run();
-			}
 			player.dispose();
-			settings.set( settings.PLAY_CUR_AUDIO_REF.to(BReference.NO_MEDIA_REF) );
 		}
+		
+		onPauseEvent.accept();
+		settings.set( settings.PLAY_IS_PLAYING.to(false) );
+		settings.set( settings.PLAY_CUR_AUDIO_REF.to(BReference.NO_MEDIA_REF) );
 		
 		if (audio == null) {
 			player = null;
@@ -102,30 +106,26 @@ public class PlaybackModel {
 			if (loadedMedia != null) {
 				player = new MediaPlayer(loadedMedia);
 				player.setOnPlaying(() -> {
-					for (int i = 0; i<onPlayHandlers.size(); i++) {
-						onPlayHandlers.get(i).run();
-					}
+					onPlayEvent.accept();
+					settings.set( settings.PLAY_IS_PLAYING.to(true) );
 				});
 				player.setOnPaused(() -> {
-					for (int i = 0; i<onPauseHandlers.size(); i++) {
-						onPauseHandlers.get(i).run();
-					}
+					onPauseEvent.accept();
+					settings.set( settings.PLAY_IS_PLAYING.to(false) );
 				});
 				player.setVolume( settings.get(settings.PLAY_CUR_VOLUME) );
 				settings.set( settings.PLAY_CUR_AUDIO_REF.to(audio.get(settings.AUDIO_REFERENCE)) );
 			}
 		}
 		
-		for (int i = 0; i<onSongChangeHandlers.size(); i++) {
-			onSongChangeHandlers.get(i).run();
-		}
+		onSongChangeEvent.accept();
 	}
 	
 	public void play(int fadeTimeMS) {
 		if (player == null) {
 			return;
 		}
-
+		
 		player.play();
 	}
 
@@ -133,7 +133,7 @@ public class PlaybackModel {
 		if (player == null) {
 			return;
 		}
-
+		
 		player.pause();
 	}
 
@@ -174,30 +174,6 @@ public class PlaybackModel {
 		if (player != null) {
 			player.setVolume(volume);
 		}
-	}
-
-	public void addPlayHandler(Runnable handler) {
-		onPlayHandlers.add(handler);
-	}
-
-	public void removePlayHandler(Runnable handler) {
-		onPlayHandlers.remove(handler);
-	}
-
-	public void addPauseHandler(Runnable handler) {
-		onPauseHandlers.add(handler);
-	}
-
-	public void removePauseHandler(Runnable handler) {
-		onPauseHandlers.remove(handler);
-	}
-
-	public void addSongChangeHandler(Runnable handler) {
-		onSongChangeHandlers.add(handler);
-	}
-	
-	public void removSongChangeHandler(Runnable handler) {
-		onSongChangeHandlers.remove(handler);
 	}
 	
 	// Decoding of the FLAC follows the sample application in io.nayuki.flac.app very closely
