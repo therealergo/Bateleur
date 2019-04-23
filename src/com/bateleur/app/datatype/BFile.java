@@ -1,11 +1,13 @@
 package com.bateleur.app.datatype;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import com.therealergo.main.MainException;
 import com.therealergo.main.resource.ResourceFile;
 
 public abstract class BFile {
@@ -39,6 +41,8 @@ public abstract class BFile {
 				this.valueMap = (HashMap<String, Serializable>) ois.readObject();
 			} catch (ClassNotFoundException e) {
 				throw new IOException("Given BFile file corrupt or improperly formatted!");
+			} catch (EOFException e) {
+				throw new MainException(BFile.class, "Given BFile file corrupt or improperly formatted!", e);
 			}
 		} else {
 			// Create default empty file
