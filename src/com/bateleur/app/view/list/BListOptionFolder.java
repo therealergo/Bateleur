@@ -6,6 +6,7 @@ import com.bateleur.app.datatype.BAudio;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.CacheHint;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -34,6 +35,8 @@ public abstract class BListOptionFolder extends BListOption {
 		foreground.setPrefWidth(10000);
 		foreground.setPadding(new Insets(0, 0, 0, 30));
 		foreground.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+		foreground.setCache(true);
+		foreground.setCacheHint(CacheHint.SPEED);
 		
 		Label innerLabel = new Label();
 		innerLabel.getStyleClass().add("listOptionLabel");

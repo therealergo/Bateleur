@@ -3,6 +3,7 @@ package com.bateleur.app.view.list;
 import com.bateleur.app.datatype.BAudio;
 
 import javafx.geometry.Insets;
+import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -26,6 +27,8 @@ public abstract class BListOption {
 		background.setOpacity(0.6);
 		background.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		background.setEffect(isEvenIndex ? bListTab.musicListController.master.playbackColorAnimation.lightingBG : bListTab.musicListController.master.playbackColorAnimation.lightingLI);
+		background.setCache(true);
+		background.setCacheHint(CacheHint.SPEED);
 		return background;
 	}
 	

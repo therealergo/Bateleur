@@ -3,6 +3,7 @@ package com.bateleur.app.view.list;
 import com.bateleur.app.datatype.BAudio;
 
 import javafx.geometry.Insets;
+import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -25,6 +26,8 @@ public class BListOptionSetting extends BListOption {
 		foreground.setPrefWidth(10000);
 		foreground.setPadding(Insets.EMPTY);
 		foreground.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+		foreground.setCache(true);
+		foreground.setCacheHint(CacheHint.SPEED);
 		
 		GridPane innerGrid = new GridPane();
 		innerGrid.getStyleClass().add("listOptionGrid");

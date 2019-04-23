@@ -14,6 +14,8 @@ import com.therealergo.main.MainException;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.CacheHint;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Tab;
@@ -51,6 +53,8 @@ public class BListTab extends Tab {
 		innerScrollBackground.setHbarPolicy(ScrollBarPolicy.NEVER);
 		innerScrollBackground.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		innerStack.getChildren().add(innerScrollBackground);
+		innerScrollBackground.setCache(true);
+		innerScrollBackground.setCacheHint(CacheHint.SPEED);
 		
 		Pane innerBorderBack = new Pane();
 		innerBorderBack.getStyleClass().add("scroll-pane-border");
@@ -64,6 +68,8 @@ public class BListTab extends Tab {
 		innerScrollForeground.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		innerStack.getChildren().add(innerScrollForeground);
 		innerScrollForeground.setEffect(musicListController.master.playbackColorAnimation.lightingFG);
+		innerScrollForeground.setCache(true);
+		innerScrollForeground.setCacheHint(CacheHint.SPEED);
 		
 		Pane innerBorderFore = new Pane();
 		innerBorderFore.getStyleClass().add("scroll-pane-border");
@@ -141,15 +147,21 @@ public class BListTab extends Tab {
 			options.removeIf(musicListController.getSearchBarFilter().negate());
 		}
 		
-		innerGridBackground.getChildren().clear();
+		List<Node> toAddNodesBG = new ArrayList<Node>();
 		for (int i = 0; i<options.size(); i++) {
-			innerGridBackground.add(options.get(i).buildBackground(i%2==0), 0, i);
+			toAddNodesBG.add(options.get(i).buildBackground(i%2==0));
+		}
+		
+		innerGridBackground.getChildren().clear();
+		innerGridBackground.addColumn(0, toAddNodesBG.toArray(new Node[toAddNodesBG.size()]));
+		
+		List<Node> toAddNodesFG = new ArrayList<Node>();
+		for (int i = 0; i<options.size(); i++) {
+			toAddNodesFG.add(options.get(i).buildForeground());
 		}
 		
 		innerGridForeground.getChildren().clear();
-		for (int i = 0; i<options.size(); i++) {
-			innerGridForeground.add(options.get(i).buildForeground(), 0, i);
-		}
+		innerGridForeground.addColumn(0, toAddNodesFG.toArray(new Node[toAddNodesFG.size()]));
 	}
 	
 	public void selectParent() {
