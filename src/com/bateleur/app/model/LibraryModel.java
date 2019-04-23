@@ -226,7 +226,8 @@ public class LibraryModel implements Iterable<BAudio> {
 			return NO_MEDIA_AUDIO;
 		}
 		
-		return libraryReferenceMap.get(reference);
+		BAudio inLibraryAudio = libraryReferenceMap.get(reference);
+		return inLibraryAudio == null ? getByReference(BReference.NO_MEDIA_REF) : inLibraryAudio;
 	}
 	
 	public void saveAll() throws IOException {
