@@ -209,9 +209,6 @@ public class LibraryModel implements Iterable<BAudio> {
 					ResourceFile noMediaPlaybackFile = BReference.NO_MEDIA_REF.getPlaybackFile();
 					ResourceFile noMediaSerialFile   = Main.resource.getResourceFileLocal("nomedia.ser");
 					
-					noMediaPlaybackFile.create();
-					noMediaSerialFile  .create();
-					
 					noMediaPlaybackFile.toFile().deleteOnExit();
 					noMediaSerialFile  .toFile().deleteOnExit();
 					
