@@ -2,6 +2,7 @@ package com.bateleur.app.view.list;
 
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BReference;
+import com.therealergo.main.MainException;
 
 import javafx.geometry.Insets;
 import javafx.scene.CacheHint;
@@ -23,6 +24,10 @@ public class BListOptionAudio extends BListOption {
 
 	public BListOptionAudio(BListTab bListTab, BAudio audio) {
 		super(bListTab);
+		
+		if (audio == null) {
+			throw new MainException(BListOption.class, "Supplied audio file cannot be null!");
+		}
 		
 		this.audio = audio;
 	}
