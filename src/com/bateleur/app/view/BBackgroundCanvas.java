@@ -9,6 +9,7 @@ import com.bateleur.app.model.PlaybackModel;
 import com.bateleur.app.model.SettingsModel;
 
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -84,12 +85,18 @@ public class BBackgroundCanvas extends Canvas {
 		
 		this.imageList = new LinkedList<BackgroundImage>();
 		playback.onSongChangeEvent.addListener(() -> {
-			BAudio newLoadedAudio = library.getByReference(playback.getLoadedAudio());
-	    	Image image         = newLoadedAudio.get(settings.AUDIO_ARTLOADER).getImagePrimary(newLoadedAudio.get(settings.AUDIO_REFERENCE));
-	    	Image image_blurred = newLoadedAudio.get(settings.AUDIO_ARTLOADER).getImageBlurred(newLoadedAudio.get(settings.AUDIO_REFERENCE));
-			imageList.add(new BackgroundImage(image, image_blurred));
-			lastUpdate = System.nanoTime();
-			imageAnimation.start();
+			new Thread("Image Load Thread") {
+				public void run() {
+					BAudio newLoadedAudio = library.getByReference(playback.getLoadedAudio());
+			    	Image image         = newLoadedAudio.get(settings.AUDIO_ARTLOADER).getImagePrimary(newLoadedAudio.get(settings.AUDIO_REFERENCE));
+			    	Image image_blurred = newLoadedAudio.get(settings.AUDIO_ARTLOADER).getImageBlurred(newLoadedAudio.get(settings.AUDIO_REFERENCE));
+			    	Platform.runLater(() -> {
+						imageList.add(new BackgroundImage(image, image_blurred));
+						lastUpdate = System.nanoTime();
+						imageAnimation.start();
+			    	});
+				}
+			}.start();
 		});
 	}
 	
