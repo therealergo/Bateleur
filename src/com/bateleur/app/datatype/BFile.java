@@ -74,12 +74,17 @@ public abstract class BFile {
 		// Add/update Entry's key-value pair in valueMap
 		valueMap.put(entry.key, entry.val);
 		
+	}
+	
+	/**
+	 * @brief   Saves all values stored in this BFile to disk.
+	 * @details Until this is called, all values that have been changed in this BFile may be lost.
+	 * @throws IOException If there is an issue writing the BFile to disk.
+	 */
+	public void save() throws IOException {
 		// Write updated valueMap to the on-disk file
 		try (ObjectOutputStream oos = new ObjectOutputStream(file.getOutputStream())) {
 			oos.writeObject(valueMap);
-		} catch (IOException e) {
-			//TODO: In future we won't be writing here, but will instead write everything when the program closes
-			e.printStackTrace();
 		}
 	}
 	

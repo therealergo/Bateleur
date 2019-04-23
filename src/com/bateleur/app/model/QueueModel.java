@@ -27,9 +27,6 @@ public class QueueModel {
     		Collections.shuffle(settings.get(settings.QUEUE_PROCES));
     	}
     	
-    	//TODO: This is a hack to ensure that the list is saved -- it really needs to be replaced
-    	settings.set( settings.QUEUE_PROCES.to(settings.get(settings.QUEUE_PROCES)) );
-    	
     	int computedIndex = settings.get(settings.QUEUE_PROCES).indexOf(startingAudio);
     	settings.set(settings.QUEUE_PROCES_INDEX.to(computedIndex));
     	
@@ -80,9 +77,6 @@ public class QueueModel {
     public void setQueue(LibraryModel library, BReference startingAudio) {
     	settings.get( settings.QUEUE_ACTUAL ).clear();
     	library.forEach( (BAudio audio) -> settings.get(settings.QUEUE_ACTUAL).add(audio.get(settings.AUDIO_REFERENCE)) );
-
-    	//TODO: This is a hack to ensure that the list is saved -- it really needs to be replaced
-    	settings.set( settings.QUEUE_ACTUAL.to(settings.get(settings.QUEUE_ACTUAL)) );
     	
     	recreateProcessedQueue(startingAudio);
     }
@@ -94,9 +88,6 @@ public class QueueModel {
     public void setQueue(List<BAudio> audioList, BReference startingAudio) {
     	settings.get( settings.QUEUE_ACTUAL ).clear();
     	audioList.forEach( (BAudio audio) -> settings.get(settings.QUEUE_ACTUAL).add(audio.get(settings.AUDIO_REFERENCE)) );
-
-    	//TODO: This is a hack to ensure that the list is saved -- it really needs to be replaced
-    	settings.set( settings.QUEUE_ACTUAL.to(settings.get(settings.QUEUE_ACTUAL)) );
     	
     	recreateProcessedQueue(startingAudio);
     }

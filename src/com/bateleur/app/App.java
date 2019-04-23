@@ -1,5 +1,7 @@
 package com.bateleur.app;
 
+import java.io.IOException;
+
 import com.bateleur.app.controller.MasterController;
 import com.bateleur.app.controller.MusicListController;
 import com.bateleur.app.controller.PlaybackController;
@@ -10,6 +12,7 @@ import com.bateleur.app.model.SettingsModel;
 import com.bateleur.app.view.BBackgroundCanvas;
 import com.melloware.jintellitype.JIntellitype;
 import com.therealergo.main.Main;
+import com.therealergo.main.MainException;
 import com.therealergo.main.os.EnumOS;
 
 import borderless.BorderlessScene;
@@ -25,11 +28,16 @@ import javafx.util.Builder;
 import javafx.util.BuilderFactory;
 
 public class App extends Application {
+	private SettingsModel settings;
+	private LibraryModel  library ;
+	private PlaybackModel playback;
+	private QueueModel    queue   ;
+	
 	@Override public void start(Stage primaryStage) throws Exception {
-		SettingsModel settings = new SettingsModel(          Main.resource.getResourceFileLocal("settings.ser"));
-		LibraryModel  library  = new LibraryModel (settings, Main.resource.getResourceFolderLocal("library")   );
-		PlaybackModel playback = new PlaybackModel(settings                                                    );
-		QueueModel    queue    = new QueueModel   (settings                                                    );
+		settings = new SettingsModel(          Main.resource.getResourceFileLocal("settings.ser"));
+		library  = new LibraryModel (settings, Main.resource.getResourceFolderLocal("library")   );
+		playback = new PlaybackModel(settings                                                    );
+		queue    = new QueueModel   (settings                                                    );
 		
 		{ // Start FXML window
 			FXMLLoader loader = new FXMLLoader(Main.resource.getResourceFileClass("views>MasterView.fxml", App.class).toURL());
@@ -99,6 +107,16 @@ public class App extends Application {
 	}
 	
 	@Override public void stop() {
+		try {
+			settings.save();
+		} catch (IOException e) {
+			Main.log.logErr(new MainException(SettingsModel.class, "Failed to save settings!", e));
+		}
+		try {
+			library.saveAll();
+		} catch (IOException e) {
+			Main.log.logErr(new MainException(LibraryModel .class, "Failed to save library!" , e));
+		}
 		Main.mainStop();
 	}
 
