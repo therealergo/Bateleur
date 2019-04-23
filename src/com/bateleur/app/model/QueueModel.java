@@ -27,6 +27,8 @@ public class QueueModel {
     		Collections.shuffle(settings.get(settings.QUEUE_PROCES));
     	}
     	
+    	settings.set( settings.QUEUE_PROCES ); //TODO: This is a hack to fix a queue not being saved bug. The more general design problem here needs fixed. Eventually.
+    	
     	int computedIndex = settings.get(settings.QUEUE_PROCES).indexOf(startingAudio);
     	settings.set(settings.QUEUE_PROCES_INDEX.to(computedIndex));
     	
@@ -78,6 +80,8 @@ public class QueueModel {
     	settings.get( settings.QUEUE_ACTUAL ).clear();
     	library.forEach( (BAudio audio) -> settings.get(settings.QUEUE_ACTUAL).add(audio.get(settings.AUDIO_REFERENCE)) );
     	
+    	settings.set( settings.QUEUE_ACTUAL ); //TODO: This is a hack to fix a queue not being saved bug. The more general design problem here needs fixed. Eventually.
+    	
     	recreateProcessedQueue(startingAudio);
     }
     
@@ -88,6 +92,8 @@ public class QueueModel {
     public void setQueue(List<BAudio> audioList, BReference startingAudio) {
     	settings.get( settings.QUEUE_ACTUAL ).clear();
     	audioList.forEach( (BAudio audio) -> settings.get(settings.QUEUE_ACTUAL).add(audio.get(settings.AUDIO_REFERENCE)) );
+
+    	settings.set( settings.QUEUE_ACTUAL ); //TODO: This is a hack to fix a queue not being saved bug. The more general design problem here needs fixed. Eventually.
     	
     	recreateProcessedQueue(startingAudio);
     }
