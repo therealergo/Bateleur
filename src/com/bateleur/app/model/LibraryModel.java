@@ -1,9 +1,11 @@
 package com.bateleur.app.model;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -28,7 +30,8 @@ public class LibraryModel implements Iterable<BAudio> {
 	private boolean isUpdating;
 	public final NilEvent updateStartEvent;
 	public final NilEvent updateFinishEvent;
-	
+
+	private HashMap<BReference, BAudio> libraryReferenceMap;
 	private List<BAudio> listLibarary;
 	private List<BAudio> listFiltered;
 	private ResourceFolder data;
@@ -42,6 +45,7 @@ public class LibraryModel implements Iterable<BAudio> {
 		this.updateStartEvent = new NilEvent();
 		this.updateFinishEvent = new NilEvent();
 		
+		this.libraryReferenceMap = new HashMap<BReference, BAudio>();
 		this.listLibarary = new ArrayList<BAudio>();
 		this.listFiltered = new ArrayList<BAudio>();
 		this.data = data;
@@ -50,7 +54,9 @@ public class LibraryModel implements Iterable<BAudio> {
 		ResourceFile[] audioFileList = data.listFileChildren();
 		for (int i = 0; i<audioFileList.length; i++) {
 			try {
-				listLibarary.add(new BAudioLocal(settings, audioFileList[i]));
+				BAudioLocal addedAudio = new BAudioLocal(settings, audioFileList[i]);
+				libraryReferenceMap.put(addedAudio.get(settings.AUDIO_REFERENCE), addedAudio);
+				listLibarary.add(addedAudio);
 			} catch (Exception e) {
 				Main.log.logErr("Error adding audio store file to library! Corrupted audio store file will be deleted.");
 				Main.log.logErr(e);
@@ -175,10 +181,18 @@ public class LibraryModel implements Iterable<BAudio> {
 						// Fill the internal list with entries from the newly-generated list
 						listLibarary.clear();
 						listLibarary.addAll(finalBAudioList);
-						Main.log.log("Library update complete!");
+						
+						// Update libraryReferenceMap hash from list
+						libraryReferenceMap.clear();
+						Iterator<BAudio> newAudioIterator = listLibarary.iterator();
+						while (newAudioIterator.hasNext()) {
+							BAudio addedAudio = newAudioIterator.next();
+							libraryReferenceMap.put(addedAudio.get(settings.AUDIO_REFERENCE), addedAudio);
+						}
 						
 						// Notify that we have finished updating
 						updateFinishEvent.accept();
+						Main.log.log("Library update complete!");
 
 						// Ensure that only one update can occur at a time
 						isUpdating = false;
@@ -215,14 +229,14 @@ public class LibraryModel implements Iterable<BAudio> {
 			return NO_MEDIA_AUDIO;
 		}
 		
+		return libraryReferenceMap.get(reference);
+	}
+	
+	public void saveAll() throws IOException {
 		Iterator<BAudio> audioIterator = listLibarary.iterator();
 		while (audioIterator.hasNext()) {
-			BAudio searchAudio = audioIterator.next();
-			if (reference.equals(searchAudio.get(settings.AUDIO_REFERENCE))) {
-				return searchAudio;
-			}
+			audioIterator.next().save();
 		}
-		return null;
 	}
 	
 	public void sortBy(Comparator<BAudio> comparator) {
