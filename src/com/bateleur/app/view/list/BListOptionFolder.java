@@ -6,7 +6,6 @@ import com.bateleur.app.datatype.BAudio;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -28,7 +27,7 @@ public abstract class BListOptionFolder extends BListOption {
 	
 	public abstract List<BListOption> listOptions();
 	
-	@Override public Node buildForeground() {
+	@Override public Button buildForeground() {
 		Button foreground = new Button();
 		foreground.setMinHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));
 		foreground.setMaxHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));

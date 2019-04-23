@@ -1,5 +1,7 @@
 package com.bateleur.app.controller;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -11,6 +13,7 @@ import com.bateleur.app.view.list.BListOptionFolder_ByPath;
 import com.bateleur.app.view.list.BListOptionFolder_ByType.BListOptionFolder_ByAlbum;
 import com.bateleur.app.view.list.BListOptionFolder_ByType.BListOptionFolder_ByArtist;
 import com.bateleur.app.view.list.BListOptionFolder_Queue;
+import com.bateleur.app.view.list.BListOptionFolder_Settings;
 import com.bateleur.app.view.list.BListOptionFolder_Tracks;
 import com.bateleur.app.view.list.BListTab;
 import com.therealergo.main.NilEvent;
@@ -27,6 +30,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -40,8 +44,8 @@ public class MusicListController {
 	/** FXML-injected component references. */
 	@FXML private TabPane listTabPane;
 	@FXML private AnchorPane musicListPane;
-	@FXML private Button goUpButton;
 	@FXML private Button settingsButton;
+	@FXML private Button goUpButton;
 	@FXML private Button updateButton;
 	@FXML private Button searchButton;
 	@FXML private TextField searchBar;
@@ -72,6 +76,7 @@ public class MusicListController {
 		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_ByArtist.class));
 		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_ByAlbum .class));
 		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_ByPath  .class));
+		listTabPane.getTabs().add(new BListTab(this, master.library, master.playback, master.settings, BListOptionFolder_Settings.class));
 		
 		// We can only get the scene after initialization finishes, so we wait until then
 		listTabPane.sceneProperty().addListener((ObservableValue<? extends Scene> ov, Scene old_val, Scene new_val) -> {
@@ -111,46 +116,47 @@ public class MusicListController {
 				// Make the background of the tab header BG colored
 				listTabPane.lookup(".tab-header-background").setEffect(master.playbackColorAnimation.lightingBG);
 				
-				// Color each of the tab labels in the header
-				Set<Node> tabs = listTabPane.lookupAll(".tab");
-				for (Node tab : tabs) {
-					
-					// Each tab defaults to BO colors
-					tab.setEffect(master.playbackColorAnimation.lightingBO);
-					
-					// Highlight the tab with FG colors when it is hovered over
-					tab.setOnMouseEntered((MouseEvent evt) -> {
-						tab.setEffect(master.playbackColorAnimation.lightingFG);
+				// Generate a HashMap mapping tab names to actual tab elements
+				Set<Node> tabLabelList = listTabPane.lookupAll(".tab-label");
+				HashMap<String, Node> tabLabelSet = new HashMap<String, Node>();
+				for (Node tabLabel : tabLabelList) {
+					tabLabelSet.put( ((Label)tabLabel).getText(), tabLabel );
+				}
+
+				// The settings button sort of functions as a tab, with tab name ""
+				// This disables the default tab button and replaces it with the setting button
+				tabLabelSet.get("").getParent().getParent().setMouseTransparent(true);
+				tabLabelSet.put("", settingsButton);
+
+				// Colorize each tab label based on the FG and BO color
+				// They are colored FG when selected or hovered over, and BO otherwise
+				// This also adds a "tab-label-NAME" CSS class to each label to be used when looking up the components on selection
+				Collection<String> fullLabelList = tabLabelSet.keySet();
+				for (String tabText : fullLabelList) {
+					Node tabNode = tabLabelSet.get(tabText);
+					tabNode.setEffect(master.playbackColorAnimation.lightingBO);
+					tabNode.getStyleClass().add( "tab-label-" + tabText );
+					tabNode.setOnMouseEntered((MouseEvent event) -> {
+						tabNode.setEffect(master.playbackColorAnimation.lightingFG);
 					});
-					
-					// Set the 'selected' user property when the tab is clicked
-					// This property prevents the selected tab being reset to BO colors when it stops being hovered
-					EventHandler<? super MouseEvent> tabPressHandler = tab.getOnMousePressed();
-					tab.setOnMousePressed((MouseEvent evt) -> {
-						// Reset all other tabs to BO colors
-						for (Node tab2 : tabs) {
-							tab2.getProperties().put("selected", false);
-							tab2.setEffect(master.playbackColorAnimation.lightingBO);
-						}
-						
-						// Set this tab to FG colors when it is selected
-						tab.setEffect(master.playbackColorAnimation.lightingFG);
-						tab.getProperties().put("selected", true);
-						
-						// Actually perform the original action of the tab click
-						tabPressHandler.handle(evt);
-					});
-					
-					// Un-highlight the tab back to BO colors when it stops being hovered over
-					tab.setOnMouseExited((MouseEvent evt) -> {
-						if (Boolean.TRUE.equals(tab.getProperties().get("selected"))) {
-							tab.setEffect(master.playbackColorAnimation.lightingFG);
-						} else {
-							tab.setEffect(master.playbackColorAnimation.lightingBO);
+					tabNode.setOnMouseExited((MouseEvent event) -> {
+						if (!listTabPane.getSelectionModel().getSelectedItem().getText().equals( tabText )) {
+							tabNode.setEffect(master.playbackColorAnimation.lightingBO);
 						}
 					});
 				}
+				
+				// Event to colorize the selected tab label with FG color when it is selected
+				listTabPane.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> otab, Tab old_tab, Tab new_tab) -> {
+					musicListPane.lookupAll(".tab-label-" + old_tab.getText()).iterator().next().setEffect(master.playbackColorAnimation.lightingBO);
+					musicListPane.lookupAll(".tab-label-" + new_tab.getText()).iterator().next().setEffect(master.playbackColorAnimation.lightingFG);
+				});
 			}
+		});
+		
+		// Setup the actual action of 'settingsButton'
+		settingsButton.setOnAction((ActionEvent event) -> {
+			listTabPane.getSelectionModel().selectLast();
 		});
 		
 		// Colorize 'goUpButton' based on the FG and BO color
@@ -166,19 +172,6 @@ public class MusicListController {
 		goUpButton.setOnAction((ActionEvent event) -> {
 			// Tell the currently-selected tab to go to up a directory to its parent folder
 			((BListTab)listTabPane.getSelectionModel().getSelectedItem()).selectParent();
-		});
-		
-		// Colorize 'settingsButton' based on the FG and BO color
-		settingsButton.setEffect(master.playbackColorAnimation.lightingBO);
-		settingsButton.setOnMouseEntered((MouseEvent event) -> {
-			settingsButton.setEffect(master.playbackColorAnimation.lightingFG);
-		});
-		settingsButton.setOnMouseExited((MouseEvent event) -> {
-			settingsButton.setEffect(master.playbackColorAnimation.lightingBO);
-		});
-		
-		// Setup the actual action of 'settingsButton'
-		settingsButton.setOnAction((ActionEvent event) -> {
 		});
 		
 		// Create the animation used to indicate that the library is currently updating
