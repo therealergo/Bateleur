@@ -170,7 +170,7 @@ public class LibraryModel implements Iterable<BAudio> {
 					
 					// Create new libraryReferenceMap hash from list
 					HashMap<BReference, BAudio> finalReferenceMap = new HashMap<BReference, BAudio>();
-					Iterator<BAudio> newAudioIterator = listLibarary.iterator();
+					Iterator<BAudio> newAudioIterator = finalBAudioList.iterator();
 					while (newAudioIterator.hasNext()) {
 						BAudio addedAudio = newAudioIterator.next();
 						finalReferenceMap.put(addedAudio.get(settings.AUDIO_REFERENCE), addedAudio);
