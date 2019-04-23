@@ -75,6 +75,7 @@ public class BBackgroundCanvas extends Canvas {
 		    	// If there's only 1 image left, we can stop the animation
 		    	if (imageList.size() == 1) {
 		    		imageList.getLast().fade = 1.0;
+		    		imageList.getLast().size = 1.0;
 					imageAnimation.stop();
 		    	}
 		    	
