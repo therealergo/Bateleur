@@ -54,8 +54,11 @@ public class PlaybackModel {
 	}
 	
 	public void loadFromSavedState(LibraryModel library) {
+		boolean shouldPlay = settings.get(settings.PLAY_IS_PLAYING);
+		
 		loadAudio(library.getByReference(settings.get( settings.PLAY_CUR_AUDIO_REF )), 0);
-		if (settings.get(settings.PLAY_IS_PLAYING)) {
+		
+		if (shouldPlay) {
 			play(0);
 		} else {
 			pause(0);
