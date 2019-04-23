@@ -134,7 +134,11 @@ public class MusicListController {
 				Collection<String> fullLabelList = tabLabelSet.keySet();
 				for (String tabText : fullLabelList) {
 					Node tabNode = tabLabelSet.get(tabText);
-					tabNode.setEffect(master.playbackColorAnimation.lightingBO);
+					if (listTabPane.getSelectionModel().getSelectedItem().getText().equals( tabText )) {
+						tabNode.setEffect(master.playbackColorAnimation.lightingFG);
+					} else {
+						tabNode.setEffect(master.playbackColorAnimation.lightingBO);
+					}
 					tabNode.getStyleClass().add( "tab-label-" + tabText );
 					tabNode.setOnMouseEntered((MouseEvent event) -> {
 						tabNode.setEffect(master.playbackColorAnimation.lightingFG);
