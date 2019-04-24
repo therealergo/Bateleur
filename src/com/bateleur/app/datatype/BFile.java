@@ -53,6 +53,14 @@ public abstract class BFile {
 			}
 		}
 	}
+	
+	/**
+	 * Returns the ResourceFile to which this BFile saves data on disk.
+	 * @return The ResourceFile used to store this BFile on disk.
+	 */
+	public ResourceFile getBackingFile() {
+		return file;
+	}
 
 	/**
 	 * @brief   Returns the value corresponding to the given Entry.
