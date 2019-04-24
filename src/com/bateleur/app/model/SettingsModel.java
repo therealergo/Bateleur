@@ -34,8 +34,9 @@ public class SettingsModel extends BFile {
 	public final BFile.Entry< Integer                   > FADE_TIME_AUTO     = new BFile.Entry< Integer                   >( "__fadeTimeAuto"     , 0                           );
 	
 	public final BFile.Entry< ArrayList<ResourceFolder> > LIBRARY_PATH       = new BFile.Entry< ArrayList<ResourceFolder> >( "__libraryPath"      , LIBRARY_PATH_INIT           );
-    public final BFile.Entry< Long                      > LIBRARY_NEXT_VAL   = new BFile.Entry< Long                      >( "__librayNextVal"    , 0L                          );
-    public final BFile.Entry< ArrayList<String>         > LIBRARY_OKAY_TYPES = new BFile.Entry< ArrayList<String>         >( "__playlistNameList" , LIBRARY_OKAY_TYPES_INIT     );
+	public final BFile.Entry< ResourceFolder            > LIBRARY_STORE_FOLD = new BFile.Entry< ResourceFolder            >( "__libraryStoreFold" , Main.resource.getResourceFolderLocal("library"));
+	public final BFile.Entry< Long                      > LIBRARY_NEXT_VAL   = new BFile.Entry< Long                      >( "__librayNextVal"    , 0L                          );
+    public final BFile.Entry< ArrayList<String>         > LIBRARY_OKAY_TYPES = new BFile.Entry< ArrayList<String>         >( "__libraryOkayTypes" , LIBRARY_OKAY_TYPES_INIT     );
 
     public final BFile.Entry< Boolean                   > QUEUE_SHUFFLE_EN   = new BFile.Entry< Boolean                   >( "__queueShuffleEn"   , false                       );
     public final BFile.Entry< Boolean                   > QUEUE_QUEUE_EN     = new BFile.Entry< Boolean                   >( "__queueQueueEn"     , true                        );

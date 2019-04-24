@@ -34,10 +34,10 @@ public class App extends Application {
 	private QueueModel    queue   ;
 	
 	@Override public void start(Stage primaryStage) throws Exception {
-		settings = new SettingsModel(          Main.resource.getResourceFileLocal("settings.ser"));
-		library  = new LibraryModel (settings, Main.resource.getResourceFolderLocal("library")   );
-		playback = new PlaybackModel(settings                                                    );
-		queue    = new QueueModel   (settings                                                    );
+		settings = new SettingsModel(Main.resource.getResourceFileLocal("settings.ser"));
+		library  = new LibraryModel (settings                                          );
+		playback = new PlaybackModel(settings                                          );
+		queue    = new QueueModel   (settings                                          );
 		
 		{ // Start FXML window
 			FXMLLoader loader = new FXMLLoader(Main.resource.getResourceFileClass("views>MasterView.fxml", App.class).toURL());

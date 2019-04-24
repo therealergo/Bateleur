@@ -35,7 +35,7 @@ public class LibraryModel implements Iterable<BAudio> {
 	private List<BAudio> listLibarary;
 	private List<BAudio> listFiltered;
 	
-	public LibraryModel(SettingsModel settings, ResourceFolder data) throws Exception {
+	public LibraryModel(SettingsModel settings) throws Exception {
 		this.settings = settings;
 		
 		this.NO_MEDIA_AUDIO = null;
@@ -48,8 +48,8 @@ public class LibraryModel implements Iterable<BAudio> {
 		this.listLibarary = new ArrayList<BAudio>();
 		this.listFiltered = new ArrayList<BAudio>();
 		
-		data.create();
-		ResourceFile[] audioFileList = data.listFileChildren();
+		settings.get(settings.LIBRARY_STORE_FOLD).create();
+		ResourceFile[] audioFileList = settings.get(settings.LIBRARY_STORE_FOLD).listFileChildren();
 		for (int i = 0; i<audioFileList.length; i++) {
 			try {
 				BAudioLocal addedAudio = new BAudioLocal(settings, audioFileList[i]);
@@ -232,7 +232,7 @@ public class LibraryModel implements Iterable<BAudio> {
 			if (NO_MEDIA_AUDIO == null) {
 				try {
 					ResourceFile noMediaPlaybackFile = Main.resource.getResourceFileLocal("nomedia.mp3");
-					ResourceFile noMediaSerialFile   = BReference.NO_MEDIA_REF.getStorageFile();
+					ResourceFile noMediaSerialFile   = BReference.NO_MEDIA_REF.getStorageFile(settings);
 					
 					noMediaPlaybackFile.toFile().deleteOnExit();
 					noMediaSerialFile  .toFile().deleteOnExit();

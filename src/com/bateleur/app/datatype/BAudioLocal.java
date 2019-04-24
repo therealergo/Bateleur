@@ -32,7 +32,7 @@ public class BAudioLocal extends BAudio {
 	}
 	
 	public BAudioLocal(SettingsModel settings, ResourceFile audioFile, BReference reference) throws Exception {
-		super(reference == null ? null : reference.getStorageFile());
+		super(reference == null ? null : reference.getStorageFile(settings));
 		
 		if (audioFile == null) {
 			throw new MainException(BAudioLocal.class, "BAudioLocal audio file cannot be null!");

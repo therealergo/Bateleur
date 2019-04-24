@@ -3,7 +3,6 @@ package com.bateleur.app.datatype;
 import java.io.Serializable;
 
 import com.bateleur.app.model.SettingsModel;
-import com.therealergo.main.Main;
 import com.therealergo.main.MainException;
 import com.therealergo.main.resource.ResourceFile;
 
@@ -15,8 +14,8 @@ public final class BReference implements Serializable {
 	private final long songId;
 	
 	public BReference(SettingsModel settings) {
-		long generatedSongId = settings.get(settings.LIBRARY_NEXT_VAL);
-		while (Main.resource.getResourceFileLocal("library>" + generatedSongId + ".ser").exists()) {
+		long generatedSongId = Math.max(1, settings.get(settings.LIBRARY_NEXT_VAL));
+		while (settings.get(settings.LIBRARY_STORE_FOLD).getChildFile(generatedSongId + ".ser").exists()) {
 			generatedSongId = Math.max(1, generatedSongId + 1);
 		}
 		settings.set(settings.LIBRARY_NEXT_VAL.to( Math.max(1, generatedSongId + 1 )));
@@ -30,8 +29,8 @@ public final class BReference implements Serializable {
 		this.songId = songId;
 	}
 	
-	public ResourceFile getStorageFile() {
-		return Main.resource.getResourceFileLocal("library>" + songId + ".ser");
+	public ResourceFile getStorageFile(SettingsModel settings) {
+		return settings.get(settings.LIBRARY_STORE_FOLD).getChildFile(songId + ".ser");
 	}
 	
 	@Override public boolean equals(Object other) {
