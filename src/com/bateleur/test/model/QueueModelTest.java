@@ -1,21 +1,21 @@
 package com.bateleur.test.model;
 
-import com.bateleur.app.App;
-import com.bateleur.app.datatype.BAudio;
-import com.bateleur.app.datatype.BAudioLocal;
-import com.bateleur.app.datatype.BReference;
-import com.bateleur.app.model.LibraryModel;
-import com.bateleur.app.model.QueueModel;
-import com.bateleur.app.model.SettingsModel;
-import com.therealergo.main.Main;
-import com.therealergo.main.MainException;
-import de.saxsys.javafx.test.JfxRunner;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNotSame;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static junit.framework.TestCase.*;
+import com.bateleur.app.App;
+import com.bateleur.app.datatype.BAudio;
+import com.bateleur.app.model.LibraryModel;
+import com.bateleur.app.model.QueueModel;
+import com.bateleur.app.model.SettingsModel;
+import com.therealergo.main.Main;
+
+import de.saxsys.javafx.test.JfxRunner;
 
 @RunWith(JfxRunner.class)
 public class QueueModelTest {
@@ -23,23 +23,26 @@ public class QueueModelTest {
 
     private static SettingsModel settings;
     private static LibraryModel library;
-    private static BAudio testAudio;
-
+    
+    private static BAudio firstAudio;
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        try {
+    	// Start Main
+    	if (Main.mainIsRunning()) {
             Main.mainStop();
-        }
-        catch (MainException e) { }
+    	}
         Main.mainInit(App.class, new String[]{});
-
-    	// Ensure that there are no existing library files
-    	Main.resource.getResourceFolderLocal("test_out>QueueModelTest>library").create().delete();
-
+        
+        // Setup settings pointing to a test_out library folder
         settings = new SettingsModel(Main.resource.getResourceFileLocal("settings.ser"));
-        library = new LibraryModel(settings, Main.resource.getResourceFolderLocal("test_out>QueueModelTest>library"));
+        settings.set(settings.LIBRARY_STORE_FOLD.to( Main.resource.getResourceFolderLocal("test_out>QueueModelTest>library") ));
+        
+    	// Setup library, ensuring that there are no existing library files and updating to get a freshly-filled library
+    	settings.get(settings.LIBRARY_STORE_FOLD).create().delete();
+        library = new LibraryModel(settings);
         library.update();
+        while (library.isUpdating()) {}
     }
 
     /**
@@ -47,15 +50,12 @@ public class QueueModelTest {
      */
     @Before
     public void setup() throws Exception {
+    	// Create new queue
         queueModel = new QueueModel(settings);
-
-        // Ensure that there is no existing metadata file
-        Main.resource.getResourceFileLocal("test_out>QueueModelTest>test_meta.ser").create().delete();
-
-        testAudio = new BAudioLocal(settings,
-        		                    Main.resource.getResourceFileClass("test_in>test.mp3", App.class),
-                                    new BReference(settings));
-        queueModel.setQueue(library, testAudio);
+        
+        // Setup queue to point to entire library, starting at 'firstAudio'
+        firstAudio = library.iterator().next();
+        queueModel.setQueue(library, firstAudio);
     }
 
 
@@ -73,7 +73,7 @@ public class QueueModelTest {
         // Then
         assertNotNull(nextAudio);
         assertNotSame(startingAudio, nextAudio);
-        assertNotSame(nextAudio, testAudio);
+        assertNotSame(nextAudio, firstAudio);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class QueueModelTest {
         // Then
         assertNotNull(prevAudio);
         assertNotSame(startingAudio, prevAudio);
-        assertNotSame(prevAudio, testAudio);
+        assertNotSame(prevAudio, firstAudio);
     }
 
     /**
@@ -121,7 +121,7 @@ public class QueueModelTest {
         // Then
         assertNotNull(nextAudio);
         assertNotSame(startingAudio, nextAudio);
-        assertNotSame(nextAudio, testAudio);
+        assertNotSame(nextAudio, firstAudio);
     }
 
     /**
