@@ -37,17 +37,12 @@ public class PlaybackModel {
 
 	public PlaybackModel(SettingsModel settings) {
 		this.settings = settings;
-
-		this.player = null;
+		
 		createdFileMap = new HashMap<>();
-
+		
 		onPlayEvent       = new NilEvent();
 		onPauseEvent      = new NilEvent();
 		onSongChangeEvent = new NilEvent();
-	}
-
-	public boolean isAudioLoaded() {
-		return settings.get( settings.PLAY_CUR_AUDIO_REF ).equals( BReference.NO_MEDIA_REF );
 	}
 
 	public BReference getLoadedAudio() {

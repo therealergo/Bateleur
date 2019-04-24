@@ -69,8 +69,7 @@ public class PlaybackModelTest {
         playbackModel.loadAudio(testAudio, FADE_TIME);
 
         // Then
-        assertTrue(playbackModel.isAudioLoaded());
-        assertEquals(testAudio, playbackModel.getLoadedAudio());
+        assertEquals(testAudio.get(settings.AUDIO_REFERENCE), playbackModel.getLoadedAudio());
     }
 
     /**
@@ -93,8 +92,7 @@ public class PlaybackModelTest {
         playbackModel.loadAudio(testAudio, FADE_TIME);
 
         // Then
-        assertTrue(playbackModel.isAudioLoaded());
-        assertEquals(testAudio, playbackModel.getLoadedAudio());
+        assertEquals(testAudio.get(settings.AUDIO_REFERENCE), playbackModel.getLoadedAudio());
     }
 
     /**
@@ -136,7 +134,6 @@ public class PlaybackModelTest {
         playbackModel.play(FADE_TIME);
 
         // Then
-        assertTrue(playbackModel.isAudioLoaded());
         if (!assertPlaying(true)) {
             fail();
         }
@@ -154,7 +151,6 @@ public class PlaybackModelTest {
         boolean playingStatus = playbackModel.isPlaying();
 
         // Then
-        assertTrue(playbackModel.isAudioLoaded());
         assertFalse(playingStatus);
     }
 
@@ -177,7 +173,6 @@ public class PlaybackModelTest {
         assertPlaying(false);
 
         // Then
-        assertTrue(playbackModel.isAudioLoaded());
         assertFalse(playbackModel.isPlaying());
     }
 
