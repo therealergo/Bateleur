@@ -34,6 +34,10 @@ public class BListOptionSetting_DoubleSlider extends BListOptionSetting {
 		this.maxVal = maxVal;
 	}
 	
+	@Override public int getTabbing() {
+		return 2;
+	}
+	
 	@Override public String getName() {
 		// Start with the setting's own name
 		String internalName = setting.key;

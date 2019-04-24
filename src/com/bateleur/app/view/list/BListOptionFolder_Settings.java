@@ -14,6 +14,7 @@ public class BListOptionFolder_Settings extends BListOptionFolder {
 	
 	public List<BListOption> listOptions() {
 		List<BListOption> options = new LinkedList<BListOption>();
+        options.add(new BListOptionSetting_SectionLabel(bListTab, "User Interface"));
         options.add(new BListOptionSetting_DoubleSlider(bListTab, bListTab.musicListController.master.settings.UI_MOTION_BLUR    ,  0.0 ,  4.0));
         options.add(new BListOptionSetting_DoubleSlider(bListTab, bListTab.musicListController.master.settings.UI_ANIMATION_SPEED,  2.0 , 20.0));
         options.add(new BListOptionSetting_DoubleSlider(bListTab, bListTab.musicListController.master.settings.UI_ART_SCALING    ,  0.7 ,  1.0));

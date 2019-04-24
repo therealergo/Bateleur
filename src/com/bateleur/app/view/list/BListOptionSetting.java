@@ -20,6 +20,8 @@ public abstract class BListOptionSetting extends BListOption {
 		super(bListTab);
 	}
 	
+	public abstract int getTabbing();
+	
 	public abstract String getName();
 	
 	public abstract Region buildControl();
@@ -50,10 +52,12 @@ public abstract class BListOptionSetting extends BListOption {
 		innerGrid.add(innerLabel, 1, 0);
 		
 		Region innerControl = buildControl();
-		innerControl.prefHeightProperty().bind(foreground.heightProperty());
-		innerGrid.add(innerControl, 2, 0);
+		if (innerControl != null) {
+			innerControl.prefHeightProperty().bind(foreground.heightProperty());
+			innerGrid.add(innerControl, 2, 0);
+		}
 		
-		innerGrid.getColumnConstraints().add(new ColumnConstraints(30             ));
+		innerGrid.getColumnConstraints().add(new ColumnConstraints(30*getTabbing()));
 		innerGrid.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
 		innerGrid.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
 		innerGrid.getColumnConstraints().add(new ColumnConstraints(30             ));
