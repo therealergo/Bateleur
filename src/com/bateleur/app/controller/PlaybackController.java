@@ -13,6 +13,7 @@ import com.melloware.jintellitype.IntellitypeListener;
 import com.melloware.jintellitype.JIntellitype;
 import com.therealergo.main.Main;
 import com.therealergo.main.MainException;
+import com.therealergo.main.NilConsumer;
 import com.therealergo.main.os.EnumOS;
 import com.therealergo.main.resource.ResourceFile;
 
@@ -129,7 +130,7 @@ public class PlaybackController implements IntellitypeListener {
 		});
 		
 		// Setup a callback to change the displayed audio info. text and image when the playing audio file changes
-		master.playback.onSongChangeEvent.addListener(() -> {
+		NilConsumer updateAudioInfoAction = () -> {
 			String text;
 			BAudio newLoadedAudio = master.library.getByReference(master.playback.getLoadedAudio());
 			
@@ -145,7 +146,9 @@ public class PlaybackController implements IntellitypeListener {
 			Image im = newLoadedAudio.get(master.settings.AUDIO_META_ARTLOAD).getImageThumbnail(master.settings, newLoadedAudio);
 			playbackImageContainer.setMinWidth(im.getWidth() / im.getHeight() * 107.0);
 			playbackImage.setImage(im);
-		});
+		};
+		master.library .updateFinishEvent.addListener(updateAudioInfoAction);
+		master.playback.onSongChangeEvent.addListener(updateAudioInfoAction);
 		
 		// TEMPORARY code that spawns a thread updating the seekbar's on-screen position to the current position
 		Thread javaFXThread = Thread.currentThread();
