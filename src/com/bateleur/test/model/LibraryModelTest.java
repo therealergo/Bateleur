@@ -31,6 +31,7 @@ public class LibraryModelTest {
         Main.mainInit(App.class, new String[]{});
 
         settings = new SettingsModel(Main.resource.getResourceFileLocal("settings.ser"));
+        settings.set(settings.LIBRARY_STORE_FOLD.to( Main.resource.getResourceFolderLocal("test_out>QueueModelTest>library") ));
     }
 
     /**
@@ -39,9 +40,8 @@ public class LibraryModelTest {
     @Before
     public void setup() throws Exception {
     	// Ensure that there are no existing library files
-    	Main.resource.getResourceFolderLocal("test_out>LibraryModelTest>library").create().delete();
-
-        library = new LibraryModel(settings, Main.resource.getResourceFolderLocal("test_out>QueueModelTest>library"));
+    	settings.get(settings.LIBRARY_STORE_FOLD).create().delete();
+        library = new LibraryModel(settings);
     }
 
 //    @Test
