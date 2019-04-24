@@ -34,8 +34,8 @@ public class BListOptionAudio extends BListOption {
 
 	@Override public Node buildForeground() {
 		Button foreground = new Button();
-		foreground.setMinHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));
-		foreground.setMaxHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));
+		foreground.setMinHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LIST_ENTRY_SIZE));
+		foreground.setMaxHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LIST_ENTRY_SIZE));
 		foreground.setPrefWidth(10000);
 		foreground.setPadding(Insets.EMPTY);
 		foreground.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));

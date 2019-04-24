@@ -44,7 +44,7 @@ public class BBackgroundCanvas extends Canvas {
 				// Compute an exponential decay base dependent on how long it has been since the last animation frame
 				long dt = now - lastUpdate;
 				lastUpdate = System.nanoTime();
-				double baseMul = Math.pow(0.9999, dt * 0.0001 / settings.get(settings.UI_ANIM_TIME_MUL));
+				double baseMul = Math.pow(0.9999, dt * 0.0001 / settings.get(settings.UI_ANIMATION_SPEED));
 				
 				// Fade in the frontmost image
 		    	imageList.getLast().fade = imageList.getLast().fade * baseMul + (1.0-baseMul);
@@ -57,7 +57,7 @@ public class BBackgroundCanvas extends Canvas {
 		    	imageIterator.next();
 		    	while (imageIterator.hasNext()) {
 		    		BackgroundImage img = imageIterator.next();
-		    		img.size = img.size * baseMul + (1.0-baseMul) * settings.get(settings.UI_SONG_ANIM_OSIZE);
+		    		img.size = img.size * baseMul + (1.0-baseMul) * settings.get(settings.UI_ART_END_SIZE);
 		    	}
 		    	
 		    	// Remove any images that are more than 99% obscured
@@ -168,7 +168,7 @@ public class BBackgroundCanvas extends Canvas {
 			this.image = image;
 			this.image_blurred = image_blurred;
 			this.fade = 0.0;
-			this.size = settings.get(settings.UI_SONG_ANIM_ISIZE);
+			this.size = settings.get(settings.UI_ART_START_SIZE);
 		}
 		
 		private void draw(GraphicsContext gc, double width, double height) {
@@ -183,9 +183,9 @@ public class BBackgroundCanvas extends Canvas {
 	    	);
 	    	
 			double areaWidth  = width                                                  ;
-			double areaHeight = height - 107 - settings.get(settings.UI_TITLEBAR_VSIZE);
+			double areaHeight = height - 107 - settings.get(settings.UI_TITLE_BAR_SIZE);
 			double areaOffX   = 0.0                                                    ;
-			double areaOffY   = settings.get(settings.UI_TITLEBAR_VSIZE)               ;
+			double areaOffY   = settings.get(settings.UI_TITLE_BAR_SIZE)               ;
 			double scaling    = settings.get(settings.UI_ART_SCALING) * size           ;
 			if (areaHeight > 0) {
 				gc.setGlobalAlpha(fade * Math.min(Math.max(artAlpha.doubleValue(), 0.0), 1.0));

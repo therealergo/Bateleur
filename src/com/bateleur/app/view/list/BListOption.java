@@ -20,8 +20,8 @@ public abstract class BListOption {
 	
 	public Node buildBackground(boolean isEvenIndex) {
 		Pane background = new Pane();
-		background.setMinHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));
-		background.setMaxHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LISTOPT_VSIZE));
+		background.setMinHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LIST_ENTRY_SIZE));
+		background.setMaxHeight(bListTab.musicListController.master.settings.get(bListTab.musicListController.master.settings.UI_LIST_ENTRY_SIZE));
 		background.setPrefWidth(10000);
 		background.setPadding(Insets.EMPTY);
 		background.setOpacity(0.6);

@@ -95,7 +95,7 @@ public class MasterController {
 		// Set UI values looked up from settings
 		{
 			root.setStyle(
-				settings.UI_TITLEBAR_VSIZE.key + ": " + settings.UI_TITLEBAR_VSIZE.val + ";"
+				settings.UI_TITLE_BAR_SIZE.key + ": " + settings.UI_TITLE_BAR_SIZE.val + ";"
 			);
 		}
 		
@@ -107,7 +107,7 @@ public class MasterController {
 				verticalSlideAnimation.addKeyValue(
 						new KeyValue(
 								blurEffect.heightProperty(), 
-								(verticalSlideAnimation.rebuildRate) * settings.get(settings.UI_MOTION_BLUR_MUL) * root.getHeight()
+								(verticalSlideAnimation.rebuildRate) * settings.get(settings.UI_MOTION_BLUR) * root.getHeight()
 								)
 						);
 			});
@@ -297,7 +297,7 @@ public class MasterController {
 				}
 				
 				// Recreate the fade animation starting at colorPlaybackFade==0.0 and begin playback
-				double playTime = settings.get(settings.UI_ANIM_TIME_MUL)*0.2;
+				double playTime = settings.get(settings.UI_ANIMATION_SPEED)*0.2;
 				colorPlaybackAnimation = new Timeline(
 					new KeyFrame(Duration.seconds(0       ), new KeyValue(colorPlaybackFade, 0.0, Interpolator.EASE_BOTH)),
 					new KeyFrame(Duration.seconds(playTime), new KeyValue(colorPlaybackFade, 1.0, Interpolator.EASE_BOTH))
@@ -400,7 +400,7 @@ public class MasterController {
 				// Add a KeyFrame made up of the generated list of KeyValues
 				slideAnimation.getKeyFrames().add(
 					new KeyFrame(
-						new Duration(i*settings.get(settings.UI_ANIM_TIME_MUL)),
+						new Duration(i*settings.get(settings.UI_ANIMATION_SPEED)),
 						buildValues.toArray(new KeyValue[buildValues.size()])
 					)
 				);
