@@ -35,7 +35,27 @@ public class BListOptionSetting_DoubleSlider extends BListOptionSetting {
 	}
 	
 	@Override public String getName() {
-		return setting.key;
+		// Start with the setting's own name
+		String internalName = setting.key;
+		
+		// Add a space before each capital letter
+		for (int i = 0; i<internalName.length(); i++) {
+			if (Character.isUpperCase(internalName.charAt(i))) {
+				internalName = internalName.substring(0, i) + ' ' + internalName.substring(i);
+				i++;
+			}
+		}
+		
+		// Remove text before the first capital letter
+		for (int i = 0; i<internalName.length(); i++) {
+			if (Character.isUpperCase(internalName.charAt(i))) {
+				internalName = internalName.substring(i);
+				break;
+			}
+		}
+		
+		// Return the result
+		return internalName;
 	}
 
 	@Override public Region buildControl() {
