@@ -15,6 +15,7 @@ import com.bateleur.app.view.list.BListOptionFolder_ByType.BListOptionFolder_ByA
 import com.bateleur.app.view.list.BListOptionFolder_Queue;
 import com.bateleur.app.view.list.BListOptionFolder_Settings;
 import com.bateleur.app.view.list.BListOptionFolder_Tracks;
+import com.bateleur.app.view.list.BListOptionSetting;
 import com.bateleur.app.view.list.BListTab;
 import com.therealergo.main.NilEvent;
 
@@ -310,6 +311,8 @@ public class MusicListController {
 				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_ARTIST).toLowerCase().contains(searchBar.getText().toLowerCase());
 			} else if (option instanceof BListOptionFolder) {
 				return ((BListOptionFolder) option).getText().toLowerCase().contains(searchBar.getText().toLowerCase());
+			} else if (option instanceof BListOptionSetting) {
+				return ((BListOptionSetting) option).getName().toLowerCase().contains(searchBar.getText().toLowerCase());
 			} else {
 				return true;
 			}
