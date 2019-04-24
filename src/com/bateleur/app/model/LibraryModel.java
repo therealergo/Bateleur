@@ -136,20 +136,48 @@ public class LibraryModel implements Iterable<BAudio> {
 						}
 					}
 					
-					// Move every BAudio for which a fuzzy match was found from the old library list to the new library list
-					referenceIterator = existingReferenceList.iterator();
-					while (referenceIterator.hasNext()) {
-						BReference testReference = referenceIterator.next();
-						audioIterator = currentBAudioList.iterator();
-						while (audioIterator.hasNext()) {
-							BAudio testAudio = audioIterator.next();
-							if (testAudio.get(settings.AUDIO_REFERENCE).matchesFuzzy(testReference)) {
-								Main.log.log("Fuzzy-matched BAudio in library: " + testReference);
-								audioIterator.remove();
-								referenceIterator.remove();
-								testAudio.set(settings.AUDIO_REFERENCE.to(testReference));
-								finalBAudioList.add(testAudio);
-								break;
+					// Perform fuzzy matching on the leftover files in the old library list and the new library list
+					// These matches attempt to detect files that have been moved and edited, and treat them appropriately
+					{
+						// Detect files that have been moved
+						// These files have their reference updated and are moved from the old library list to the new library list
+						referenceIterator = existingReferenceList.iterator();
+						while (referenceIterator.hasNext()) {
+							BReference testReference = referenceIterator.next();
+							audioIterator = currentBAudioList.iterator();
+							while (audioIterator.hasNext()) {
+								BAudio testAudio = audioIterator.next();
+								if (testAudio.get(settings.AUDIO_REFERENCE).matchesMove(testReference)) {
+									Main.log.log("Move-matched BAudio in library: " + testReference);
+									audioIterator.remove();
+									referenceIterator.remove();
+									testAudio.set(settings.AUDIO_REFERENCE.to(testReference));
+									finalBAudioList.add(testAudio);
+									break;
+								}
+							}
+						}
+
+						// Detect files that have been edited
+						// These files are reloaded to ensure that any updated metadata is written into the store file
+						// However, other metadata (e.g. playlists) are maintained through this reload
+						referenceIterator = existingReferenceList.iterator();
+						while (referenceIterator.hasNext()) {
+							BReference testReference = referenceIterator.next();
+							audioIterator = currentBAudioList.iterator();
+							while (audioIterator.hasNext()) {
+								BAudio testAudio = audioIterator.next();
+								if (testAudio.get(settings.AUDIO_REFERENCE).matchesEdit(testReference)) {
+									Main.log.log("Edit-matched BAudio in library: " + testReference);
+									audioIterator.remove();
+									referenceIterator.remove();
+									try {
+										finalBAudioList.add(new BAudioLocal(settings, testAudio.getBackingFile(), testReference));
+									} catch (Exception e) {
+										Main.log.logErr(e);
+									}
+									break;
+								}
 							}
 						}
 					}

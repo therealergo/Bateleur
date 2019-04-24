@@ -63,10 +63,14 @@ public final class BReference implements Serializable {
 			   Arrays.equals( ((BReference)reference).audioFileHash, audioFileHash );
 	}
 	
-	public boolean matchesFuzzy(BReference reference) {
+	public boolean matchesMove(BReference reference) {
 		return reference instanceof BReference && 
-			   ( audioFile.equals( ((BReference)reference).audioFile ) || 
-			     Arrays.equals( ((BReference)reference).audioFileHash, audioFileHash ) );
+			   Arrays.equals( ((BReference)reference).audioFileHash, audioFileHash );
+	}
+	
+	public boolean matchesEdit(BReference reference) {
+		return reference instanceof BReference && 
+			   audioFile.equals( ((BReference)reference).audioFile );
 	}
 	
 	@Override public boolean equals(Object other) {
