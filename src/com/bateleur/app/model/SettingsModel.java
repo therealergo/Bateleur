@@ -68,7 +68,6 @@ public class SettingsModel extends BFile {
     public final BFile.Entry< Double                    > UI_ART_SCALING     = new BFile.Entry< Double                    >( "__uiArtScaling"     , 0.9                         );
     public final BFile.Entry< Double                    > UI_TITLE_BAR_SIZE  = new BFile.Entry< Double                    >( "__uiTitleBarSize"   , 25.0                        );
     public final BFile.Entry< Double                    > UI_LIST_ENTRY_SIZE = new BFile.Entry< Double                    >( "__uiListEntrySize"  , 30.0                        );
-    public final BFile.Entry< Double                    > UI_BLUR_RADIUS     = new BFile.Entry< Double                    >( "__uiBlurRadius"     , 0.1                         );
     public final BFile.Entry< Double                    > UI_ART_START_SIZE  = new BFile.Entry< Double                    >( "__uiArtStartSize"   , 0.7                         );
     public final BFile.Entry< Double                    > UI_ART_END_SIZE    = new BFile.Entry< Double                    >( "__uiArtEndSize"     , 4.0                         );
     
