@@ -57,8 +57,9 @@ public abstract class BListOptionSetting extends BListOption {
 			innerGrid.add(innerControl, 2, 0);
 		}
 		
-		innerGrid.getColumnConstraints().add(new ColumnConstraints(30*getTabbing()));
-		innerGrid.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
+		double midWidth = 10000 - 30 * (getTabbing()-1);
+		innerGrid.getColumnConstraints().add(new ColumnConstraints(30 * getTabbing()));
+		innerGrid.getColumnConstraints().add(new ColumnConstraints(0, midWidth, midWidth));
 		innerGrid.getColumnConstraints().add(new ColumnConstraints(0, 10000, 10000));
 		innerGrid.getColumnConstraints().add(new ColumnConstraints(30             ));
 		
