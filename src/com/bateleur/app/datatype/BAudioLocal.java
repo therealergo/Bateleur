@@ -5,6 +5,11 @@ import java.awt.image.BufferedImageOp;
 import java.awt.image.Kernel;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.imageio.ImageIO;
 
@@ -15,6 +20,7 @@ import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.images.Artwork;
 
 import com.bateleur.app.model.SettingsModel;
+import com.therealergo.main.MainException;
 import com.therealergo.main.math.Vector3D;
 import com.therealergo.main.resource.ResourceFile;
 import com.twelvemonkeys.image.ConvolveWithEdgeOp;
@@ -25,27 +31,72 @@ public class BAudioLocal extends BAudio {
 		super(file);
 	}
 	
-	public BAudioLocal(SettingsModel settings, ResourceFile file, BReference reference) throws Exception {
-		super(file);
-		loadMetadataFromURI(settings, reference);
+	public BAudioLocal(SettingsModel settings, ResourceFile audioFile, BReference reference) throws Exception {
+		super(reference == null ? null : reference.getStorageFile());
+		
+		if (audioFile == null) {
+			throw new MainException(BAudioLocal.class, "BAudioLocal audio file cannot be null!");
+		}
+		if (!audioFile.exists()) {
+			throw new MainException(BAudioLocal.class, "BAudioLocal audio must exist!");
+		}
+		if (reference == null) {
+			throw new MainException(BAudioLocal.class, "BAudioLocal reference cannot be null!");
+		}
+
+		// Locally store the reference pointing to the audio file and reference
+		set(settings.AUDIO_RESOURCEFILE.to(audioFile));
+		set(settings.AUDIO_REFERENCE   .to(reference));
+		
+		// Compute the hash of the audio file
+		try (InputStream is = audioFile.getInputStream()) {
+			byte[] buffer = new byte[1024];
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			
+			int read;
+			while ( (read = is.read(buffer)) >= 0 ) {
+				digest.update(buffer, 0, read);
+			}
+			
+			byte[] audioFileHash = digest.digest();
+			set(settings.AUDIO_IDENTITYHASH.to( String.format("%032x", new BigInteger(1, audioFileHash)) ));
+		} catch (IOException e) {
+			throw new MainException(BAudioLocal.class, "IOException while hashing file!", e);
+		} catch (NoSuchAlgorithmException e) {
+			throw new MainException(BAudioLocal.class, "Cannot run MD5 hashing algorithm!", e);
+		}
 	}
 	
-	private void loadMetadataFromURI(SettingsModel settings, BReference reference) throws Exception {
-		// Locally store the reference pointing to the audio file
-		set(settings.AUDIO_REFERENCE.to(reference));
-		
+	public String toString() {
+		return "[BAudioLocal songId=" + getBackingFile().getShortName() + "]";
+	}
+	
+	public boolean matchesExact(SettingsModel settings, BAudio audio) {
+		return get(settings.AUDIO_IDENTITYHASH).equals(audio.get(settings.AUDIO_IDENTITYHASH)) && 
+			   get(settings.AUDIO_RESOURCEFILE).equals(audio.get(settings.AUDIO_RESOURCEFILE));
+	}
+	
+	public boolean matchesMove(SettingsModel settings, BAudio audio) {
+		return get(settings.AUDIO_IDENTITYHASH).equals(audio.get(settings.AUDIO_IDENTITYHASH));
+	}
+	
+	public boolean matchesEdit(SettingsModel settings, BAudio audio) {
+		return get(settings.AUDIO_RESOURCEFILE).equals(audio.get(settings.AUDIO_RESOURCEFILE));
+	}
+	
+	public void loadMetadata(SettingsModel settings) throws Exception {
 		// Read all metadata from the audio file
-		AudioFile f = AudioFileIO.read(reference.getPlaybackFile().toFile());
+		AudioFile f = AudioFileIO.read(get(settings.AUDIO_RESOURCEFILE).toFile());
 		Tag tag = f.getTag();
 		
 		// Read and locally store all of the audio file's metadata tags
-		if (tag.hasField(FieldKey.TITLE )) { set(settings.AUDIO_PROP_TITLE .to(tag.getFirst(FieldKey.TITLE ))); }
-		if (tag.hasField(FieldKey.ARTIST)) { set(settings.AUDIO_PROP_ARTIST.to(tag.getFirst(FieldKey.ARTIST))); }
-		if (tag.hasField(FieldKey.ALBUM )) { set(settings.AUDIO_PROP_ALBUM .to(tag.getFirst(FieldKey.ALBUM ))); }
-		if (tag.hasField(FieldKey.TRACK )) { set(settings.AUDIO_PROP_TRACKN.to(tag.getFirst(FieldKey.TRACK ))); }
+		if (tag.hasField(FieldKey.TITLE )) { set(settings.AUDIO_META_TITLE .to(tag.getFirst(FieldKey.TITLE ))); }
+		if (tag.hasField(FieldKey.ARTIST)) { set(settings.AUDIO_META_ARTIST.to(tag.getFirst(FieldKey.ARTIST))); }
+		if (tag.hasField(FieldKey.ALBUM )) { set(settings.AUDIO_META_ALBUM .to(tag.getFirst(FieldKey.ALBUM ))); }
+		if (tag.hasField(FieldKey.TRACK )) { set(settings.AUDIO_META_TRACKN.to(tag.getFirst(FieldKey.TRACK ))); }
 
 		// Set title to filename if no title is found
-		if (get(settings.AUDIO_PROP_TITLE).equals(settings.AUDIO_PROP_TITLE.val)) { set(settings.AUDIO_PROP_TITLE.to(reference.getPlaybackFile().getShortName())); }
+		if (get(settings.AUDIO_META_TITLE).equals(settings.AUDIO_META_TITLE.val)) { set(settings.AUDIO_META_TITLE.to(get(settings.AUDIO_RESOURCEFILE).getShortName())); }
 		
 		// Read and set all data pertaining to the audio file's art
 		Artwork art = tag.getFirstArtwork();
@@ -91,7 +142,7 @@ public class BAudioLocal extends BAudio {
 			image_bl_baos.close();
 			
 			// Create the BArtLoaderLocal instance which will locally store all of the image data
-			set(settings.AUDIO_ARTLOADER.to(new BAudioLocal_ArtLoader(image_th_encoded_bytes, image_bl_encoded_bytes)));
+			set(settings.AUDIO_META_ARTLOAD.to(new BAudioLocal_ArtLoader(image_th_encoded_bytes, image_bl_encoded_bytes)));
 			
 			// Compute the foreground and background colors of the album art
 			{
@@ -196,8 +247,8 @@ public class BAudioLocal extends BAudio {
 				}
 				
 				// Locally store the computed art foreground and background colors
-				set( settings.AUDIO_PROP_COLR_BG.to(new Vector3D(baseX_f/255.0, baseY_f/255.0, baseZ_f/255.0)) );
-				set( settings.AUDIO_PROP_COLR_FG.to(new Vector3D(baseX  /255.0, baseY  /255.0, baseZ  /255.0)) );
+				set( settings.AUDIO_META_COLR_BG.to(new Vector3D(baseX_f/255.0, baseY_f/255.0, baseZ_f/255.0)) );
+				set( settings.AUDIO_META_COLR_FG.to(new Vector3D(baseX  /255.0, baseY  /255.0, baseZ  /255.0)) );
 			}
 		}
 	}

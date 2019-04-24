@@ -45,12 +45,7 @@ public abstract class BFile {
 				throw new MainException(BFile.class, "Given BFile file corrupt or improperly formatted!", e);
 			}
 		} else {
-			// Create default empty file
-			file.create();
-			try (ObjectOutputStream oos = new ObjectOutputStream(file.getOutputStream())) {
-				this.valueMap = new HashMap<String, Serializable>();
-				oos.writeObject(valueMap);
-			}
+			this.valueMap = new HashMap<String, Serializable>();
 		}
 	}
 	
@@ -95,6 +90,8 @@ public abstract class BFile {
 	 */
 	public void save() throws IOException {
 		// Write updated valueMap to the on-disk file
+		// Create default empty file
+		file.create();
 		try (ObjectOutputStream oos = new ObjectOutputStream(file.getOutputStream())) {
 			oos.writeObject(valueMap);
 		}

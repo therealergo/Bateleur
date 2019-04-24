@@ -47,7 +47,6 @@ public class BListOptionFolder_ByPath extends BListOptionFolder {
 		
 		@Override public List<BListOption> listOptions() {
 			LibraryModel  library  = bListTab.musicListController.master.library ;
-			SettingsModel settings = bListTab.musicListController.master.settings;
 			
 			List<BListOption> options = new LinkedList<BListOption>();
 			
@@ -58,7 +57,7 @@ public class BListOptionFolder_ByPath extends BListOptionFolder {
 			
 			library.reset();
 			library.forEach((BAudio audio) -> {
-				if (audio.get(settings.AUDIO_REFERENCE).getPlaybackFile().getParent().equals(folder)) {
+				if (audio.get(bListTab.musicListController.master.settings.AUDIO_RESOURCEFILE).getParent().equals(folder)) {
 					options.add(new BListOptionAudio(bListTab, audio));
 				}
 			});

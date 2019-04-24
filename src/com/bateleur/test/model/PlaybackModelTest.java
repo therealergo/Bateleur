@@ -46,8 +46,8 @@ public class PlaybackModelTest {
 
         settings = new SettingsModel(Main.resource.getResourceFileLocal("settings.ser"));
         testAudio = new BAudioLocal(settings,
-                                   Main.resource.getResourceFileLocal("test_out>PlaybackModelTest>test_meta.ser"),
-                                   new BReference(Main.resource.getResourceFileClass("test_in>test.mp3", App.class)));
+					                Main.resource.getResourceFileClass("test_in>test.mp3", App.class),
+					                new BReference(settings));
     }
 
     /**
@@ -80,9 +80,9 @@ public class PlaybackModelTest {
     @Test
     public void test_loadedAudio_loadAudio_loadsNewAudio() throws Exception {
         // Given
-        BAudio originalAudio = new BAudioLocal(settings,
-                                               Main.resource.getResourceFileLocal("test_out>PlaybackModelTest>test_meta.ser"),
-                                               new BReference(Main.resource.getResourceFileClass("test_in>test.mp3", App.class)));
+    	BAudio originalAudio = new BAudioLocal(settings,
+								               Main.resource.getResourceFileClass("test_in>test.mp3", App.class),
+								               new BReference(settings));
 
         assert !(testAudio.equals(originalAudio));    // validates the test environment was created correctly, not unit
 

@@ -53,8 +53,8 @@ public class QueueModelTest {
         Main.resource.getResourceFileLocal("test_out>QueueModelTest>test_meta.ser").create().delete();
 
         testAudio = new BAudioLocal(settings,
-                                    Main.resource.getResourceFileLocal("test_out>QueueModelTest>test_meta.ser"),
-                                    new BReference(Main.resource.getResourceFileClass("test_in>QueueModelTest>library>test.mp3", App.class)));
+        		                    Main.resource.getResourceFileClass("test_in>test.mp3", App.class),
+                                    new BReference(settings));
         queueModel.setQueue(library, testAudio);
     }
 

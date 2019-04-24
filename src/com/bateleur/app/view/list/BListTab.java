@@ -120,7 +120,7 @@ public class BListTab extends Tab {
 	public void onOptionSelected(BListOptionAudio bListOption) {
 		library.reset();
 		library.sortBy((BAudio a0, BAudio a1) -> {
-			return a0.get(settings.AUDIO_PROP_TITLE).compareTo(a1.get(settings.AUDIO_PROP_TITLE));
+			return a0.get(settings.AUDIO_META_TITLE).compareTo(a1.get(settings.AUDIO_META_TITLE));
 		});
 		
 		List<BAudio> audioList = new LinkedList<BAudio>();

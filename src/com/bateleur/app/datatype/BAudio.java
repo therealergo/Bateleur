@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.resource.ResourceFile;
 
 public abstract class BAudio extends BFile {
@@ -32,6 +33,14 @@ public abstract class BAudio extends BFile {
 		
 		this.valueMapExternal = new HashMap<String, Serializable>();
 	}
+	
+	public abstract boolean matchesExact(SettingsModel settings, BAudio audio);
+	
+	public abstract boolean matchesMove(SettingsModel settings, BAudio audio);
+	
+	public abstract boolean matchesEdit(SettingsModel settings, BAudio audio);
+	
+	public abstract void loadMetadata(SettingsModel settings) throws Exception;
 	
 	/**
 	 * @brief   Returns the metadata corresponding to the given Entry's key.

@@ -1,89 +1,49 @@
 package com.bateleur.app.datatype;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
+import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.Main;
 import com.therealergo.main.MainException;
 import com.therealergo.main.resource.ResourceFile;
 
 public final class BReference implements Serializable {
-	private static final long serialVersionUID = -6296710954635051390L;
+	private static final long serialVersionUID = -4691959388427184809L;
 	
-	public static final BReference NO_MEDIA_REF = new BReference(Main.resource.getResourceFileLocal("nomedia.mp3"));
+	public static final BReference NO_MEDIA_REF = new BReference(0);
 	
-	private final ResourceFile audioFile;
-	private final byte[] audioFileHash;
+	private final long songId;
 	
-	public BReference(ResourceFile audioFile) {
-		if (audioFile == null) {
-			throw new MainException(BReference.class, "BReference audio file cannot be null!");
+	public BReference(SettingsModel settings) {
+		long generatedSongId = settings.get(settings.LIBRARY_NEXT_VAL);
+		while (Main.resource.getResourceFileLocal("library>" + generatedSongId + ".ser").exists()) {
+			generatedSongId = Math.max(1, generatedSongId + 1);
 		}
-		
-		this.audioFile = audioFile;
-		
-		// Compute hash of given audio file
-		if (audioFile.exists()) {
-			try (InputStream is = audioFile.getInputStream()) {
-				byte[] buffer = new byte[1024];
-				MessageDigest digest = MessageDigest.getInstance("MD5");
-				
-				int read;
-				while ( (read = is.read(buffer)) >= 0 ) {
-					digest.update(buffer, 0, read);
-				}
-				
-				audioFileHash = digest.digest();
-			} catch (IOException e) {
-				throw new MainException(BReference.class, "IOException while hashing file!", e);
-			} catch (NoSuchAlgorithmException e) {
-				throw new MainException(BReference.class, "Cannot run MD5 hashing algorithm!", e);
-			}
-		} else {
-			audioFileHash = new byte[0];
+		settings.set(settings.LIBRARY_NEXT_VAL.to( Math.max(1, generatedSongId + 1 )));
+		this.songId = generatedSongId;
+	}
+	
+	public BReference(int songId) {
+		if (songId < 0) {
+			throw new MainException(BReference.class, "Parameter 'songId' cannot be negative!");
 		}
+		this.songId = songId;
 	}
 	
-	public ResourceFile getPlaybackFile() {
-		return audioFile;
-	}
-	
-	public String getHumanReadableHash() {
-		return String.format("%032x", new BigInteger(1, audioFileHash));
-	}
-	
-	public boolean matchesExact(BReference reference) {
-		return reference instanceof BReference && 
-			   audioFile.equals( ((BReference)reference).audioFile ) && 
-			   Arrays.equals( ((BReference)reference).audioFileHash, audioFileHash );
-	}
-	
-	public boolean matchesMove(BReference reference) {
-		return reference instanceof BReference && 
-			   Arrays.equals( ((BReference)reference).audioFileHash, audioFileHash );
-	}
-	
-	public boolean matchesEdit(BReference reference) {
-		return reference instanceof BReference && 
-			   audioFile.equals( ((BReference)reference).audioFile );
+	public ResourceFile getStorageFile() {
+		return Main.resource.getResourceFileLocal("library>" + songId + ".ser");
 	}
 	
 	@Override public boolean equals(Object other) {
-		return other != null &&
-			   other instanceof BReference && 
-			   matchesExact( (BReference)other );
+		return other instanceof BReference && 
+			   songId == ((BReference)other).songId;
 	}
 	
 	@Override public int hashCode() {
-		return audioFile.hashCode();
+		return (int) songId;
 	}
 	
 	@Override public String toString() {
-		return "[BReference audioFile=" + audioFile + "]";
+		return "[BReference songId=" + songId + "]";
 	}
 }

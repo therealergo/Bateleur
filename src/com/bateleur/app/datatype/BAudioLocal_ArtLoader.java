@@ -10,6 +10,8 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 
+import com.bateleur.app.model.SettingsModel;
+
 import javafx.scene.image.Image;
 
 public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
@@ -67,7 +69,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		this.image_bl = null;
 	}
 	
-	@Override public Image getImagePrimary(BReference parentReference) {
+	@Override public Image getImagePrimary(SettingsModel settings, BAudio parentAudio) {
 		// Read the image from the cache if the cache has been created
 		Image retVal = image_pr == null ? null : image_pr.get();
 		
@@ -76,7 +78,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 			try {
 				retVal = new Image(
 					new ByteArrayInputStream(
-						AudioFileIO.read(parentReference.getPlaybackFile().toFile()).getTag().getFirstArtwork().getBinaryData()
+						AudioFileIO.read(parentAudio.get(settings.AUDIO_RESOURCEFILE).toFile()).getTag().getFirstArtwork().getBinaryData()
 					)
 				);
 			} catch (InvalidAudioFrameException | CannotReadException | IOException | TagException | ReadOnlyFileException e) {
@@ -85,7 +87,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		
 		// If the image load failed for any reason, use the default 'no art found' image
 		if (retVal == null || retVal.isError()) {
-			retVal = super.getImagePrimary(parentReference);
+			retVal = super.getImagePrimary(settings, parentAudio);
 		}
 		
 		// Update the cache to refer to the new image
@@ -96,7 +98,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		return retVal;
 	}
 	
-	@Override public Image getImageThumbnail(BReference parentReference) {
+	@Override public Image getImageThumbnail(SettingsModel settings, BAudio parentAudio) {
 		// Read the image from the cache if the cache has been created
 		Image retVal = image_th == null ? null : image_th.get();
 		
@@ -107,7 +109,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		
 		// If the image load failed for any reason, use the default 'no art found' image
 		if (retVal.isError()) {
-			retVal = super.getImageThumbnail(parentReference);
+			retVal = super.getImageThumbnail(settings, parentAudio);
 		}
 		
 		// Update the cache to refer to the new image
@@ -118,7 +120,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		return retVal;
 	}
 	
-	@Override public Image getImageBlurred(BReference parentReference) {
+	@Override public Image getImageBlurred(SettingsModel settings, BAudio parentAudio) {
 		// Read the image from the cache if the cache has been created
 		Image retVal = image_bl == null ? null : image_bl.get();
 		
@@ -129,7 +131,7 @@ public class BAudioLocal_ArtLoader extends BAudio_ArtLoader {
 		
 		// If the image load failed for any reason, use the default 'no art found' image
 		if (retVal.isError()) {
-			retVal = super.getImageBlurred(parentReference);
+			retVal = super.getImageBlurred(settings, parentAudio);
 		}
 		
 		// Update the cache to refer to the new image

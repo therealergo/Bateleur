@@ -43,7 +43,7 @@ public abstract class BListOptionSetting extends BListOption {
 		Label innerLabel = new Label();
 		innerLabel.getStyleClass().add("listOptionLabel");
 		innerLabel.setText(getName());
-		if (innerLabel.getText().equals(bListTab.musicListController.master.settings.AUDIO_PROP_TITLE.val)) {
+		if (innerLabel.getText().equals(bListTab.musicListController.master.settings.AUDIO_META_TITLE.val)) {
 			innerLabel.setOpacity(0.3);
 		}
 		innerLabel.prefHeightProperty().bind(foreground.heightProperty());

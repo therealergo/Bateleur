@@ -306,9 +306,9 @@ public class MusicListController {
 	public Predicate<BListOption> getSearchBarFilter() {
 		return (BListOption option) -> {
 			if (option instanceof BListOptionAudio) {
-				return ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_TITLE ).toLowerCase().contains(searchBar.getText().toLowerCase()) || 
-				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_ALBUM ).toLowerCase().contains(searchBar.getText().toLowerCase()) || 
-				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_PROP_ARTIST).toLowerCase().contains(searchBar.getText().toLowerCase());
+				return ((BListOptionAudio) option).audio.get(master.settings.AUDIO_META_TITLE ).toLowerCase().contains(searchBar.getText().toLowerCase()) || 
+				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_META_ALBUM ).toLowerCase().contains(searchBar.getText().toLowerCase()) || 
+				       ((BListOptionAudio) option).audio.get(master.settings.AUDIO_META_ARTIST).toLowerCase().contains(searchBar.getText().toLowerCase());
 			} else if (option instanceof BListOptionFolder) {
 				return ((BListOptionFolder) option).getText().toLowerCase().contains(searchBar.getText().toLowerCase());
 			} else if (option instanceof BListOptionSetting) {

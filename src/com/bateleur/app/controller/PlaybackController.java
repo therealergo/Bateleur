@@ -133,16 +133,16 @@ public class PlaybackController implements IntellitypeListener {
 			String text;
 			BAudio newLoadedAudio = master.library.getByReference(master.playback.getLoadedAudio());
 			
-			text = newLoadedAudio.get(master.settings.AUDIO_PROP_ARTIST);
-			textTop.setText(text.equals(master.settings.AUDIO_PROP_ARTIST.val) ? "" : text);
+			text = newLoadedAudio.get(master.settings.AUDIO_META_ARTIST);
+			textTop.setText(text.equals(master.settings.AUDIO_META_ARTIST.val) ? "" : text);
 			
-			text = newLoadedAudio.get(master.settings.AUDIO_PROP_ALBUM);
-			textMid.setText(text.equals(master.settings.AUDIO_PROP_ALBUM.val) ? "" : text);
+			text = newLoadedAudio.get(master.settings.AUDIO_META_ALBUM);
+			textMid.setText(text.equals(master.settings.AUDIO_META_ALBUM.val) ? "" : text);
 			
-			text = newLoadedAudio.get(master.settings.AUDIO_PROP_TITLE);
-			textBot.setText(text.equals(master.settings.AUDIO_PROP_TITLE.val) ? "" : text);
+			text = newLoadedAudio.get(master.settings.AUDIO_META_TITLE);
+			textBot.setText(text.equals(master.settings.AUDIO_META_TITLE.val) ? "" : text);
 			
-			Image im = newLoadedAudio.get(master.settings.AUDIO_ARTLOADER).getImageThumbnail(newLoadedAudio.get(master.settings.AUDIO_REFERENCE));
+			Image im = newLoadedAudio.get(master.settings.AUDIO_META_ARTLOAD).getImageThumbnail(master.settings, newLoadedAudio);
 			playbackImageContainer.setMinWidth(im.getWidth() / im.getHeight() * 107.0);
 			playbackImage.setImage(im);
 		});

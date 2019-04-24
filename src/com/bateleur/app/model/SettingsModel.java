@@ -44,14 +44,16 @@ public class SettingsModel extends BFile {
     public final BFile.Entry< ArrayList<BReference>     > QUEUE_PROCES       = new BFile.Entry< ArrayList<BReference>     >( "__queueProces"      , QUEUE_PROCES_INIT           );
     public final BFile.Entry< Integer                   > QUEUE_PROCES_INDEX = new BFile.Entry< Integer                   >( "__queueProcesIndex" , 0                           );
     
-	public final BFile.Entry< BReference                > AUDIO_REFERENCE    = new BFile.Entry< BReference                >( "__reference"        , BReference.NO_MEDIA_REF     );
-	public final BFile.Entry< BAudio_ArtLoader          > AUDIO_ARTLOADER    = new BFile.Entry< BAudio_ArtLoader          >( "__artloader"        , new BAudio_ArtLoader()      );
-    public final BFile.Entry< String                    > AUDIO_PROP_TITLE   = new BFile.Entry< String                    >( "__title"            , "<<no title>>"              );
-    public final BFile.Entry< String                    > AUDIO_PROP_ARTIST  = new BFile.Entry< String                    >( "__artist"           , "<<no artist>>"             );
-    public final BFile.Entry< String                    > AUDIO_PROP_ALBUM   = new BFile.Entry< String                    >( "__album"            , "<<no album>>"              );
-    public final BFile.Entry< String                    > AUDIO_PROP_TRACKN  = new BFile.Entry< String                    >( "__trackn"           , "<<no track number>>"       );
-    public final BFile.Entry< Vector3D                  > AUDIO_PROP_COLR_BG = new BFile.Entry< Vector3D                  >( "__colorBG"          , new Vector3D(0.0, 0.0, 0.0) );
-    public final BFile.Entry< Vector3D                  > AUDIO_PROP_COLR_FG = new BFile.Entry< Vector3D                  >( "__colorFG"          , new Vector3D(1.0, 1.0, 1.0) );
+	public final BFile.Entry< BReference                > AUDIO_REFERENCE    = new BFile.Entry< BReference                >( "__audioReference"   , BReference.NO_MEDIA_REF     );
+    public final BFile.Entry< ResourceFile              > AUDIO_RESOURCEFILE = new BFile.Entry< ResourceFile              >( "__audioResourceFile", Main.resource.getResourceFileGlobal(""));
+	public final BFile.Entry< String                    > AUDIO_IDENTITYHASH = new BFile.Entry< String                    >( "__audioIdentityHash", "<<no hash error state>>"   );
+	public final BFile.Entry< BAudio_ArtLoader          > AUDIO_META_ARTLOAD = new BFile.Entry< BAudio_ArtLoader          >( "__audioMetaArtLoad" , new BAudio_ArtLoader()      );
+  	public final BFile.Entry< String                    > AUDIO_META_TITLE   = new BFile.Entry< String                    >( "__audioMetaTitle"   , "<<no title>>"              );
+    public final BFile.Entry< String                    > AUDIO_META_ARTIST  = new BFile.Entry< String                    >( "__audioMetaArtist"  , "<<no artist>>"             );
+    public final BFile.Entry< String                    > AUDIO_META_ALBUM   = new BFile.Entry< String                    >( "__audioMetaAlbum"   , "<<no album>>"              );
+    public final BFile.Entry< String                    > AUDIO_META_TRACKN  = new BFile.Entry< String                    >( "__audioMetaTrackN"  , "<<no track number>>"       );
+    public final BFile.Entry< Vector3D                  > AUDIO_META_COLR_BG = new BFile.Entry< Vector3D                  >( "__audioMetaColorBG" , new Vector3D(0.0, 0.0, 0.0) );
+    public final BFile.Entry< Vector3D                  > AUDIO_META_COLR_FG = new BFile.Entry< Vector3D                  >( "__audioMetaColorFG" , new Vector3D(1.0, 1.0, 1.0) );
     
     public final BFile.Entry< Integer                   > ART_BLUR_PASSES    = new BFile.Entry< Integer                   >( "__artBlurPasses"    , 2                           );
     public final BFile.Entry< String                    > ART_IMG_ENCODING   = new BFile.Entry< String                    >( "__artImgEncoding"   , "png"                       );

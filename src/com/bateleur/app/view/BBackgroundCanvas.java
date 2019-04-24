@@ -89,8 +89,8 @@ public class BBackgroundCanvas extends Canvas {
 			new Thread("Image Load Thread") {
 				public void run() {
 					BAudio newLoadedAudio = library.getByReference(playback.getLoadedAudio());
-			    	Image image         = newLoadedAudio.get(settings.AUDIO_ARTLOADER).getImagePrimary(newLoadedAudio.get(settings.AUDIO_REFERENCE));
-			    	Image image_blurred = newLoadedAudio.get(settings.AUDIO_ARTLOADER).getImageBlurred(newLoadedAudio.get(settings.AUDIO_REFERENCE));
+			    	Image image         = newLoadedAudio.get(settings.AUDIO_META_ARTLOAD).getImagePrimary(settings, newLoadedAudio);
+			    	Image image_blurred = newLoadedAudio.get(settings.AUDIO_META_ARTLOAD).getImageBlurred(settings, newLoadedAudio);
 			    	Platform.runLater(() -> {
 						imageList.add(new BackgroundImage(image, image_blurred));
 						lastUpdate = System.nanoTime();

@@ -46,8 +46,8 @@ public class BAudioLocalTest {
 
         // Create audio file to test with
         testAudio = new BAudioLocal(settings,
-                                    Main.resource.getResourceFileLocal("test_out>BAudioLocalTest>test_meta.ser"),
-                                    new BReference(Main.resource.getResourceFileClass("test_in>test.mp3", App.class)));
+        		                    Main.resource.getResourceFileClass("test_in>test.mp3", App.class),
+                                    new BReference(settings));
     }
 
     /**
@@ -82,9 +82,9 @@ public class BAudioLocalTest {
      */
     @Test
     public void test_readAudioMetadata() {
-    	assertEquals(testAudio.get(settings.AUDIO_PROP_ARTIST), "therealergo"                 );
-    	assertEquals(testAudio.get(settings.AUDIO_PROP_ALBUM) , "Pre-Alpha (TRE)"             );
-    	assertEquals(testAudio.get(settings.AUDIO_PROP_TITLE) , "Proving Grounds"             );
-    	assertEquals(testAudio.get(settings.AUDIO_PROP_TRACKN), settings.AUDIO_PROP_TRACKN.val);
+    	assertEquals(testAudio.get(settings.AUDIO_META_ARTIST), "therealergo"                 );
+    	assertEquals(testAudio.get(settings.AUDIO_META_ALBUM) , "Pre-Alpha (TRE)"             );
+    	assertEquals(testAudio.get(settings.AUDIO_META_TITLE) , "Proving Grounds"             );
+    	assertEquals(testAudio.get(settings.AUDIO_META_TRACKN), settings.AUDIO_META_TRACKN.val);
     }
 }

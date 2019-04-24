@@ -13,6 +13,7 @@ import java.util.HashMap;
 import com.bateleur.app.datatype.BAudio;
 import com.bateleur.app.datatype.BReference;
 import com.therealergo.main.Main;
+import com.therealergo.main.MainException;
 import com.therealergo.main.NilEvent;
 import com.therealergo.main.resource.ResourceFile;
 
@@ -66,24 +67,22 @@ public class PlaybackModel {
 	}
 
 	public void loadAudio(BAudio audio, int fadeOutTimeMS) {
-		if (player != null) {
-			player.dispose();
+		if (audio == null) {
+			throw new MainException(PlaybackModel.class, "Cannot request null audio file!");
 		}
 		
-		onPauseEvent.accept();
-		settings.set( settings.PLAY_IS_PLAYING.to(false) );
-		settings.set( settings.PLAY_CUR_AUDIO_REF.to(BReference.NO_MEDIA_REF) );
-		
-		if (audio == null) {
-			player = null;
-			settings.set( settings.PLAY_CUR_AUDIO_REF.to(BReference.NO_MEDIA_REF) );
-		} else {
-			Main.log.log("Loaded audio: " + audio.get(settings.AUDIO_REFERENCE));
+		try {
+			pause(fadeOutTimeMS);
 			
-			ResourceFile playbackFile = audio.get(settings.AUDIO_REFERENCE).getPlaybackFile();
+			ResourceFile playbackFile = audio.get(settings.AUDIO_RESOURCEFILE);
 			String       playbackURI  = playbackFile.getFullURI();
 			String       fileExt      = playbackFile.getExtension();
-			Media        loadedMedia  = null;
+
+			Media loadedMedia;
+			
+			if (!playbackFile.exists()) {
+				throw new MainException(PlaybackModel.class, "The requested audio file does not exist!");
+			}
 			
 			switch (fileExt.toLowerCase()) {
 				case "mp3":
@@ -97,31 +96,34 @@ public class PlaybackModel {
 							loadedMedia = BFlacToWav.decode(settings, audio);
 						}
 					} catch (IOException e) {
-						Main.log.logErr("Error decoding FLAC in PlaybackModel");
-					} catch (URISyntaxException q) {
-						Main.log.logErr("Error decoding FLAC in PlaybackModel");
+						throw new MainException(PlaybackModel.class, "Error decoding FLAC!", e);
+					} catch (URISyntaxException e) {
+						throw new MainException(PlaybackModel.class, "Error decoding FLAC!", e);
 					}
 					break;
 				default:
-					break;
+					throw new MainException(PlaybackModel.class, "Unknown audio format!");
 			}
 			
-			if (loadedMedia != null) {
-				player = new MediaPlayer(loadedMedia);
-				player.setOnPlaying(() -> {
-					onPlayEvent.accept();
-					settings.set( settings.PLAY_IS_PLAYING.to(true) );
-				});
-				player.setOnPaused(() -> {
-					onPauseEvent.accept();
-					settings.set( settings.PLAY_IS_PLAYING.to(false) );
-				});
-				player.setVolume( settings.get(settings.PLAY_CUR_VOLUME) );
-				settings.set( settings.PLAY_CUR_AUDIO_REF.to(audio.get(settings.AUDIO_REFERENCE)) );
+			if (player != null) {
+				player.dispose();
 			}
+			player = new MediaPlayer(loadedMedia);
+			player.setOnPlaying(() -> {
+				onPlayEvent.accept();
+				settings.set( settings.PLAY_IS_PLAYING.to(true) );
+			});
+			player.setOnPaused(() -> {
+				onPauseEvent.accept();
+				settings.set( settings.PLAY_IS_PLAYING.to(false) );
+			});
+			player.setVolume( settings.get(settings.PLAY_CUR_VOLUME) );
+			
+			settings.set( settings.PLAY_CUR_AUDIO_REF.to(audio.get(settings.AUDIO_REFERENCE)) );
+		} finally {
+			onSongChangeEvent.accept();
+			Main.log.log("Loaded audio: " + settings.get(settings.PLAY_CUR_AUDIO_REF) + " for request: " + audio);
 		}
-		
-		onSongChangeEvent.accept();
 	}
 	
 	public void play(int fadeTimeMS) {
@@ -186,7 +188,7 @@ public class PlaybackModel {
 		private static DataOutputStream out;
 
 		static Media decode(SettingsModel settings, BAudio audio) throws IOException, URISyntaxException {
-			ResourceFile playbackFile = audio.get(settings.AUDIO_REFERENCE).getPlaybackFile();
+			ResourceFile playbackFile = audio.get(settings.AUDIO_RESOURCEFILE);
 			URI          requestedURI = playbackFile.toURI ();
 			File         inFile       = playbackFile.toFile();
 			//TODO: Add the hash of the original FLAC file here, so that if the original file changes we don't re-use the old converted file

@@ -3,6 +3,7 @@ package com.bateleur.app.datatype;
 import java.io.Serializable;
 
 import com.bateleur.app.App;
+import com.bateleur.app.model.SettingsModel;
 import com.therealergo.main.Main;
 
 import javafx.scene.image.Image;
@@ -18,7 +19,7 @@ public class BAudio_ArtLoader implements Serializable {
 	 * This behavior will generally be overridden by subclasses that provide images using their own methods.
 	 * @return This BArtLoader's primary Image.
 	 */
-	public Image getImagePrimary(BReference parentReference) {
+	public Image getImagePrimary(SettingsModel settings, BAudio parentAudio) {
 		return new Image(Main.resource.getResourceFileClass("textures>none_TH.png", App.class).getInputStream());
 	}
 	
@@ -30,7 +31,7 @@ public class BAudio_ArtLoader implements Serializable {
 	 * This behavior will generally be overridden by subclasses that provide images using their own methods.
 	 * @return This BArtLoader's thumbnail Image.
 	 */
-	public Image getImageThumbnail(BReference parentReference) {
+	public Image getImageThumbnail(SettingsModel settings, BAudio parentAudio) {
 		return new Image(Main.resource.getResourceFileClass("textures>none_TH.png", App.class).getInputStream());
 	}
 	
@@ -43,7 +44,7 @@ public class BAudio_ArtLoader implements Serializable {
 	 * This behavior will generally be overridden by subclasses that provide images using their own methods.
 	 * @return This BArtLoader's thumbnail Image.
 	 */
-	public Image getImageBlurred(BReference parentReference) {
+	public Image getImageBlurred(SettingsModel settings, BAudio parentAudio) {
 		return new Image(Main.resource.getResourceFileClass("textures>none_BL.png", App.class).getInputStream());
 	}
 }

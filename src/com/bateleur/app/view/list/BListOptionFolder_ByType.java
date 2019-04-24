@@ -69,7 +69,7 @@ public abstract class BListOptionFolder_ByType extends BListOptionFolder {
 		}
 		
 		@Override public Entry<String> getType() {
-			return bListTab.musicListController.master.settings.AUDIO_PROP_ALBUM;
+			return bListTab.musicListController.master.settings.AUDIO_META_ALBUM;
 		}
 	}
 	
@@ -83,7 +83,7 @@ public abstract class BListOptionFolder_ByType extends BListOptionFolder {
 		}
 		
 		@Override public Entry<String> getType() {
-			return bListTab.musicListController.master.settings.AUDIO_PROP_ARTIST;
+			return bListTab.musicListController.master.settings.AUDIO_META_ARTIST;
 		}
 	}
 }
