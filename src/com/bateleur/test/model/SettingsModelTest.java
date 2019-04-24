@@ -65,6 +65,7 @@ public class SettingsModelTest {
         // Setting a setting and then reloading the settings object should retain the setting
     	Integer test_val = ArgumentMatchers.any(Integer.class);
     	settings.set(settings.TEST_VAL.to(test_val));
+    	settings.save();
         settings = new SettingsModel(Main.resource.getResourceFileLocal("test_out>SettingsModelTest>test_settings.ser"));
         assertEquals(settings.<Integer>get(settings.TEST_VAL), test_val);
     }
